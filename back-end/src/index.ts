@@ -1,14 +1,29 @@
-import express from "express";
+import express from 'express';
+import { Coordinate } from '../../shared/chesslib/Coordinate';
 
 const app = express();
-const port = 8080; // default port to listen
+app.set('port', process.env.PORT || 3000);
 
-// define a route handler for the default home page
-app.get("/", (req, res) => {
-  res.send("Hello world!");
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
+// simple '/' endpoint sending a Hello World
+// response
+app.get('/', (req: any, res: any) => {
+  res.send('hello world');
 });
 
-// start the Express server
-app.listen(port, () => {
-  // console.log( `server started at http://localhost:${ port }` );
+io.on('connection', (socket: any) => {
+  console.log('a user connected');
+  io.emit('board-update', 'FUCK YOU');
+
+  socket.on('make-move', (coordinates: Coordinate[]) => {
+    console.log(coordinates);
+    io.emit('board-update', null);
+  });
+});
+
+// start our simple server up on localhost:3000
+const server = http.listen(3000, () => {
+  console.log('listening on *:3000');
 });
