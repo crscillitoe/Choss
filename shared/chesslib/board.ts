@@ -5,4 +5,6 @@ import { Piece } from "./Piece";
  */
 export abstract class Board {
   Pieces: Piece[];
+  Height: number;
+  Width: number;
 }
