@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { TunnelService } from "../services/tunnel.service";
 import { Board } from "../../../../shared/chesslib/Board";
-import { Team } from "../../../../shared/chesslib/Player";
+import { Team } from "../../../../shared/chesslib/Team";
 
 @Component({
   selector: "app-board",
@@ -43,13 +43,8 @@ export class BoardComponent implements OnInit {
       this.columns.push(this.alphabet[i]);
     }
 
-    //   this.tunnelService.receiveBoardState().subscribe(data => {
-    //     console.log(`Received board update: ${data}`);
-    //   });
+    this.tunnelService.receiveBoardState().subscribe(data => {
+      this.Board = data;
+    });
   }
-
-  // sendUpdate() {
-  //   console.log("sending move");
-  //   this.tunnelService.makeMove({ x: 1, y: 1 }, { x: 2, y: 2 });
-  // }
 }

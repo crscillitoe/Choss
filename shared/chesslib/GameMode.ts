@@ -1,4 +1,4 @@
-import { Team } from "./Player";
+import { Team } from "./Team";
 import { Move } from "./Move";
 import { Board } from "./Board";
 import { GameState } from "./GameState";

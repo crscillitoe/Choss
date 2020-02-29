@@ -2,7 +2,7 @@ import { MoveRule } from "./MoveRule";
 import { Board } from "./Board";
 import { Coordinate } from "./Coordinate";
 
-import { Team } from "./Player";
+import { Team } from "./Team";
 
 /**
  * Contains all the information needed for a single piece

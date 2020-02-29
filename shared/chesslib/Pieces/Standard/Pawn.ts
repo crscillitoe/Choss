@@ -1,5 +1,5 @@
 import { Piece } from "../../Piece";
-import { Team } from "../../Player";
+import { Team } from "../../Team";
 import { Board } from "../../Board";
 
 export class Pawn extends Piece {
