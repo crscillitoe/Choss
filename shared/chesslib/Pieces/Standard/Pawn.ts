@@ -1,6 +1,6 @@
-import { Piece } from "../Piece";
-import { Team } from "../Player";
-import { Board } from "../Board";
+import { Piece } from "../../Piece";
+import { Team } from "../../Player";
+import { Board } from "../../Board";
 
 export class Pawn extends Piece {
   constructor(x: number, y: number, team: Team, board: Board) {

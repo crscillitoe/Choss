@@ -1,7 +1,7 @@
-import { MoveRule } from "../MoveRule";
-import { Board } from "../Board";
-import { Piece } from "../Piece";
-import { Coordinate } from "../Coordinate";
+import { MoveRule } from "../../MoveRule";
+import { Board } from "../../Board";
+import { Piece } from "../../Piece";
+import { Coordinate } from "../../Coordinate";
 
 /**
  * This rule, when applied to a piece, will stop it from performing

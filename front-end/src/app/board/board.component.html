@@ -1,1 +1,13 @@
-<div class="chess-row"></div>
+<div class="horizontal-center-game">
+  <div class="vertical-center-game">
+    <div class="chess-game">
+      <div *ngFor="let row of rows; let x = index" class="chess-row">
+        <div
+          [style.background]="getColor(x, y)"
+          *ngFor="let col of columns; let y = index"
+          class="chess-tile"
+        ></div>
+      </div>
+    </div>
+  </div>
+</div>
