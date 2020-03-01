@@ -33,6 +33,12 @@ export class BoardComponent implements OnInit {
     return "#888888";
   }
 
+  test(x: number, y: number) {
+    const Piece = this.Board.getPieceAtCoordinate(x, y);
+    console.log(Piece.MoveRules);
+    console.log(Piece.getValidSquares());
+  }
+
   /**
    * Returns the given SVG of the piece at this location on the board.
    * If no piece is found, this function will return a blank SVG.
@@ -42,10 +48,9 @@ export class BoardComponent implements OnInit {
    */
   getSVG(x: number, y: number) {
     if (this.Board) {
-      for (let Piece of this.Board.Pieces) {
-        if (Piece.Coordinate.x === x && Piece.Coordinate.y === y) {
-          return `assets/chess_pieces/${Piece.SVGName}`;
-        }
+      const Piece = this.Board.getPieceAtCoordinate(x, y);
+      if (Piece) {
+        return `assets/chess_pieces/${Piece.SVGName}`;
       }
     }
 
@@ -53,11 +58,7 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.Board = {
-      Pieces: [],
-      Width: 8,
-      Height: 8
-    };
+    this.Board = new Board([], 8, 8);
     this.Board.Pieces.push(new King(4, 4, Team.BLACK, this.Board));
     console.log(this.Board);
 

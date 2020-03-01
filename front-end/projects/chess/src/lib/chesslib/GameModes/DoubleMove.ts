@@ -1,6 +1,6 @@
 import { GameMode } from "../GameMode";
 import { Board } from "../Board";
-import { Team } from "../Player";
+import { Team } from "../Team";
 import { Move } from "../Move";
 import { GameState } from "../GameState";
 

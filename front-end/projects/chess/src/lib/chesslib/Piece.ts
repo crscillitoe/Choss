@@ -29,4 +29,19 @@ export abstract class Piece {
     this.Team = team;
     this.Board = board;
   }
+
+  /**
+   * Returns a list of squares that this piece can legally move to.
+   */
+  getValidSquares(): Coordinate[] {
+    let coordinates = new Set<Coordinate>();
+
+    for (const moveRule of this.MoveRules) {
+      for (const coordinate of moveRule.ValidSqures(this, this.Board)) {
+        coordinates.add(coordinate);
+      }
+    }
+
+    return Array.from(coordinates);
+  }
 }

@@ -23,10 +23,12 @@ export class HorizontalMove implements MoveRule {
     for (let xCoord = 1; xCoord < board.Width; xCoord++) {
       // If distance is set to -1, that means we can move anywhere on the row.
       if (Math.abs(xCoord - PieceX) <= this.distance || this.distance === -1) {
-        toReturn.push({
-          x: xCoord,
-          y: PieceY
-        });
+        if (xCoord !== PieceX) {
+          toReturn.push({
+            x: xCoord,
+            y: PieceY
+          });
+        }
       }
     }
 

@@ -23,10 +23,12 @@ export class VerticalMove implements MoveRule {
     for (let yCoord = 1; yCoord < board.Height; yCoord++) {
       // If distance is set to -1, that means we can move anywhere on the column.
       if (Math.abs(yCoord - PieceY) <= this.distance || this.distance === -1) {
-        toReturn.push({
-          x: PieceX,
-          y: yCoord
-        });
+        if (yCoord !== PieceY) {
+          toReturn.push({
+            x: PieceX,
+            y: yCoord
+          });
+        }
       }
     }
 
