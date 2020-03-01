@@ -25,7 +25,9 @@ export class DoubleMove extends GameMode {
    * @param Move The desired move to be performed
    */
   HandleMove(Player: Team, Move: Move): boolean {
-    throw new Error("Not Implemented");
+    let Piece = this.Board.getPieceAtCoordinate(Move.PointA.x, Move.PointA.y);
+    Piece.Coordinate = Move.PointB;
+    return true;
   }
 
   /**

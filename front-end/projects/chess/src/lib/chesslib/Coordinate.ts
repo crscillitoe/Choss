@@ -1,7 +1,7 @@
 /**
  * Represents a position on the board.
- * Coordinates will range from 1, 1 (a 1)
- * to 8, 8 (h 8)
+ * Coordinates will range from 1, 1 (A1)
+ * to Board.Width, Board.Height
  */
 export interface Coordinate {
   x: number;

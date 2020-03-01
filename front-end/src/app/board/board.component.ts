@@ -2,6 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { TunnelService } from "../services/tunnel.service";
 import { Board } from "../../../projects/chess/src/lib/chesslib/Board";
 import { King } from "../../../projects/chess/src/lib/chesslib/Pieces/Standard/King";
+import { Piece } from "projects/chess/src/lib/chesslib/Piece";
+import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
+import { GameMode } from "projects/chess/src/lib/chesslib/GameMode";
+import { DoubleMove } from "projects/chess/src/lib/chesslib/GameModes/DoubleMove";
 
 @Component({
   selector: "app-board",
@@ -10,22 +14,37 @@ import { King } from "../../../projects/chess/src/lib/chesslib/Pieces/Standard/K
 })
 export class BoardComponent implements OnInit {
   Board: Board;
-
   rows = [];
   columns = [];
-
   alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
-
   player = Team.BLACK;
+  selectedPiece: Piece = null;
+
+  /* ------ BEGIN TEMPORARY VARIABLES FOR TESTING BOARD LOGIC  ------ */
+
+  BoardGame: GameMode = null;
+
+  /* ------   END TEMPORARY VARIABLES FOR TESTING BOARD LOGIC  ------ */
 
   constructor(private tunnelService: TunnelService) {}
 
   /**
    * Gets the background tile of the tile at the given location.
+   *
    * @param x X coordinate of the tile
    * @param y Y coordinate of the tile
    */
   getColor(x: number, y: number) {
+    if (this.selectedPiece) {
+      if (this.selectedPiece.isValidSquare(x, y)) {
+        if ((x + y) % 2 === 0) {
+          return "indianred";
+        }
+
+        return "salmon";
+      }
+    }
+
     if ((x + y) % 2 === 0) {
       return "#303030";
     }
@@ -33,10 +52,34 @@ export class BoardComponent implements OnInit {
     return "#888888";
   }
 
-  test(x: number, y: number) {
+  /**
+   * Selects the given piece (or unselects it, if it is already selected.)
+   *
+   * @param x The x coordinate on the board of the piece
+   * @param y The y coordinate on the board of the piece
+   */
+  selectPiece(x: number, y: number) {
     const Piece = this.Board.getPieceAtCoordinate(x, y);
-    console.log(Piece.MoveRules);
-    console.log(Piece.getValidSquares());
+    if (Piece && Piece.Team == this.player) {
+      if (this.selectedPiece === Piece) {
+        this.selectedPiece = null;
+      } else {
+        this.selectedPiece = Piece;
+      }
+    } else {
+      if (this.selectedPiece && this.selectedPiece.isValidSquare(x, y)) {
+        // TODO: Send this move to the backend, don't do the logic here you dummy
+        this.BoardGame.HandleMove(this.player, {
+          PointA: this.selectedPiece.Coordinate,
+          PointB: {
+            x: x,
+            y: y
+          }
+        });
+
+        this.selectedPiece = null;
+      }
+    }
   }
 
   /**
@@ -60,7 +103,12 @@ export class BoardComponent implements OnInit {
   ngOnInit() {
     this.Board = new Board([], 8, 8);
     this.Board.Pieces.push(new King(4, 4, Team.BLACK, this.Board));
-    console.log(this.Board);
+
+    /* ------ BEGIN TEMPORARY VARIABLES FOR TESTING BOARD LOGIC  ------ */
+
+    this.BoardGame = new DoubleMove(this.Board);
+
+    /* ------   END TEMPORARY VARIABLES FOR TESTING BOARD LOGIC  ------ */
 
     for (let i = 0; i < this.Board.Width; i++) {
       this.rows.push(i + 1);

@@ -31,9 +31,9 @@ export abstract class Piece {
   }
 
   /**
-   * Returns a list of squares that this piece can legally move to.
+   * Returns a set of squares that this piece can legally move to.
    */
-  getValidSquares(): Coordinate[] {
+  getValidSquares(): Set<Coordinate> {
     let coordinates = new Set<Coordinate>();
 
     for (const moveRule of this.MoveRules) {
@@ -42,6 +42,20 @@ export abstract class Piece {
       }
     }
 
-    return Array.from(coordinates);
+    return coordinates;
+  }
+
+  /**
+   * Checks if the given square can be moved onto.
+   *
+   * @param x The x coordinate to move the piece to
+   * @param y The y coordinate to move the piece to
+   */
+  isValidSquare(x: number, y: number): boolean {
+    for (const coordinate of Array.from(this.getValidSquares())) {
+      if (coordinate.x === x && coordinate.y === y) {
+        return true;
+      }
+    }
   }
 }

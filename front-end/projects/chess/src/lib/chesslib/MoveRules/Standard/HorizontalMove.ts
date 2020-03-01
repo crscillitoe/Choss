@@ -20,7 +20,7 @@ export class HorizontalMove implements MoveRule {
     const PieceY = piece.Coordinate.y;
 
     // Iterate over the entire row
-    for (let xCoord = 1; xCoord < board.Width; xCoord++) {
+    for (let xCoord = 1; xCoord <= board.Width; xCoord++) {
       // If distance is set to -1, that means we can move anywhere on the row.
       if (Math.abs(xCoord - PieceX) <= this.distance || this.distance === -1) {
         if (xCoord !== PieceX) {

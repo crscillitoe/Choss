@@ -3,12 +3,12 @@
     <div class="chess-game">
       <div *ngFor="let row of rows; let x = index" class="chess-row">
         <div
-          [style.background]="getColor(x, y)"
+          [style.background]="getColor(x + 1, y + 1)"
           *ngFor="let col of columns; let y = index"
           class="chess-tile"
         >
           <img
-            (click)="test(x + 1, y + 1)"
+            (click)="selectPiece(x + 1, y + 1)"
             [src]="getSVG(x + 1, y + 1)"
             class="chess-image"
           />

@@ -20,7 +20,7 @@ export class VerticalMove implements MoveRule {
     const PieceY = piece.Coordinate.y;
 
     // Iterate over the entire column
-    for (let yCoord = 1; yCoord < board.Height; yCoord++) {
+    for (let yCoord = 1; yCoord <= board.Height; yCoord++) {
       // If distance is set to -1, that means we can move anywhere on the column.
       if (Math.abs(yCoord - PieceY) <= this.distance || this.distance === -1) {
         if (yCoord !== PieceY) {
