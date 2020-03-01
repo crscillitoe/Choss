@@ -14,6 +14,22 @@ export class HorizontalMove implements MoveRule {
   }
 
   ValidSqures(piece: Piece, board: Board): Coordinate[] {
-    throw new Error("Not Implemented");
+    let toReturn: Coordinate[] = [];
+
+    const PieceX = piece.Coordinate.x;
+    const PieceY = piece.Coordinate.y;
+
+    // Iterate over the entire row
+    for (let xCoord = 1; xCoord < board.Width; xCoord++) {
+      // If distance is set to -1, that means we can move anywhere on the row.
+      if (Math.abs(xCoord - PieceX) <= this.distance || this.distance === -1) {
+        toReturn.push({
+          x: xCoord,
+          y: PieceY
+        });
+      }
+    }
+
+    return toReturn;
   }
 }

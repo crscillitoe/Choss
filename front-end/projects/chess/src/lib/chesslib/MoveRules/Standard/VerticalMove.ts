@@ -14,6 +14,22 @@ export class VerticalMove implements MoveRule {
   }
 
   ValidSqures(piece: Piece, board: Board): Coordinate[] {
-    throw new Error("Not Implemented");
+    let toReturn: Coordinate[] = [];
+
+    const PieceX = piece.Coordinate.x;
+    const PieceY = piece.Coordinate.y;
+
+    // Iterate over the entire column
+    for (let yCoord = 1; yCoord < board.Height; yCoord++) {
+      // If distance is set to -1, that means we can move anywhere on the column.
+      if (Math.abs(yCoord - PieceY) <= this.distance || this.distance === -1) {
+        toReturn.push({
+          x: PieceX,
+          y: yCoord
+        });
+      }
+    }
+
+    return toReturn;
   }
 }

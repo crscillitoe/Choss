@@ -7,7 +7,7 @@
           *ngFor="let col of columns; let y = index"
           class="chess-tile"
         >
-          <img [src]="getSVG(x, y)" class="chess-image" />
+          <img [src]="getSVG(x + 1, y + 1)" class="chess-image" />
         </div>
       </div>
     </div>

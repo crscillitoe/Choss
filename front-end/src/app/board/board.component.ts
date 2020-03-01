@@ -58,7 +58,7 @@ export class BoardComponent implements OnInit {
       Width: 8,
       Height: 8
     };
-    this.Board.Pieces.push(new King(3, 4, Team.WHITE, this.Board));
+    this.Board.Pieces.push(new King(4, 4, Team.BLACK, this.Board));
     console.log(this.Board);
 
     for (let i = 0; i < this.Board.Width; i++) {
