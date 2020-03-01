@@ -41,3 +41,17 @@
   flex-direction: column;
   height: 100%;
 }
+
+.chess-image {
+  width: 90%;
+  height: 90%;
+  position: relative;
+  top: 3%;
+}
+
+.label {
+  position: relative;
+  bottom: 0px;
+  color: white;
+  float: left;
+}

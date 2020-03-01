@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import * as io from "socket.io-client";
 import { Observable, BehaviorSubject } from "rxjs";
-import { Board } from "../../../../shared/chesslib/Board";
-import { Coordinate } from "../../../../shared/chesslib/Coordinate";
+import { Board } from "../../../projects/chess/src/lib/chesslib/Board";
+import { Coordinate } from "../../../projects/chess/src/lib/chesslib/Coordinate";
 
 @Injectable({
   providedIn: "root"

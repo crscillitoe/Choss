@@ -6,7 +6,9 @@
           [style.background]="getColor(x, y)"
           *ngFor="let col of columns; let y = index"
           class="chess-tile"
-        ></div>
+        >
+          <img [src]="getSVG(x, y)" class="chess-image" />
+        </div>
       </div>
     </div>
   </div>

@@ -120,6 +120,41 @@
           }
         }
       }
+    },
+    "chess": {
+      "projectType": "library",
+      "root": "projects/chess",
+      "sourceRoot": "projects/chess/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/chess/tsconfig.lib.json",
+            "project": "projects/chess/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/chess/src/test.ts",
+            "tsConfig": "projects/chess/tsconfig.spec.json",
+            "karmaConfig": "projects/chess/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/chess/tsconfig.lib.json",
+              "projects/chess/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }},
   "defaultProject": "front-end"
 }

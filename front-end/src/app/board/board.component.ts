@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { TunnelService } from "../services/tunnel.service";
-import { Board } from "../../../../shared/chesslib/Board";
-import { Team } from "../../../../shared/chesslib/Team";
+import { Board } from "../../../projects/chess/src/lib/chesslib/Board";
+import { King } from "../../../projects/chess/src/lib/chesslib/Pieces/Standard/King";
 
 @Component({
   selector: "app-board",
@@ -9,16 +9,12 @@ import { Team } from "../../../../shared/chesslib/Team";
   styleUrls: ["./board.component.css"]
 })
 export class BoardComponent implements OnInit {
-  Board: Board = {
-    Pieces: [],
-    Width: 8,
-    Height: 8
-  };
+  Board: Board;
 
   rows = [];
   columns = [];
 
-  alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"];
+  alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
 
   player = Team.BLACK;
 
@@ -37,14 +33,48 @@ export class BoardComponent implements OnInit {
     return "#888888";
   }
 
+  /**
+   * Returns the given SVG of the piece at this location on the board.
+   * If no piece is found, this function will return a blank SVG.
+   *
+   * @param x The x coordinate on the board of the piece
+   * @param y The y coordinate on the board of the piece
+   */
+  getSVG(x: number, y: number) {
+    if (this.Board) {
+      for (let Piece of this.Board.Pieces) {
+        if (Piece.Coordinate.x === x && Piece.Coordinate.y === y) {
+          return `assets/chess_pieces/${Piece.SVGName}`;
+        }
+      }
+    }
+
+    return "assets/chess_pieces/Blank.svg";
+  }
+
   ngOnInit() {
+    this.Board = {
+      Pieces: [],
+      Width: 8,
+      Height: 8
+    };
+    this.Board.Pieces.push(new King(3, 4, Team.WHITE, this.Board));
+    console.log(this.Board);
+
     for (let i = 0; i < this.Board.Width; i++) {
       this.rows.push(i + 1);
       this.columns.push(this.alphabet[i]);
     }
 
     this.tunnelService.receiveBoardState().subscribe(data => {
-      this.Board = data;
+      if (data) {
+        this.Board = data;
+      }
     });
   }
+}
+
+export enum Team {
+  WHITE = 1,
+  BLACK = 0
 }
