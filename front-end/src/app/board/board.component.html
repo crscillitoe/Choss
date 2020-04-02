@@ -1,10 +1,10 @@
 <div class="horizontal-center-game">
   <div class="vertical-center-game">
     <div class="chess-game">
-      <div *ngFor="let row of rows; let x = index" class="chess-row">
+      <div *ngFor="let row of rows; let y = index" class="chess-row">
         <div
           [style.background]="getColor(x + 1, y + 1)"
-          *ngFor="let col of columns; let y = index"
+          *ngFor="let col of columns; let x = index"
           class="chess-tile"
         >
           <img

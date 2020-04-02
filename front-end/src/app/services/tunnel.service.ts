@@ -23,6 +23,15 @@ export class TunnelService {
   }
 
   /**
+   * Connects to the given game.
+   *
+   * @param ID The ID of the game to connect to.
+   */
+  connectToGame(ID: number) {
+    throw new Error("Not Implemented");
+  }
+
+  /**
    * Returns an obsevable containing the state of the board
    * from the server.
    */
@@ -32,6 +41,7 @@ export class TunnelService {
 
   /**
    * Constructs and sends a move to the server
+   *
    * @param pointA The coordinate of the piece you would like to move
    * @param pointB The coordinate that you would like to move the piece to
    */

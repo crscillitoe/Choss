@@ -17,7 +17,7 @@ export class BoardComponent implements OnInit {
   rows = [];
   columns = [];
   alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
-  player = Team.BLACK;
+  player = Team.WHITE;
   selectedPiece: Piece = null;
 
   /* ------ BEGIN TEMPORARY VARIABLES FOR TESTING BOARD LOGIC  ------ */
@@ -103,6 +103,7 @@ export class BoardComponent implements OnInit {
   ngOnInit() {
     this.Board = new Board([], 8, 8);
     this.Board.Pieces.push(new King(4, 4, Team.BLACK, this.Board));
+    this.Board.Pieces.push(new King(2, 2, Team.WHITE, this.Board));
 
     /* ------ BEGIN TEMPORARY VARIABLES FOR TESTING BOARD LOGIC  ------ */
 
