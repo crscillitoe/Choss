@@ -5,7 +5,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { BoardComponent } from "./board/board.component";
 import { HomeComponent } from "./home/home.component";
-import { MatButtonModule } from "@angular/material/button";
+import { MatButtonModule } from "@angular/material";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
