@@ -1,0 +1,21 @@
+.vertical-align {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.slidey-button {
+  font-size: 70px;
+  padding: 50px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.horizontal-align {
+  display: flex;
+  justify-content: center;
+}
+
+.max-height {
+  height: 100%;
+}
