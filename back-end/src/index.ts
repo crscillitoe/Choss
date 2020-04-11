@@ -13,7 +13,8 @@ app.get("/", (req: any, res: any) => {
   res.send("hello world");
 });
 
-io.on("connection", (socket: any) => {
+io.on("connection", (socket: SocketIO.Socket) => {
+  console.log(socket.client.id);
   socket.on("make-move", (coordinates: Coordinate[]) => {
     // TODO: board state management by backend
     io.emit("board-update", null);
