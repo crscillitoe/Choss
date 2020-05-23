@@ -4,8 +4,7 @@ import { Piece } from "../../Piece";
 import { Coordinate } from "../../Coordinate";
 
 /**
- * This rule, when applied to a piece, will stop it from performing
- * any movement that involves jumping over a piece.
+ * Allows the piece to move `distance` units in the up+left/down+right diagonal.
  */
 export class DiagonalLeftMove implements MoveRule {
   distance: number = -1;
