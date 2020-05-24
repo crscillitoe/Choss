@@ -42,8 +42,8 @@ export class DoubleMove implements GameMode {
 
   BuildFreshGame(): Game {
     const board = new Board([], 8, 8);
-    board.Pieces.push(new Queen(4, 1, Team.WHITE));
-    board.Pieces.push(new King(5, 1, Team.WHITE));
+    board.Pieces.push(new Queen(5, 1, Team.WHITE));
+    board.Pieces.push(new King(4, 1, Team.WHITE));
 
     board.Pieces.push(new Rook(1, 1, Team.WHITE));
     board.Pieces.push(new Rook(8, 1, Team.WHITE));
@@ -63,8 +63,8 @@ export class DoubleMove implements GameMode {
     board.Pieces.push(new Pawn(7, 2, Team.WHITE));
     board.Pieces.push(new Pawn(8, 2, Team.WHITE));
 
-    board.Pieces.push(new Queen(4, 8, Team.BLACK));
-    board.Pieces.push(new King(5, 8, Team.BLACK));
+    board.Pieces.push(new Queen(5, 8, Team.BLACK));
+    board.Pieces.push(new King(4, 8, Team.BLACK));
 
     board.Pieces.push(new Rook(1, 8, Team.BLACK));
     board.Pieces.push(new Rook(8, 8, Team.BLACK));

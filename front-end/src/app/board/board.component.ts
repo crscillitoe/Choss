@@ -6,6 +6,7 @@ import { Piece } from "projects/chess/src/lib/chesslib/Piece";
 import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
 import { GameMode } from "projects/chess/src/lib/chesslib/GameMode";
 import { DoubleMove } from "projects/chess/src/lib/chesslib/GameModes/DoubleMove";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-board",
@@ -17,11 +18,19 @@ export class BoardComponent implements OnInit {
   rows = [];
   columns = [];
   alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
-  player = Team.WHITE;
+  player = Team.BLACK;
   selectedPiece: Piece = null;
   pieceMoves: Coordinate[] = null;
 
-  constructor(private tunnelService: TunnelService) {}
+  constructor(
+    private tunnelService: TunnelService,
+    private route: ActivatedRoute
+  ) {
+    this.route.queryParams.subscribe((params) => {
+      console.log(params);
+      this.player = parseInt(params["team"]);
+    });
+  }
 
   /**
    * Gets the background tile of the tile at the given location.
@@ -44,7 +53,7 @@ export class BoardComponent implements OnInit {
       }
     }
 
-    if ((x + y) % 2 === 0) {
+    if ((x + y) % 2 === 1) {
       return "#303030";
     }
 
@@ -66,7 +75,7 @@ export class BoardComponent implements OnInit {
         this.selectedPiece = Piece;
         this.tunnelService.requestValidSquares(Piece);
       }
-    } else {
+    } else if (this.selectedPiece) {
       const location: Coordinate = {
         x: x,
         y: y,

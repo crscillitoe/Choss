@@ -2,19 +2,36 @@
   <div class="vertical-center-game">
     <div class="chess-game">
       <ng-container *ngIf="rows">
-        <div *ngFor="let row of rows; let y = index" class="chess-row">
-          <div
-            [style.background]="getColor(x + 1, y + 1)"
-            *ngFor="let col of columns; let x = index"
-            class="chess-tile"
-          >
-            <img
-              (click)="selectPiece(x + 1, y + 1)"
-              [src]="getSVG(x + 1, y + 1)"
-              class="chess-image"
-            />
+        <ng-container *ngIf="player === 0">
+          <div *ngFor="let row of rows; let y = index" class="chess-row">
+            <div
+              [style.background]="getColor(x + 1, y + 1)"
+              *ngFor="let col of columns; let x = index"
+              class="chess-tile"
+            >
+              <img
+                (click)="selectPiece(x + 1, y + 1)"
+                [src]="getSVG(x + 1, y + 1)"
+                class="chess-image"
+              />
+            </div>
           </div>
-        </div>
+        </ng-container>
+        <ng-container *ngIf="player === 1">
+          <div *ngFor="let row of rows; let y = index" class="chess-row">
+            <div
+              [style.background]="getColor(Board.Width - x, Board.Height - y)"
+              *ngFor="let col of columns; let x = index"
+              class="chess-tile"
+            >
+              <img
+                (click)="selectPiece(Board.Width - x, Board.Height - y)"
+                [src]="getSVG(Board.Width - x, Board.Height - y)"
+                class="chess-image"
+              />
+            </div>
+          </div>
+        </ng-container>
       </ng-container>
     </div>
   </div>
