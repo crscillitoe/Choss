@@ -30,4 +30,14 @@ export class Board {
       }
     }
   }
+
+  /**
+   * Removes the given piece from the board's internal
+   * array of pieces.
+   *
+   * @param Prey Piece to remove from the board
+   */
+  killPiece(Prey: Piece): void {
+    this.Pieces = this.Pieces.filter((piece) => piece !== Prey);
+  }
 }

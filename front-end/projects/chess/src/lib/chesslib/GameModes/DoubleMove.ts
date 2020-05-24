@@ -11,6 +11,7 @@ import { Knight } from "../Pieces/Standard/Knight";
 import { Bishop } from "../Pieces/Standard/Bishop";
 import { Queen } from "../Pieces/Standard/Queen";
 import { Piece } from "../Piece";
+import { GameModeShared } from "./GameModeShared";
 
 export class DoubleMove implements GameMode {
   turnCounter: number;
@@ -88,9 +89,8 @@ export class DoubleMove implements GameMode {
   }
 
   TakePiece(Predator: Piece, Prey: Piece, BoardGameState: Game): void {
-    BoardGameState.BoardState.Pieces = BoardGameState.BoardState.Pieces.filter(
-      (piece) => piece !== Prey
-    );
+    Predator.KillCount++;
+    BoardGameState.BoardState.killPiece(Prey);
 
     Predator.Coordinate = Prey.Coordinate;
 
@@ -104,48 +104,9 @@ export class DoubleMove implements GameMode {
   }
 
   BuildFreshGame(): Game {
-    const board = new Board([], 8, 8);
-    board.Pieces.push(new Queen(5, 1, Team.WHITE));
-    board.Pieces.push(new King(4, 1, Team.WHITE));
-
-    board.Pieces.push(new Rook(1, 1, Team.WHITE));
-    board.Pieces.push(new Rook(8, 1, Team.WHITE));
-
-    board.Pieces.push(new Knight(2, 1, Team.WHITE));
-    board.Pieces.push(new Knight(7, 1, Team.WHITE));
-
-    board.Pieces.push(new Bishop(3, 1, Team.WHITE));
-    board.Pieces.push(new Bishop(6, 1, Team.WHITE));
-
-    board.Pieces.push(new Pawn(1, 2, Team.WHITE));
-    board.Pieces.push(new Pawn(2, 2, Team.WHITE));
-    board.Pieces.push(new Pawn(3, 2, Team.WHITE));
-    board.Pieces.push(new Pawn(4, 2, Team.WHITE));
-    board.Pieces.push(new Pawn(5, 2, Team.WHITE));
-    board.Pieces.push(new Pawn(6, 2, Team.WHITE));
-    board.Pieces.push(new Pawn(7, 2, Team.WHITE));
-    board.Pieces.push(new Pawn(8, 2, Team.WHITE));
-
-    board.Pieces.push(new Queen(5, 8, Team.BLACK));
-    board.Pieces.push(new King(4, 8, Team.BLACK));
-
-    board.Pieces.push(new Rook(1, 8, Team.BLACK));
-    board.Pieces.push(new Rook(8, 8, Team.BLACK));
-
-    board.Pieces.push(new Knight(2, 8, Team.BLACK));
-    board.Pieces.push(new Knight(7, 8, Team.BLACK));
-
-    board.Pieces.push(new Bishop(3, 8, Team.BLACK));
-    board.Pieces.push(new Bishop(6, 8, Team.BLACK));
-
-    board.Pieces.push(new Pawn(1, 7, Team.BLACK));
-    board.Pieces.push(new Pawn(2, 7, Team.BLACK));
-    board.Pieces.push(new Pawn(3, 7, Team.BLACK));
-    board.Pieces.push(new Pawn(4, 7, Team.BLACK));
-    board.Pieces.push(new Pawn(5, 7, Team.BLACK));
-    board.Pieces.push(new Pawn(6, 7, Team.BLACK));
-    board.Pieces.push(new Pawn(7, 7, Team.BLACK));
-    board.Pieces.push(new Pawn(8, 7, Team.BLACK));
-    return new Game(board, GameState.IN_PROGRESS_WHITE_TURN);
+    return new Game(
+      GameModeShared.StandardChessBoard(),
+      GameState.IN_PROGRESS_WHITE_TURN
+    );
   }
 }

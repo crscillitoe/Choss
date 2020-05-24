@@ -12,6 +12,7 @@ export abstract class Piece {
   Coordinate: Coordinate;
   Team: Team;
   SVGName: string;
+  KillCount: number = 0;
 
   constructor(x: number, y: number, team: Team, SVGName: string) {
     this.Coordinate = {

@@ -19,14 +19,53 @@ export class DiagonalLeftMove implements MoveRule {
     const PieceY = piece.Coordinate.y;
 
     // Iterate over the entire column
-    for (let yCoord = 1; yCoord <= board.Height; yCoord++) {
+    for (let yCoord = PieceY; yCoord <= board.Height; yCoord++) {
       // If distance is set to -1, that means we can move anywhere on the column.
       if (Math.abs(yCoord - PieceY) <= this.distance || this.distance === -1) {
         if (yCoord !== PieceY) {
-          toReturn.push({
-            x: PieceX - (PieceY - yCoord),
-            y: yCoord
-          });
+          const toAddX: number = PieceX - (PieceY - yCoord);
+          const toAddY: number = yCoord;
+          const toAdd: Coordinate = {
+            x: toAddX,
+            y: toAddY,
+          };
+
+          const foundPiece = board.getPieceAtCoordinate(toAddX, toAddY);
+          if (foundPiece) {
+            if (foundPiece.Team !== piece.Team) {
+              toReturn.push(toAdd);
+            }
+
+            break;
+          }
+
+          toReturn.push(toAdd);
+        }
+      }
+    }
+
+    // Iterate over the entire column
+    for (let yCoord = PieceY; yCoord >= 1; yCoord--) {
+      // If distance is set to -1, that means we can move anywhere on the column.
+      if (Math.abs(yCoord - PieceY) <= this.distance || this.distance === -1) {
+        if (yCoord !== PieceY) {
+          const toAddX: number = PieceX - (PieceY - yCoord);
+          const toAddY: number = yCoord;
+          const toAdd: Coordinate = {
+            x: toAddX,
+            y: toAddY,
+          };
+
+          const foundPiece = board.getPieceAtCoordinate(toAddX, toAddY);
+          if (foundPiece) {
+            if (foundPiece.Team !== piece.Team) {
+              toReturn.push(toAdd);
+            }
+
+            break;
+          }
+
+          toReturn.push(toAdd);
         }
       }
     }
