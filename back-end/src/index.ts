@@ -19,32 +19,33 @@ app.get("/", (req: any, res: any) => {
   res.send("hello world");
 });
 
-const board = new Board([], 8, 8);
-board.Pieces.push(new King(4, 4, Team.BLACK));
-board.Pieces.push(new King(2, 2, Team.WHITE));
 const boardGame = new DoubleMove();
+const board = boardGame.BuildFreshGame();
 
 io.on("connection", (socket: SocketIO.Socket) => {
   console.log(`Received connection from client: ${socket.client.id}`);
   io.emit("board-update", board);
 
   socket.on("make-move", (move: Move) => {
-    boardGame.HandleMove(Team.WHITE, move, board);
-    io.emit("board-update", board);
+    if (boardGame.HandleMove(Team.WHITE, move, board)) {
+      io.emit("board-update", board);
+    }
   });
 
   socket.on("valid-squares", (piece: Piece) => {
     console.log(
       `requesting valid squares for ${piece.Coordinate.x}, ${piece.Coordinate.y}`
     );
-    const pieceOnBoard = board.getPieceAtCoordinate(
+    const pieceOnBoard = board.BoardState.getPieceAtCoordinate(
       piece.Coordinate.x,
       piece.Coordinate.y
     );
 
     if (pieceOnBoard) {
       console.log(`found piece: ${pieceOnBoard}`);
-      const validSquares = Array.from(pieceOnBoard.getValidSquares(board));
+      const validSquares = Array.from(
+        pieceOnBoard.getValidSquares(board.BoardState)
+      );
 
       console.log(`valid squares: ${validSquares}`);
       io.emit("piece-moves", validSquares);

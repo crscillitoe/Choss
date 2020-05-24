@@ -2,7 +2,7 @@ import { Team } from "./Team";
 import { Move } from "./Move";
 import { Board } from "./Board";
 import { GameState } from "./GameState";
-import { Game } from './Game';
+import { Game } from "./Game";
 
 export interface GameMode {
   /**
@@ -11,10 +11,10 @@ export interface GameMode {
   BuildFreshGame(): Game;
 
   /**
-  * Requests the currently selected gamemode to
-  * perform the given move.
-  * @param Player The player making the move
-  * @param Move The desired move to be performed
-  */
-  HandleMove(Player: Team, Move: Move, Board: Board): void;
+   * Requests the currently selected gamemode to
+   * perform the given move.
+   * @param Player The player making the move
+   * @param Move The desired move to be performed
+   */
+  HandleMove(Player: Team, Move: Move, GameState: Game): void;
 }

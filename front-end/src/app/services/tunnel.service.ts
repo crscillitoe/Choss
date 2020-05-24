@@ -5,6 +5,7 @@ import { Board } from "../../../projects/chess/src/lib/chesslib/Board";
 import { Move } from "../../../projects/chess/src/lib/chesslib/Move";
 import { Coordinate } from "../../../projects/chess/src/lib/chesslib/Coordinate";
 import { Piece } from "projects/chess/src/lib/chesslib/Piece";
+import { Game } from "projects/chess/src/lib/chesslib/Game";
 
 @Injectable({
   providedIn: "root",
@@ -13,7 +14,7 @@ export class TunnelService {
   private socket: SocketIOClient.Socket;
   private server_ip: string = "api.woohoojin.dev";
 
-  private boardState: BehaviorSubject<Board> = new BehaviorSubject<Board>(null);
+  private boardState: BehaviorSubject<Game> = new BehaviorSubject<Game>(null);
   private validSquares: BehaviorSubject<Coordinate[]> = new BehaviorSubject<
     Coordinate[]
   >(null);
@@ -21,9 +22,13 @@ export class TunnelService {
   constructor() {
     this.socket = io.connect(this.server_ip);
 
-    this.socket.on("board-update", (data: Board) => {
-      const toPush: Board = new Board(data.Pieces, data.Height, data.Width);
-      this.boardState.next(toPush);
+    this.socket.on("board-update", (data: Game) => {
+      data.BoardState = new Board(
+        data.BoardState.Pieces,
+        data.BoardState.Height,
+        data.BoardState.Width
+      );
+      this.boardState.next(data);
     });
 
     this.socket.on("piece-moves", (data: Coordinate[]) => {
@@ -60,7 +65,7 @@ export class TunnelService {
    * Returns an obsevable containing the state of the board
    * from the server.
    */
-  receiveBoardState(): Observable<Board> {
+  receiveBoardState(): Observable<Game> {
     return this.boardState;
   }
 

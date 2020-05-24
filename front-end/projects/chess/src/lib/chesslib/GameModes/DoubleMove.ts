@@ -4,6 +4,7 @@ import { Team } from "../Team";
 import { Move } from "../Move";
 import { GameState } from "../GameState";
 import { Game } from "../Game";
+import { King } from "../Pieces/Standard/King";
 
 export class DoubleMove implements GameMode {
   /**
@@ -21,8 +22,11 @@ export class DoubleMove implements GameMode {
    * @param Player The player making the move
    * @param Move The desired move to be performed
    */
-  HandleMove(Player: Team, Move: Move, Board: Board): boolean {
-    let Piece = Board.getPieceAtCoordinate(Move.PointA.x, Move.PointA.y);
+  HandleMove(Player: Team, Move: Move, GameState: Game): boolean {
+    let Piece = GameState.BoardState.getPieceAtCoordinate(
+      Move.PointA.x,
+      Move.PointA.y
+    );
     if (Piece) {
       Piece.Coordinate = Move.PointB;
       return true;
@@ -32,6 +36,9 @@ export class DoubleMove implements GameMode {
   }
 
   BuildFreshGame(): Game {
-    throw new Error("Method not implemented.");
+    const board = new Board([], 8, 8);
+    board.Pieces.push(new King(4, 4, Team.BLACK));
+    board.Pieces.push(new King(2, 2, Team.WHITE));
+    return new Game(board, GameState.IN_PROGRESS_WHITE_TURN);
   }
 }

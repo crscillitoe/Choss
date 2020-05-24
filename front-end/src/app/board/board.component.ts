@@ -98,7 +98,7 @@ export class BoardComponent implements OnInit {
   ngOnInit() {
     this.tunnelService.receiveBoardState().subscribe((data) => {
       if (data) {
-        this.Board = data;
+        this.Board = data.BoardState;
 
         this.rows = [];
         this.columns = [];
