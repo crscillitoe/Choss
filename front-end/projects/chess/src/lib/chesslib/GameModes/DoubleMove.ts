@@ -5,6 +5,7 @@ import { Move } from "../Move";
 import { GameState } from "../GameState";
 import { Game } from "../Game";
 import { King } from "../Pieces/Standard/King";
+import { Pawn } from "../Pieces/Standard/Pawn";
 
 export class DoubleMove implements GameMode {
   /**
@@ -38,7 +39,7 @@ export class DoubleMove implements GameMode {
   BuildFreshGame(): Game {
     const board = new Board([], 8, 8);
     board.Pieces.push(new King(4, 4, Team.BLACK));
-    board.Pieces.push(new King(2, 2, Team.WHITE));
+    board.Pieces.push(new Pawn(2, 2, Team.WHITE));
     return new Game(board, GameState.IN_PROGRESS_WHITE_TURN);
   }
 }
