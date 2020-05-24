@@ -2,6 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { TunnelService } from "../services/tunnel.service";
 import { Board } from "../../../projects/chess/src/lib/chesslib/Board";
 import { King } from "../../../projects/chess/src/lib/chesslib/Pieces/Standard/King";
+import {
+  Team,
+  TeamOption,
+} from "../../../projects/chess/src/lib/chesslib/Team";
 import { Piece } from "projects/chess/src/lib/chesslib/Piece";
 import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
 import { GameMode } from "projects/chess/src/lib/chesslib/GameMode";
@@ -20,7 +24,7 @@ export class BoardComponent implements OnInit {
   rows = [];
   columns = [];
   alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
-  player = Team.BLACK;
+  player = new Team(TeamOption.BLACK);
   selectedPiece: Piece = null;
   pieceMoves: Coordinate[] = null;
 
@@ -30,7 +34,7 @@ export class BoardComponent implements OnInit {
   ) {
     this.route.queryParams.subscribe((params) => {
       console.log(params);
-      this.player = parseInt(params["team"]);
+      this.player = new Team(parseInt(params["team"]));
     });
   }
 
@@ -70,9 +74,9 @@ export class BoardComponent implements OnInit {
    */
   selectPiece(x: number, y: number) {
     if (
-      (this.player === Team.WHITE &&
+      (this.player.equals(TeamOption.WHITE) &&
         this.Status === GameState.IN_PROGRESS_WHITE_TURN) ||
-      (this.player === Team.BLACK &&
+      (this.player.equals(TeamOption.BLACK) &&
         this.Status === GameState.IN_PROGRESS_BLACK_TURN)
     ) {
       const Piece = this.Board.getPieceAtCoordinate(x, y);
@@ -132,9 +136,4 @@ export class BoardComponent implements OnInit {
       this.pieceMoves = data;
     });
   }
-}
-
-export enum Team {
-  WHITE = 1,
-  BLACK = 0,
 }

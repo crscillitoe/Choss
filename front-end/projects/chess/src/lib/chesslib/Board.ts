@@ -29,6 +29,7 @@ export class Board {
         return Piece;
       }
     }
+    return null;
   }
 
   /**

@@ -1,6 +1,6 @@
 import { GameMode } from "../GameMode";
 import { Board } from "../Board";
-import { Team } from "../Team";
+import { Team, TeamOption } from "../Team";
 import { Move } from "../Move";
 import { GameState } from "../GameState";
 import { Game } from "../Game";
@@ -34,7 +34,7 @@ export class DoubleMove implements GameMode {
    * @param Player The player making the move
    * @param Move The desired move to be performed
    */
-  HandleMove(Player: Team, Move: Move, BoardGameState: Game): boolean {
+  HandleMove(Player: TeamOption, Move: Move, BoardGameState: Game): boolean {
     let Piece = BoardGameState.BoardState.getPieceAtCoordinate(
       Move.PointA.x,
       Move.PointA.y
@@ -95,7 +95,7 @@ export class DoubleMove implements GameMode {
     Predator.Coordinate = Prey.Coordinate;
 
     if (Prey instanceof King) {
-      if (Prey.Team === Team.WHITE) {
+      if (Prey.Team === new Team(TeamOption.WHITE)) {
         BoardGameState.State = GameState.BLACK_WIN_VARIANT;
       } else {
         BoardGameState.State = GameState.WHITE_WIN_VARIANT;

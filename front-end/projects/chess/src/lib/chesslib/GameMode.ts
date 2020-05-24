@@ -1,4 +1,4 @@
-import { Team } from "./Team";
+import { Team, TeamOption } from "./Team";
 import { Move } from "./Move";
 import { Board } from "./Board";
 import { GameState } from "./GameState";
@@ -19,7 +19,7 @@ export interface GameMode {
    * @param Move The desired move to be performed
    * @param GameState The current board state
    */
-  HandleMove(Player: Team, Move: Move, GameState: Game): void;
+  HandleMove(Player: TeamOption, Move: Move, GameState: Game): void;
 
   /**
    * The predator hunts its' prey, and the gamemode will define

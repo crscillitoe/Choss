@@ -2,7 +2,7 @@ import { MoveRule } from "./MoveRule";
 import { Board } from "./Board";
 import { Coordinate } from "./Coordinate";
 
-import { Team } from "./Team";
+import { Team, TeamOption } from "./Team";
 
 /**
  * Contains all the information needed for a single piece
@@ -20,7 +20,7 @@ export abstract class Piece {
       y: y,
     };
 
-    if (team === Team.WHITE) {
+    if (team.equals(TeamOption.WHITE)) {
       this.SVGName = `White_${SVGName}.svg`;
     } else {
       this.SVGName = `Black_${SVGName}.svg`;
