@@ -9,12 +9,11 @@ import { Team } from "./Team";
  */
 export abstract class Piece {
   MoveRules: MoveRule[];
-  Board: Board;
   Coordinate: Coordinate;
   Team: Team;
   SVGName: string;
 
-  constructor(x: number, y: number, team: Team, board: Board, SVGName: string) {
+  constructor(x: number, y: number, team: Team, SVGName: string) {
     this.Coordinate = {
       x: x,
       y: y
@@ -27,17 +26,16 @@ export abstract class Piece {
     }
 
     this.Team = team;
-    this.Board = board;
   }
 
   /**
    * Returns a set of squares that this piece can legally move to.
    */
-  getValidSquares(): Set<Coordinate> {
+  getValidSquares(board: Board): Set<Coordinate> {
     let coordinates = new Set<Coordinate>();
 
     for (const moveRule of this.MoveRules) {
-      for (const coordinate of moveRule.ValidSqures(this, this.Board)) {
+      for (const coordinate of moveRule.ValidSqures(this, board)) {
         coordinates.add(coordinate);
       }
     }
@@ -51,8 +49,8 @@ export abstract class Piece {
    * @param x The x coordinate to move the piece to
    * @param y The y coordinate to move the piece to
    */
-  isValidSquare(x: number, y: number): boolean {
-    for (const coordinate of Array.from(this.getValidSquares())) {
+  isValidSquare(x: number, y: number, board: Board): boolean {
+    for (const coordinate of Array.from(this.getValidSquares(board))) {
       if (coordinate.x === x && coordinate.y === y) {
         return true;
       }

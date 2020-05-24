@@ -2,28 +2,19 @@ import { Team } from "./Team";
 import { Move } from "./Move";
 import { Board } from "./Board";
 import { GameState } from "./GameState";
+import { Game } from './Game';
 
-export abstract class GameMode {
-  Board: Board;
-
-  constructor(Board: Board) {
-    this.Board = Board;
-  }
+export interface GameMode {
+  /**
+   * Sets the board up for a brand new game.
+   */
+  BuildFreshGame(): Game;
 
   /**
-   * Requests the currently selected gamemode to
-   * perform the given move.
-   * @param Player The player making the move
-   * @param Move The desired move to be performed
-   */
-  HandleMove(Player: Team, Move: Move): boolean {
-    throw new Error("Not Implemented");
-  }
-
-  /**
-   * Returns the current state of the game.
-   */
-  GetGameState(): GameState {
-    throw new Error("Not Implemented");
-  }
+  * Requests the currently selected gamemode to
+  * perform the given move.
+  * @param Player The player making the move
+  * @param Move The desired move to be performed
+  */
+  HandleMove(Player: Team, Move: Move, Board: Board): void;
 }

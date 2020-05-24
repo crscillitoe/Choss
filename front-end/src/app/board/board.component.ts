@@ -10,7 +10,7 @@ import { DoubleMove } from "projects/chess/src/lib/chesslib/GameModes/DoubleMove
 @Component({
   selector: "app-board",
   templateUrl: "./board.component.html",
-  styleUrls: ["./board.component.css"]
+  styleUrls: ["./board.component.css"],
 })
 export class BoardComponent implements OnInit {
   Board: Board;
@@ -19,12 +19,7 @@ export class BoardComponent implements OnInit {
   alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
   player = Team.WHITE;
   selectedPiece: Piece = null;
-
-  /* ------ BEGIN TEMPORARY VARIABLES FOR TESTING BOARD LOGIC  ------ */
-
-  BoardGame: GameMode = null;
-
-  /* ------   END TEMPORARY VARIABLES FOR TESTING BOARD LOGIC  ------ */
+  pieceMoves: Coordinate[] = null;
 
   constructor(private tunnelService: TunnelService) {}
 
@@ -36,12 +31,16 @@ export class BoardComponent implements OnInit {
    */
   getColor(x: number, y: number) {
     if (this.selectedPiece) {
-      if (this.selectedPiece.isValidSquare(x, y)) {
-        if ((x + y) % 2 === 0) {
-          return "indianred";
-        }
+      if (this.pieceMoves) {
+        for (const coordinate of this.pieceMoves) {
+          if (coordinate.x === x && coordinate.y === y) {
+            if ((x + y) % 2 === 0) {
+              return "indianred";
+            }
 
-        return "salmon";
+            return "salmon";
+          }
+        }
       }
     }
 
@@ -65,20 +64,16 @@ export class BoardComponent implements OnInit {
         this.selectedPiece = null;
       } else {
         this.selectedPiece = Piece;
+        this.tunnelService.requestValidSquares(Piece);
       }
     } else {
-      if (this.selectedPiece && this.selectedPiece.isValidSquare(x, y)) {
-        // TODO: Send this move to the backend, don't do the logic here you dummy
-        this.BoardGame.HandleMove(this.player, {
-          PointA: this.selectedPiece.Coordinate,
-          PointB: {
-            x: x,
-            y: y
-          }
-        });
-
-        this.selectedPiece = null;
-      }
+      const location: Coordinate = {
+        x: x,
+        y: y,
+      };
+      this.tunnelService.makeMove(this.selectedPiece.Coordinate, location);
+      this.pieceMoves = [];
+      this.selectedPiece = null;
     }
   }
 
@@ -101,30 +96,26 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.Board = new Board([], 8, 8);
-    this.Board.Pieces.push(new King(4, 4, Team.BLACK, this.Board));
-    this.Board.Pieces.push(new King(2, 2, Team.WHITE, this.Board));
-
-    /* ------ BEGIN TEMPORARY VARIABLES FOR TESTING BOARD LOGIC  ------ */
-
-    this.BoardGame = new DoubleMove(this.Board);
-
-    /* ------   END TEMPORARY VARIABLES FOR TESTING BOARD LOGIC  ------ */
-
-    for (let i = 0; i < this.Board.Width; i++) {
-      this.rows.push(i + 1);
-      this.columns.push(this.alphabet[i]);
-    }
-
-    this.tunnelService.receiveBoardState().subscribe(data => {
+    this.tunnelService.receiveBoardState().subscribe((data) => {
       if (data) {
         this.Board = data;
+
+        this.rows = [];
+        this.columns = [];
+        for (let i = 0; i < this.Board.Width; i++) {
+          this.rows.push(i + 1);
+          this.columns.push(this.alphabet[i]);
+        }
       }
+    });
+
+    this.tunnelService.getValidSquares().subscribe((data) => {
+      this.pieceMoves = data;
     });
   }
 }
 
 export enum Team {
   WHITE = 1,
-  BLACK = 0
+  BLACK = 0,
 }

@@ -3,12 +3,9 @@ import { Board } from "../Board";
 import { Team } from "../Team";
 import { Move } from "../Move";
 import { GameState } from "../GameState";
+import { Game } from "../Game";
 
-export class DoubleMove extends GameMode {
-  constructor(Board: Board) {
-    super(Board);
-  }
-
+export class DoubleMove implements GameMode {
   /**
    * In `DoubleMove`, each player is allowed to make
    * *two* moves before their turn is concluded.
@@ -24,16 +21,17 @@ export class DoubleMove extends GameMode {
    * @param Player The player making the move
    * @param Move The desired move to be performed
    */
-  HandleMove(Player: Team, Move: Move): boolean {
-    let Piece = this.Board.getPieceAtCoordinate(Move.PointA.x, Move.PointA.y);
-    Piece.Coordinate = Move.PointB;
-    return true;
+  HandleMove(Player: Team, Move: Move, Board: Board): boolean {
+    let Piece = Board.getPieceAtCoordinate(Move.PointA.x, Move.PointA.y);
+    if (Piece) {
+      Piece.Coordinate = Move.PointB;
+      return true;
+    }
+
+    return false;
   }
 
-  /**
-   * Returns the current state of the game.
-   */
-  GetGameState(): GameState {
-    throw new Error("Not Implemented");
+  BuildFreshGame(): Game {
+    throw new Error("Method not implemented.");
   }
 }
