@@ -32,51 +32,70 @@ export class ElbowMove implements MoveRule {
     this.disallowedQuadrants = moveOptions.disallowedQuadrants || [];
   }
 
+  private canWalkTo(
+    board: Board,
+    coordinate: Coordinate,
+    max: number,
+    delta: number,
+    horizontal: boolean
+  ): boolean {
+    for (
+      let coordDelta = 1 * delta;
+      coordDelta < max;
+      coordDelta += coordDelta
+    ) {
+      const currCoord = horizontal
+        ? coordinate.x + coordDelta
+        : coordinate.y + coordDelta;
+
+      if (currCoord === board.Height || currCoord < 1) {
+        return false;
+      }
+
+      const currentPiece = horizontal
+        ? board.getPieceAtCoordinate(currCoord, coordinate.y)
+        : board.getPieceAtCoordinate(coordinate.x, currCoord);
+
+      if (currentPiece && !this.canFly) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   private checkPath(
     piece: Piece,
     board: Board,
     verticalMax: number,
     horizontalMax: number,
-    delta: number
+    deltaX: number,
+    deltaY: number
   ): Coordinate[] {
-    for (let xDelta = 1 * delta; xDelta < horizontalMax; xDelta += delta) {
-      const xCoord = piece.Coordinate.x + xDelta;
-      if (xCoord > board.Width || xCoord < 1) {
-        return [];
-      }
-
-      const currentPiece = board.getPieceAtCoordinate(
-        xCoord,
-        piece.Coordinate.y
-      );
-
-      if (currentPiece !== null && !this.canFly) {
-        return [];
-      }
+    if (
+      (this.canWalkTo(board, piece.Coordinate, horizontalMax, deltaX, true) &&
+        this.canWalkTo(
+          board,
+          { x: piece.Coordinate.x + horizontalMax, y: piece.Coordinate.y },
+          verticalMax,
+          deltaY,
+          false
+        )) ||
+      (this.canWalkTo(board, piece.Coordinate, verticalMax, deltaY, false) &&
+        this.canWalkTo(
+          board,
+          { x: piece.Coordinate.x, y: piece.Coordinate.y + verticalMax },
+          horizontalMax,
+          deltaX,
+          true
+        ))
+    ) {
+      return [
+        {
+          x: piece.Coordinate.x + horizontalMax * deltaX,
+          y: piece.Coordinate.y + verticalMax * deltaY,
+        },
+      ];
     }
-
-    const newXCoord = piece.Coordinate.x + horizontalMax * delta;
-    for (let yDelta = 1 * delta; yDelta < verticalMax; yDelta += delta) {
-      const yCoord = piece.Coordinate.y + yDelta;
-      if (yCoord > board.Height || yCoord < 1) {
-        return [];
-      }
-
-      const currentPiece = board.getPieceAtCoordinate(
-        piece.Coordinate.x,
-        yCoord
-      );
-
-      if (currentPiece !== null && !this.canFly) {
-        return [];
-      }
-    }
-    return [
-      {
-        x: piece.Coordinate.x + horizontalMax,
-        y: piece.Coordinate.y + verticalMax,
-      },
-    ];
   }
 
   ValidSqures(piece: Piece, board: Board): Coordinate[] {
@@ -85,16 +104,78 @@ export class ElbowMove implements MoveRule {
       board,
       this.distanceLength,
       this.distanceWidth,
+      1,
       1
     );
-    valid.concat(
-      this.checkPath(piece, board, this.distanceLength, this.distanceWidth, -1)
+    valid = valid.concat(
+      this.checkPath(
+        piece,
+        board,
+        this.distanceLength,
+        this.distanceWidth,
+        1,
+        -1
+      )
     );
-    valid.concat(
-      this.checkPath(piece, board, this.distanceWidth, this.distanceLength, 1)
+    valid = valid.concat(
+      this.checkPath(
+        piece,
+        board,
+        this.distanceLength,
+        this.distanceWidth,
+        -1,
+        1
+      )
     );
-    valid.concat(
-      this.checkPath(piece, board, this.distanceWidth, this.distanceLength, -1)
+    valid = valid.concat(
+      this.checkPath(
+        piece,
+        board,
+        this.distanceLength,
+        this.distanceWidth,
+        -1,
+        -1
+      )
+    );
+    valid = valid.concat(
+      this.checkPath(
+        piece,
+        board,
+        this.distanceWidth,
+        this.distanceLength,
+        1,
+        1
+      )
+    );
+    valid = valid.concat(
+      this.checkPath(
+        piece,
+        board,
+        this.distanceWidth,
+        this.distanceLength,
+        1,
+        -1
+      )
+    );
+    valid = valid.concat(
+      this.checkPath(
+        piece,
+        board,
+        this.distanceWidth,
+        this.distanceLength,
+        -1,
+        1
+      )
+    );
+    valid = valid.concat(
+      this.checkPath(
+        piece,
+        board,
+        this.distanceWidth,
+        this.distanceLength,
+        -1,
+        -1
+      )
     );
     return valid;
   }

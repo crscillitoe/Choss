@@ -37,7 +37,7 @@ export abstract class Piece {
 
     for (const moveRule of this.MoveRules) {
       for (const coordinate of moveRule.ValidSqures(this, board)) {
-        coordinates.add(coordinate);
+        if (coordinate) coordinates.add(coordinate);
       }
     }
 
