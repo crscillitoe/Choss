@@ -73,6 +73,7 @@ export class BoardComponent implements OnInit {
    * @param y The y coordinate on the board of the piece
    */
   selectPiece(x: number, y: number) {
+    console.log(this.player);
     if (
       (this.player.equals(TeamOption.WHITE) &&
         this.Status === GameState.IN_PROGRESS_WHITE_TURN) ||
@@ -80,7 +81,7 @@ export class BoardComponent implements OnInit {
         this.Status === GameState.IN_PROGRESS_BLACK_TURN)
     ) {
       const Piece = this.Board.getPieceAtCoordinate(x, y);
-      if (Piece && Piece.Team == this.player) {
+      if (Piece && this.player.equals(Piece.Team.teamOption)) {
         if (this.selectedPiece === Piece) {
           this.selectedPiece = null;
         } else {
