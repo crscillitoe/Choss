@@ -2,7 +2,7 @@
   <div class="vertical-center-game">
     <div class="chess-game">
       <ng-container *ngIf="rows">
-        <ng-container *ngIf="player === 0">
+        <ng-container *ngIf="player.teamOption === 0">
           <div *ngFor="let row of rows; let y = index" class="chess-row">
             <div
               [style.background]="getColor(x + 1, y + 1)"
@@ -17,7 +17,7 @@
             </div>
           </div>
         </ng-container>
-        <ng-container *ngIf="player === 1">
+        <ng-container *ngIf="player.teamOption === 1">
           <div *ngFor="let row of rows; let y = index" class="chess-row">
             <div
               [style.background]="getColor(Board.Width - x, Board.Height - y)"
