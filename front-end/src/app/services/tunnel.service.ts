@@ -12,7 +12,7 @@ import { Game } from "projects/chess/src/lib/chesslib/Game";
 })
 export class TunnelService {
   private socket: SocketIOClient.Socket;
-  private server_ip: string = "localhost:3000";
+  private server_ip: string = "api.woohoojin.dev";
 
   private boardState: BehaviorSubject<Game> = new BehaviorSubject<Game>(null);
   private validSquares: BehaviorSubject<Coordinate[]> = new BehaviorSubject<

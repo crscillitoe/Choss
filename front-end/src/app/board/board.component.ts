@@ -86,6 +86,7 @@ export class BoardComponent implements OnInit {
           this.selectedPiece = null;
         } else {
           this.selectedPiece = Piece;
+          this.pieceMoves = [];
           this.tunnelService.requestValidSquares(Piece);
         }
       } else if (this.selectedPiece) {

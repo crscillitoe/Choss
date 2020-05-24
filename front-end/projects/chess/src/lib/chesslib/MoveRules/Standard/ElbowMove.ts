@@ -41,8 +41,8 @@ export class ElbowMove implements MoveRule {
   ): boolean {
     for (
       let coordDelta = 1 * delta;
-      coordDelta < max;
-      coordDelta += coordDelta
+      coordDelta < max * delta;
+      coordDelta += delta
     ) {
       const currCoord = horizontal
         ? coordinate.x + coordDelta
@@ -96,6 +96,8 @@ export class ElbowMove implements MoveRule {
         },
       ];
     }
+
+    return [];
   }
 
   ValidSqures(piece: Piece, board: Board): Coordinate[] {

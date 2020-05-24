@@ -11,7 +11,6 @@ export class Pawn extends Piece {
     super(x, y, team, "Pawn");
 
     this.MoveRules = [
-      new VerticalMove(1),
       new ElbowMove({ distanceLength: 1, distanceWidth: 1, canFly: false }),
     ];
   }
