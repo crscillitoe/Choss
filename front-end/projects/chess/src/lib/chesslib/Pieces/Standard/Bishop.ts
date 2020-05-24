@@ -3,10 +3,10 @@ import { Team } from "../../Team";
 import { HorizontalMove } from "../../MoveRules/Standard/HorizontalMove";
 import { VerticalMove } from "../../MoveRules/Standard/VerticalMove";
 
-export class Rook extends Piece {
+export class Bishop extends Piece {
   constructor(x: number, y: number, team: Team) {
-    super(x, y, team, "Rook");
+    super(x, y, team, "Bishop");
 
-    this.MoveRules = [new HorizontalMove(-1), new VerticalMove(-1)];
+    this.MoveRules = [];
   }
 }
