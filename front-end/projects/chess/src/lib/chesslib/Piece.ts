@@ -16,7 +16,7 @@ export abstract class Piece {
   constructor(x: number, y: number, team: Team, SVGName: string) {
     this.Coordinate = {
       x: x,
-      y: y
+      y: y,
     };
 
     if (team === Team.WHITE) {

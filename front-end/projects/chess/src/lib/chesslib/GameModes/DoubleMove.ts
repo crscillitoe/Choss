@@ -10,8 +10,14 @@ import { Rook } from "../Pieces/Standard/Rook";
 import { Knight } from "../Pieces/Standard/Knight";
 import { Bishop } from "../Pieces/Standard/Bishop";
 import { Queen } from "../Pieces/Standard/Queen";
+import { Piece } from "../Piece";
 
 export class DoubleMove implements GameMode {
+  turnCounter: number;
+  constructor() {
+    this.turnCounter = 0;
+  }
+
   /**
    * In `DoubleMove`, each player is allowed to make
    * *two* moves before their turn is concluded.
@@ -27,17 +33,74 @@ export class DoubleMove implements GameMode {
    * @param Player The player making the move
    * @param Move The desired move to be performed
    */
-  HandleMove(Player: Team, Move: Move, GameState: Game): boolean {
-    let Piece = GameState.BoardState.getPieceAtCoordinate(
+  HandleMove(Player: Team, Move: Move, BoardGameState: Game): boolean {
+    let Piece = BoardGameState.BoardState.getPieceAtCoordinate(
       Move.PointA.x,
       Move.PointA.y
     );
+
+    let TargetPiece = BoardGameState.BoardState.getPieceAtCoordinate(
+      Move.PointB.x,
+      Move.PointB.y
+    );
+
     if (Piece) {
-      Piece.Coordinate = Move.PointB;
+      if (
+        !Piece.isValidSquare(
+          Move.PointB.x,
+          Move.PointB.y,
+          BoardGameState.BoardState
+        )
+      ) {
+        return false;
+      }
+
+      if (TargetPiece) {
+        this.TakePiece(Piece, TargetPiece, BoardGameState);
+
+        // TakePiece may cause the game to end, if we are taking a king.
+        if (
+          BoardGameState.State === GameState.BLACK_WIN_CHECKMATE ||
+          BoardGameState.State === GameState.BLACK_WIN_VARIANT ||
+          BoardGameState.State === GameState.WHITE_WIN_CHECKMATE ||
+          BoardGameState.State === GameState.WHITE_WIN_VARIANT
+        ) {
+          return true;
+        }
+      } else {
+        // No killing has been done.
+        Piece.Coordinate = Move.PointB;
+      }
+
+      this.turnCounter++;
+
+      // Next players' turn
+      if (Math.floor(this.turnCounter / 2) % 2 === 0) {
+        BoardGameState.State = GameState.IN_PROGRESS_WHITE_TURN;
+      } else {
+        BoardGameState.State = GameState.IN_PROGRESS_BLACK_TURN;
+      }
+
       return true;
     }
 
     return false;
+  }
+
+  TakePiece(Predator: Piece, Prey: Piece, BoardGameState: Game): void {
+    BoardGameState.BoardState.Pieces = BoardGameState.BoardState.Pieces.filter(
+      (piece) => piece !== Prey
+    );
+
+    Predator.Coordinate = Prey.Coordinate;
+
+    if (Prey instanceof King) {
+      if (Prey.Team === Team.WHITE) {
+        BoardGameState.State = GameState.BLACK_WIN_VARIANT;
+      } else {
+        BoardGameState.State = GameState.WHITE_WIN_VARIANT;
+      }
+    }
   }
 
   BuildFreshGame(): Game {

@@ -7,6 +7,7 @@ import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
 import { GameMode } from "projects/chess/src/lib/chesslib/GameMode";
 import { DoubleMove } from "projects/chess/src/lib/chesslib/GameModes/DoubleMove";
 import { ActivatedRoute } from "@angular/router";
+import { GameState } from "projects/chess/src/lib/chesslib/GameState";
 
 @Component({
   selector: "app-board",
@@ -15,6 +16,7 @@ import { ActivatedRoute } from "@angular/router";
 })
 export class BoardComponent implements OnInit {
   Board: Board;
+  Status: GameState;
   rows = [];
   columns = [];
   alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
@@ -67,22 +69,29 @@ export class BoardComponent implements OnInit {
    * @param y The y coordinate on the board of the piece
    */
   selectPiece(x: number, y: number) {
-    const Piece = this.Board.getPieceAtCoordinate(x, y);
-    if (Piece && Piece.Team == this.player) {
-      if (this.selectedPiece === Piece) {
+    if (
+      (this.player === Team.WHITE &&
+        this.Status === GameState.IN_PROGRESS_WHITE_TURN) ||
+      (this.player === Team.BLACK &&
+        this.Status === GameState.IN_PROGRESS_BLACK_TURN)
+    ) {
+      const Piece = this.Board.getPieceAtCoordinate(x, y);
+      if (Piece && Piece.Team == this.player) {
+        if (this.selectedPiece === Piece) {
+          this.selectedPiece = null;
+        } else {
+          this.selectedPiece = Piece;
+          this.tunnelService.requestValidSquares(Piece);
+        }
+      } else if (this.selectedPiece) {
+        const location: Coordinate = {
+          x: x,
+          y: y,
+        };
+        this.tunnelService.makeMove(this.selectedPiece.Coordinate, location);
+        this.pieceMoves = [];
         this.selectedPiece = null;
-      } else {
-        this.selectedPiece = Piece;
-        this.tunnelService.requestValidSquares(Piece);
       }
-    } else if (this.selectedPiece) {
-      const location: Coordinate = {
-        x: x,
-        y: y,
-      };
-      this.tunnelService.makeMove(this.selectedPiece.Coordinate, location);
-      this.pieceMoves = [];
-      this.selectedPiece = null;
     }
   }
 
@@ -108,6 +117,7 @@ export class BoardComponent implements OnInit {
     this.tunnelService.receiveBoardState().subscribe((data) => {
       if (data) {
         this.Board = data.BoardState;
+        this.Status = data.State;
 
         this.rows = [];
         this.columns = [];
