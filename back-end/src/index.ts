@@ -1,8 +1,5 @@
 import express from "express";
-import { Coordinate } from "../../front-end/projects/chess/src/lib/chesslib/Coordinate";
-import { Board } from "../../front-end/projects/chess/src/lib/chesslib/Board";
 import { Team } from "../../front-end/projects/chess/src/lib/chesslib/Team";
-import { King } from "../../front-end/projects/chess/src/lib/chesslib/Pieces/Standard/King";
 import { DoubleMove } from "../../front-end/projects/chess/src/lib/chesslib/GameModes/DoubleMove";
 import { Move } from "../../front-end/projects/chess/src/lib/chesslib/Move";
 import { Piece } from "../../front-end/projects/chess/src/lib/chesslib/Piece";
@@ -48,7 +45,7 @@ io.on("connection", (socket: SocketIO.Socket) => {
       );
 
       console.log(`valid squares: ${validSquares}`);
-      io.emit("piece-moves", validSquares);
+      socket.emit("piece-moves", validSquares);
     }
   });
 });
