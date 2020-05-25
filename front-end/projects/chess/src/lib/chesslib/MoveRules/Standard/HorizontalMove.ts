@@ -12,7 +12,7 @@ export class HorizontalMove implements MoveRule {
     this.distance = distance;
   }
 
-  ValidSqures(piece: Piece, board: Board): Coordinate[] {
+  ValidSquares(piece: Piece, board: Board): Coordinate[] {
     let toReturn: Coordinate[] = [];
 
     const PieceX = piece.Coordinate.x;
@@ -25,7 +25,7 @@ export class HorizontalMove implements MoveRule {
         if (xCoord !== PieceX) {
           toReturn.push({
             x: xCoord,
-            y: PieceY
+            y: PieceY,
           });
         }
       }

@@ -15,4 +15,8 @@ export class Team {
       this.teamOption === TeamOption.ANY || this.teamOption === otherTeamOption
     );
   }
+
+  direction(): number {
+    return this.teamOption === TeamOption.WHITE ? 1 : -1;
+  }
 }

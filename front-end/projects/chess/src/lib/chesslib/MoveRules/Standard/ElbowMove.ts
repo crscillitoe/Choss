@@ -100,7 +100,7 @@ export class ElbowMove implements MoveRule {
     return [];
   }
 
-  ValidSqures(piece: Piece, board: Board): Coordinate[] {
+  ValidSquares(piece: Piece, board: Board): Coordinate[] {
     let valid = this.checkPath(
       piece,
       board,

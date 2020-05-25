@@ -12,7 +12,7 @@ export class DiagonalLeftMove implements MoveRule {
     this.distance = distance;
   }
 
-  ValidSqures(piece: Piece, board: Board): Coordinate[] {
+  ValidSquares(piece: Piece, board: Board): Coordinate[] {
     let toReturn: Coordinate[] = [];
 
     const PieceX = piece.Coordinate.x;
@@ -30,16 +30,11 @@ export class DiagonalLeftMove implements MoveRule {
             y: toAddY,
           };
 
-          const foundPiece = board.getPieceAtCoordinate(toAddX, toAddY);
-          if (foundPiece) {
-            if (foundPiece.Team !== piece.Team) {
-              toReturn.push(toAdd);
-            }
+          toReturn.push(toAdd);
 
+          if (board.getPieceAtCoordinate(toAddX, toAddY)) {
             break;
           }
-
-          toReturn.push(toAdd);
         }
       }
     }
@@ -56,16 +51,11 @@ export class DiagonalLeftMove implements MoveRule {
             y: toAddY,
           };
 
-          const foundPiece = board.getPieceAtCoordinate(toAddX, toAddY);
-          if (foundPiece) {
-            if (foundPiece.Team !== piece.Team) {
-              toReturn.push(toAdd);
-            }
+          toReturn.push(toAdd);
 
+          if (board.getPieceAtCoordinate(toAddX, toAddY)) {
             break;
           }
-
-          toReturn.push(toAdd);
         }
       }
     }

@@ -13,5 +13,5 @@ export interface MoveRule {
    * @param piece The piece being moved
    * @param board The board the piece is on
    */
-  ValidSqures: (piece: Piece, board: Board) => Coordinate[];
+  ValidSquares: (piece: Piece, board: Board) => Coordinate[];
 }

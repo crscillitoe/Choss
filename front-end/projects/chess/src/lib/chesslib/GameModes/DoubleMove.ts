@@ -75,6 +75,8 @@ export class DoubleMove implements GameMode {
 
       this.turnCounter++;
 
+      BoardGameState.BoardState.logMove(Piece, Move.PointA, Move.PointB);
+
       // Next players' turn
       if (Math.floor(this.turnCounter / 2) % 2 === 0) {
         BoardGameState.State = GameState.IN_PROGRESS_WHITE_TURN;
@@ -90,6 +92,7 @@ export class DoubleMove implements GameMode {
 
   TakePiece(Predator: Piece, Prey: Piece, BoardGameState: Game): void {
     Predator.KillCount++;
+    Predator.CostEffectiveness += Prey.PointValue;
     BoardGameState.BoardState.killPiece(Prey);
 
     Predator.Coordinate = Prey.Coordinate;

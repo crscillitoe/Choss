@@ -3,16 +3,26 @@ import { Board } from "./Board";
 import { Coordinate } from "./Coordinate";
 
 import { Team, TeamOption } from "./Team";
+import { SpecialMoveRule } from "./SpecialMoveRule";
 
 /**
  * Contains all the information needed for a single piece
  */
 export abstract class Piece {
   MoveRules: MoveRule[];
+  MoveRestrictions: MoveRule[];
+  SpecialMoves: SpecialMoveRule[];
+
   Coordinate: Coordinate;
   Team: Team;
   SVGName: string;
+
   KillCount: number = 0;
+  TimesMoved: number = 0;
+  DistanceTraveled: number = 0;
+  CostEffectiveness: number = 0;
+
+  PointValue: number;
 
   constructor(x: number, y: number, team: Team, SVGName: string) {
     this.Coordinate = {
@@ -33,15 +43,54 @@ export abstract class Piece {
    * Returns a set of squares that this piece can legally move to.
    */
   getValidSquares(board: Board): Set<Coordinate> {
-    let coordinates = new Set<Coordinate>();
+    let rules = new Set<Coordinate>();
+    let restrictions: Coordinate[] = board.getAllSquares();
+    let specialRules: Coordinate[] = [];
 
     for (const moveRule of this.MoveRules) {
-      for (const coordinate of moveRule.ValidSqures(this, board)) {
-        coordinates.add(coordinate);
+      for (const coordinate of moveRule.ValidSquares(this, board)) {
+        rules.add(coordinate);
       }
     }
 
-    return coordinates;
+    if (!this.MoveRestrictions) {
+      return rules;
+    }
+
+    for (const moveRestriction of this.MoveRestrictions) {
+      restrictions = restrictions.filter((allowedSquares) => {
+        for (const coordinate of moveRestriction.ValidSquares(this, board)) {
+          if (
+            allowedSquares.x === coordinate.x &&
+            allowedSquares.y === coordinate.y
+          ) {
+            return true;
+          }
+        }
+
+        return false;
+      });
+    }
+
+    for (const specialMove of this.SpecialMoves) {
+      for (const moveDefinition of specialMove.ValidSquares(this, board)) {
+        specialRules.push(moveDefinition.target);
+      }
+    }
+
+    return new Set(
+      [...rules]
+        .filter((coord) => {
+          for (const restriction of restrictions) {
+            if (restriction.x === coord.x && restriction.y === coord.y) {
+              return true;
+            }
+          }
+
+          return false;
+        })
+        .concat(specialRules)
+    );
   }
 
   /**
