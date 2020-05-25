@@ -13,13 +13,12 @@ import { Quadrant } from "../../Quadrant";
  * within `tallPieces` on the board. ElbowMove will refuse to allow moves
  * into the `Quadrants` defined in `disallowedQuadrants`.
  */
-export class ElbowMove implements MoveRule {
-  private distanceLength: number;
-  private distanceWidth: number;
-  private numStations: number;
-  private canFly: boolean;
-  private tallPieces: Piece[];
-  private disallowedQuadrants: Quadrant[];
+export abstract class ElbowMove {
+  protected distanceLength: number;
+  protected distanceWidth: number;
+  protected numStations: number;
+  protected canFly: boolean;
+  protected tallPieces: Piece[];
   constructor(moveOptions: ElbowMoveOptions) {
     this.distanceLength = moveOptions.distanceLength || 1;
     this.distanceWidth = moveOptions.distanceWidth || 1;
@@ -29,7 +28,6 @@ export class ElbowMove implements MoveRule {
     }
     this.canFly = moveOptions.canFly || false;
     this.tallPieces = moveOptions.tallPieces || [];
-    this.disallowedQuadrants = moveOptions.disallowedQuadrants || [];
   }
 
   private canWalkTo(
@@ -63,7 +61,7 @@ export class ElbowMove implements MoveRule {
     return true;
   }
 
-  private checkPath(
+  protected checkPath(
     piece: Piece,
     board: Board,
     verticalMax: number,
@@ -99,88 +97,6 @@ export class ElbowMove implements MoveRule {
 
     return [];
   }
-
-  ValidSquares(piece: Piece, board: Board): Coordinate[] {
-    let valid = this.checkPath(
-      piece,
-      board,
-      this.distanceLength,
-      this.distanceWidth,
-      1,
-      1
-    );
-    valid = valid.concat(
-      this.checkPath(
-        piece,
-        board,
-        this.distanceLength,
-        this.distanceWidth,
-        1,
-        -1
-      )
-    );
-    valid = valid.concat(
-      this.checkPath(
-        piece,
-        board,
-        this.distanceLength,
-        this.distanceWidth,
-        -1,
-        1
-      )
-    );
-    valid = valid.concat(
-      this.checkPath(
-        piece,
-        board,
-        this.distanceLength,
-        this.distanceWidth,
-        -1,
-        -1
-      )
-    );
-    valid = valid.concat(
-      this.checkPath(
-        piece,
-        board,
-        this.distanceWidth,
-        this.distanceLength,
-        1,
-        1
-      )
-    );
-    valid = valid.concat(
-      this.checkPath(
-        piece,
-        board,
-        this.distanceWidth,
-        this.distanceLength,
-        1,
-        -1
-      )
-    );
-    valid = valid.concat(
-      this.checkPath(
-        piece,
-        board,
-        this.distanceWidth,
-        this.distanceLength,
-        -1,
-        1
-      )
-    );
-    valid = valid.concat(
-      this.checkPath(
-        piece,
-        board,
-        this.distanceWidth,
-        this.distanceLength,
-        -1,
-        -1
-      )
-    );
-    return valid;
-  }
 }
 
 /**
@@ -190,7 +106,6 @@ export class ElbowMove implements MoveRule {
  * @param mustReachDestination: True if a piece must be able to make the maximal elbow move in order to move to any of its stations.
  * @param canFly: True if a piece may move with other pieces in its path
  * @param tallPieces: List of Pieces that prevent this piece from moving if they are in its path.
- * @param disallowedQuadrants: Quadrants which the piece may not move into
  * @param canKillFriends: Can take friendly pieces
  */
 export interface ElbowMoveOptions {
@@ -200,6 +115,5 @@ export interface ElbowMoveOptions {
   mustReachDestination?: boolean;
   canFly?: boolean;
   tallPieces?: Piece[];
-  disallowedQuadrants?: Quadrant[];
   canKillFriends?: boolean;
 }

@@ -5,8 +5,12 @@ import {
   ElbowMove,
   ElbowMoveOptions,
 } from "../../MoveRules/Standard/ElbowMove";
-import { ForwardRestriction } from "../../MoveRestrictions/Standard/ForwardRestriction";
+import { ElbowMoveFrontRight } from "../../MoveRules/Standard/ElbowMoveFrontRight";
+import { ElbowMoveFrontLeft } from "../../MoveRules/Standard/ElbowMoveFrontLeft";
+import { ElbowMoveBackLeft } from "../../MoveRules/Standard/ElbowMoveBackLeft";
+import { ElbowMoveBackRight } from "../../MoveRules/Standard/ElbowMoveBackRight";
 import { PawnDoubleMove } from "../../MoveRules/Standard/PawnDoubleMove";
+import { ForwardRestriction } from "../../MoveRestrictions/Standard/ForwardRestriction";
 import { DiagonalMoveOnlyIfAttack } from "../../MoveRestrictions/Standard/DiagonalMoveOnlyIfAttack";
 import { CannotAttackPiecesVertically } from "../../MoveRestrictions/Standard/CannotAttackPiecesVertically";
 import { CannotAttackFriends } from "../../MoveRestrictions/Standard/CannotAttackFriends";
@@ -14,9 +18,23 @@ import { CannotAttackFriends } from "../../MoveRestrictions/Standard/CannotAttac
 export class Pawn extends Piece {
   constructor(x: number, y: number, team: Team) {
     super(x, y, team, "Pawn");
+    const moveOptions = {
+      distanceLength: 1,
+      distanceWidth: 1,
+      canFly: true,
+    };
 
     this.MoveRules = [
-      new ElbowMove({ distanceLength: 1, distanceWidth: 1, canFly: true }),
+      new ElbowMoveFrontRight({
+        distanceLength: 1,
+        distanceWidth: 1,
+        canFly: true,
+      }),
+      new ElbowMoveFrontLeft({
+        distanceLength: 1,
+        distanceWidth: 1,
+        canFly: true,
+      }),
       new VerticalMove(1),
       new PawnDoubleMove(),
     ];
