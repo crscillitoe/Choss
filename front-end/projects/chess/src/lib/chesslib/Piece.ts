@@ -72,9 +72,11 @@ export abstract class Piece {
       });
     }
 
-    for (const specialMove of this.SpecialMoves) {
-      for (const moveDefinition of specialMove.ValidSquares(this, board)) {
-        specialRules.push(moveDefinition.target);
+    if (this.SpecialMoves) {
+      for (const specialMove of this.SpecialMoves) {
+        for (const moveDefinition of specialMove.ValidSquares(this, board)) {
+          specialRules.push(moveDefinition.target);
+        }
       }
     }
 

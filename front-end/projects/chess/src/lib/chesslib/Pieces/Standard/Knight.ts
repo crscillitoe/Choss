@@ -1,7 +1,10 @@
 import { Piece } from "../../Piece";
 import { Team } from "../../Team";
-import { ElbowMove } from "../../MoveRules/Standard/ElbowMove";
 import { CannotAttackFriends } from "../../MoveRestrictions/Standard/CannotAttackFriends";
+import { ElbowMoveBackLeft } from "../../MoveRules/Standard/ElbowMoveBackLeft";
+import { ElbowMoveFrontLeft } from "../../MoveRules/Standard/ElbowMoveFrontLeft";
+import { ElbowMoveFrontRight } from "../../MoveRules/Standard/ElbowMoveFrontRight";
+import { ElbowMoveBackRight } from "../../MoveRules/Standard/ElbowMoveBackRight";
 
 export class Knight extends Piece {
   constructor(x: number, y: number, team: Team) {
@@ -9,7 +12,26 @@ export class Knight extends Piece {
 
     this.PointValue = 3;
     this.MoveRules = [
-      new ElbowMove({ distanceLength: 2, distanceWidth: 1, canFly: true }),
+      new ElbowMoveBackLeft({
+        distanceLength: 2,
+        distanceWidth: 1,
+        canFly: true,
+      }),
+      new ElbowMoveFrontLeft({
+        distanceLength: 2,
+        distanceWidth: 1,
+        canFly: true,
+      }),
+      new ElbowMoveBackRight({
+        distanceLength: 2,
+        distanceWidth: 1,
+        canFly: true,
+      }),
+      new ElbowMoveFrontRight({
+        distanceLength: 2,
+        distanceWidth: 1,
+        canFly: true,
+      }),
     ];
 
     this.MoveRestrictions = [new CannotAttackFriends()];
