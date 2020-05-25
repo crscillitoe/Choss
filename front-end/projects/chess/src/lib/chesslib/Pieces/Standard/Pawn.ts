@@ -5,13 +5,25 @@ import {
   ElbowMove,
   ElbowMoveOptions,
 } from "../../MoveRules/Standard/ElbowMove";
+import { ElbowMoveFrontRight } from "../../MoveRules/Standard/ElbowMoveFrontRight";
+import { ElbowMoveFrontLeft } from "../../MoveRules/Standard/ElbowMoveFrontLeft";
+import { ElbowMoveBackLeft } from "../../MoveRules/Standard/ElbowMoveBackLeft";
+import { ElbowMoveBackRight } from "../../MoveRules/Standard/ElbowMoveBackRight";
 
 export class Pawn extends Piece {
   constructor(x: number, y: number, team: Team) {
     super(x, y, team, "Pawn");
+    const moveOptions = {
+      distanceLength: 1,
+      distanceWidth: 1,
+      canFly: true,
+    };
 
     this.MoveRules = [
-      new ElbowMove({ distanceLength: 1, distanceWidth: 1, canFly: false }),
+      new ElbowMoveFrontRight(moveOptions),
+      new ElbowMoveFrontLeft(moveOptions),
+      new ElbowMoveBackLeft(moveOptions),
+      new ElbowMoveBackRight(moveOptions),
     ];
   }
 }
