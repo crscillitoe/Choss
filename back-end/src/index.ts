@@ -1,6 +1,7 @@
 import express from "express";
 import { TeamOption } from "../../front-end/projects/chess/src/lib/chesslib/Team";
 import { DoubleMove } from "../../front-end/projects/chess/src/lib/chesslib/GameModes/DoubleMove";
+import { RandomAtomic } from "../../front-end/projects/chess/src/lib/chesslib/GameModes/RandomAtomic";
 import { Move } from "../../front-end/projects/chess/src/lib/chesslib/Move";
 import { Piece } from "../../front-end/projects/chess/src/lib/chesslib/Piece";
 
@@ -16,7 +17,7 @@ app.get("/", (req: any, res: any) => {
   res.send("hello world");
 });
 
-const boardGame = new DoubleMove();
+const boardGame = new RandomAtomic();
 const board = boardGame.BuildFreshGame();
 
 io.on("connection", (socket: SocketIO.Socket) => {
@@ -24,26 +25,21 @@ io.on("connection", (socket: SocketIO.Socket) => {
   io.emit("board-update", board);
 
   socket.on("make-move", (move: Move) => {
-    if (boardGame.HandleMove(TeamOption.WHITE, move, board)) {
+    if (boardGame.HandleMove(move, board)) {
       io.emit("board-update", board);
     }
   });
 
   socket.on("valid-squares", (piece: Piece) => {
-    console.log(
-      `requesting valid squares for ${piece.Coordinate.x}, ${piece.Coordinate.y}`
-    );
     const pieceOnBoard = board.BoardState.getPieceAtCoordinate(
       piece.Coordinate
     );
 
     if (pieceOnBoard) {
-      console.log(`found piece: ${pieceOnBoard}`);
       const validSquares = Array.from(
         pieceOnBoard.getValidSquares(board.BoardState)
       );
 
-      console.log(`valid squares: ${validSquares}`);
       socket.emit("piece-moves", validSquares);
     }
   });

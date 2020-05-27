@@ -4,7 +4,7 @@ import { Board } from "../../../projects/chess/src/lib/chesslib/Board";
 import { King } from "../../../projects/chess/src/lib/chesslib/Pieces/Standard/King";
 import {
   Team,
-  TeamOption
+  TeamOption,
 } from "../../../projects/chess/src/lib/chesslib/Team";
 import { Piece } from "projects/chess/src/lib/chesslib/Piece";
 import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
@@ -16,7 +16,7 @@ import { GameState } from "projects/chess/src/lib/chesslib/GameState";
 @Component({
   selector: "app-board",
   templateUrl: "./board.component.html",
-  styleUrls: ["./board.component.css"]
+  styleUrls: ["./board.component.css"],
 })
 export class BoardComponent implements OnInit {
   Board: Board;
@@ -32,7 +32,7 @@ export class BoardComponent implements OnInit {
     private tunnelService: TunnelService,
     private route: ActivatedRoute
   ) {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       console.log(params);
       this.player = new Team(parseInt(params["team"]));
     });
@@ -45,6 +45,12 @@ export class BoardComponent implements OnInit {
    * @param y Y coordinate of the tile
    */
   getColor(x: number, y: number) {
+    const piece = this.Board.getPieceAtCoordinate(new Coordinate(x, y));
+    if (piece) {
+      if (piece.IsBomb && piece.Team.teamOption !== this.player.teamOption) {
+        return "red";
+      }
+    }
     if (this.selectedPiece) {
       if (this.pieceMoves) {
         for (const coordinate of this.pieceMoves) {
@@ -116,7 +122,7 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.tunnelService.receiveBoardState().subscribe(data => {
+    this.tunnelService.receiveBoardState().subscribe((data) => {
       if (data) {
         this.Board = data.BoardState;
         this.Status = data.State;
@@ -130,7 +136,7 @@ export class BoardComponent implements OnInit {
       }
     });
 
-    this.tunnelService.getValidSquares().subscribe(data => {
+    this.tunnelService.getValidSquares().subscribe((data) => {
       this.pieceMoves = data;
     });
   }

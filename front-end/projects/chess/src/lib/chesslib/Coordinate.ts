@@ -34,7 +34,26 @@ export class Coordinate {
    * @param board the board the coordinate is on
    */
   getAllAdjacentCoordinatesOnBoard(board: Board): Coordinate[] {
-    throw new Error("Not implemented");
+    const deltas: number[][] = [
+      [0, 1],
+      [0, -1],
+      [1, 0],
+      [1, 1],
+      [1, -1],
+      [-1, 0],
+      [-1, 1],
+      [-1, -1],
+    ];
+
+    let toReturn: Coordinate[] = [];
+    for (const delta of deltas) {
+      const coordinate = new Coordinate(this.x + delta[0], this.y + delta[1]);
+      if (board.isOnBoard(coordinate)) {
+        toReturn.push(coordinate);
+      }
+    }
+
+    return toReturn;
   }
 
   /**

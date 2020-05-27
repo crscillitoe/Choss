@@ -13,9 +13,10 @@ import { Queen } from "../Pieces/Standard/Queen";
 import { Piece } from "../Piece";
 import { GameModeShared } from "./GameModeShared";
 
-export class DoubleMove implements GameMode {
+export class DoubleMove extends GameMode {
   turnCounter: number;
   constructor() {
+    super();
     this.turnCounter = 0;
   }
 
@@ -34,44 +35,14 @@ export class DoubleMove implements GameMode {
    * @param Player The player making the move
    * @param Move The desired move to be performed
    */
-  HandleMove(Player: TeamOption, Move: Move, BoardGameState: Game): boolean {
-    let Piece = BoardGameState.BoardState.getPieceAtCoordinate(Move.PointA);
+  HandleMove(Move: Move, BoardGameState: Game): boolean {
+    const movePerformed = super.HandleMove(Move, BoardGameState);
+    if (BoardGameState.isGameOver()) {
+      return true;
+    }
 
-    let TargetPiece = BoardGameState.BoardState.getPieceAtCoordinate(
-      Move.PointB
-    );
-
-    if (Piece) {
-      if (
-        !Piece.isValidSquare(
-          Move.PointB.x,
-          Move.PointB.y,
-          BoardGameState.BoardState
-        )
-      ) {
-        return false;
-      }
-
-      if (TargetPiece) {
-        this.TakePiece(Piece, TargetPiece, BoardGameState);
-
-        // TakePiece may cause the game to end, if we are taking a king.
-        if (
-          BoardGameState.State === GameState.BLACK_WIN_CHECKMATE ||
-          BoardGameState.State === GameState.BLACK_WIN_VARIANT ||
-          BoardGameState.State === GameState.WHITE_WIN_CHECKMATE ||
-          BoardGameState.State === GameState.WHITE_WIN_VARIANT
-        ) {
-          return true;
-        }
-      } else {
-        // No killing has been done.
-        Piece.Coordinate = Move.PointB;
-      }
-
+    if (movePerformed) {
       this.turnCounter++;
-
-      BoardGameState.BoardState.logMove(Piece, Move.PointA, Move.PointB);
 
       // Next players' turn
       if (Math.floor(this.turnCounter / 2) % 2 === 0) {
@@ -79,33 +50,8 @@ export class DoubleMove implements GameMode {
       } else {
         BoardGameState.State = GameState.IN_PROGRESS_BLACK_TURN;
       }
-
-      return true;
     }
 
-    return false;
-  }
-
-  TakePiece(Predator: Piece, Prey: Piece, BoardGameState: Game): void {
-    Predator.KillCount++;
-    Predator.CostEffectiveness += Prey.PointValue;
-    BoardGameState.BoardState.killPiece(Prey);
-
-    Predator.Coordinate = Prey.Coordinate;
-
-    if (Prey instanceof King) {
-      if (Prey.Team === new Team(TeamOption.WHITE)) {
-        BoardGameState.State = GameState.BLACK_WIN_VARIANT;
-      } else {
-        BoardGameState.State = GameState.WHITE_WIN_VARIANT;
-      }
-    }
-  }
-
-  BuildFreshGame(): Game {
-    return new Game(
-      GameModeShared.StandardChessBoard(),
-      GameState.IN_PROGRESS_WHITE_TURN
-    );
+    return movePerformed;
   }
 }

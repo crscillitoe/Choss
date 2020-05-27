@@ -9,7 +9,7 @@ import { TeamOption } from "../../Team";
  */
 export class CannotAttackFriends implements MoveRule {
   ValidSquares(piece: Piece, board: Board): Coordinate[] {
-    return board.getAllSquares().filter(square => {
+    return board.getAllSquares().filter((square) => {
       const otherPiece = board.getPieceAtCoordinate(square);
       if (otherPiece) {
         if (piece.Team.equals(otherPiece.Team.teamOption)) {

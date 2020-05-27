@@ -22,6 +22,8 @@ export abstract class Piece {
   DistanceTraveled: number = 0;
   CostEffectiveness: number = 0;
 
+  IsBomb: boolean = false;
+
   PointValue: number;
 
   constructor(x: number, y: number, team: Team, SVGName: string) {
@@ -55,7 +57,7 @@ export abstract class Piece {
     }
 
     for (const moveRestriction of this.MoveRestrictions) {
-      restrictions = restrictions.filter(allowedSquares => {
+      restrictions = restrictions.filter((allowedSquares) => {
         for (const coordinate of moveRestriction.ValidSquares(this, board)) {
           if (
             allowedSquares.x === coordinate.x &&
@@ -79,7 +81,7 @@ export abstract class Piece {
 
     return new Set(
       [...rules]
-        .filter(coord => {
+        .filter((coord) => {
           for (const restriction of restrictions) {
             if (restriction.x === coord.x && restriction.y === coord.y) {
               return true;

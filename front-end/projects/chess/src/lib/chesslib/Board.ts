@@ -27,10 +27,17 @@ export class Board {
     this.MoveHistory.push({
       PointA: pointA,
       PointB: pointB,
-      PieceMoved: piece
+      PieceMoved: piece,
     });
 
     piece.TimesMoved++;
+  }
+
+  /**
+   * Returns a random piece on the board.
+   */
+  getRandomPiece(): Piece {
+    return this.Pieces[Math.floor(Math.random() * this.Pieces.length)];
   }
 
   /**
@@ -59,7 +66,7 @@ export class Board {
    * @param Prey Piece to remove from the board
    */
   killPiece(Prey: Piece): void {
-    this.Pieces = this.Pieces.filter(piece => piece !== Prey);
+    this.Pieces = this.Pieces.filter((piece) => piece !== Prey);
   }
 
   /**
