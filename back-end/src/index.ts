@@ -1,11 +1,5 @@
 import express from "express";
-import { Coordinate } from "../../front-end/projects/chess/src/lib/chesslib/Coordinate";
-import { Board } from "../../front-end/projects/chess/src/lib/chesslib/Board";
-import {
-  Team,
-  TeamOption,
-} from "../../front-end/projects/chess/src/lib/chesslib/Team";
-import { King } from "../../front-end/projects/chess/src/lib/chesslib/Pieces/Standard/King";
+import { TeamOption } from "../../front-end/projects/chess/src/lib/chesslib/Team";
 import { DoubleMove } from "../../front-end/projects/chess/src/lib/chesslib/GameModes/DoubleMove";
 import { Move } from "../../front-end/projects/chess/src/lib/chesslib/Move";
 import { Piece } from "../../front-end/projects/chess/src/lib/chesslib/Piece";
@@ -40,8 +34,7 @@ io.on("connection", (socket: SocketIO.Socket) => {
       `requesting valid squares for ${piece.Coordinate.x}, ${piece.Coordinate.y}`
     );
     const pieceOnBoard = board.BoardState.getPieceAtCoordinate(
-      piece.Coordinate.x,
-      piece.Coordinate.y
+      piece.Coordinate
     );
 
     if (pieceOnBoard) {

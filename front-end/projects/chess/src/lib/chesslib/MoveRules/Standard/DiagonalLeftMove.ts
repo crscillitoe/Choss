@@ -13,53 +13,14 @@ export class DiagonalLeftMove implements MoveRule {
   }
 
   ValidSquares(piece: Piece, board: Board): Coordinate[] {
-    let toReturn: Coordinate[] = [];
+    const upLeft = board.stopAtPiece(
+      piece.Coordinate.getAllCoordinatesInDirection(-1, 1, this.distance, board)
+    );
 
-    const PieceX = piece.Coordinate.x;
-    const PieceY = piece.Coordinate.y;
+    const downRight = board.stopAtPiece(
+      piece.Coordinate.getAllCoordinatesInDirection(1, -1, this.distance, board)
+    );
 
-    // Iterate over the entire column
-    for (let yCoord = PieceY; yCoord <= board.Height; yCoord++) {
-      // If distance is set to -1, that means we can move anywhere on the column.
-      if (Math.abs(yCoord - PieceY) <= this.distance || this.distance === -1) {
-        if (yCoord !== PieceY) {
-          const toAddX: number = PieceX - (PieceY - yCoord);
-          const toAddY: number = yCoord;
-          const toAdd: Coordinate = {
-            x: toAddX,
-            y: toAddY,
-          };
-
-          toReturn.push(toAdd);
-
-          if (board.getPieceAtCoordinate(toAddX, toAddY)) {
-            break;
-          }
-        }
-      }
-    }
-
-    // Iterate over the entire column
-    for (let yCoord = PieceY; yCoord >= 1; yCoord--) {
-      // If distance is set to -1, that means we can move anywhere on the column.
-      if (Math.abs(yCoord - PieceY) <= this.distance || this.distance === -1) {
-        if (yCoord !== PieceY) {
-          const toAddX: number = PieceX - (PieceY - yCoord);
-          const toAddY: number = yCoord;
-          const toAdd: Coordinate = {
-            x: toAddX,
-            y: toAddY,
-          };
-
-          toReturn.push(toAdd);
-
-          if (board.getPieceAtCoordinate(toAddX, toAddY)) {
-            break;
-          }
-        }
-      }
-    }
-
-    return toReturn;
+    return upLeft.concat(downRight);
   }
 }

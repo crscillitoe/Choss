@@ -13,24 +13,14 @@ export class HorizontalMove implements MoveRule {
   }
 
   ValidSquares(piece: Piece, board: Board): Coordinate[] {
-    let toReturn: Coordinate[] = [];
+    const left = board.stopAtPiece(
+      piece.Coordinate.getAllCoordinatesInDirection(-1, 0, this.distance, board)
+    );
 
-    const PieceX = piece.Coordinate.x;
-    const PieceY = piece.Coordinate.y;
+    const right = board.stopAtPiece(
+      piece.Coordinate.getAllCoordinatesInDirection(1, 0, this.distance, board)
+    );
 
-    // Iterate over the entire row
-    for (let xCoord = 1; xCoord <= board.Width; xCoord++) {
-      // If distance is set to -1, that means we can move anywhere on the row.
-      if (Math.abs(xCoord - PieceX) <= this.distance || this.distance === -1) {
-        if (xCoord !== PieceX) {
-          toReturn.push({
-            x: xCoord,
-            y: PieceY,
-          });
-        }
-      }
-    }
-
-    return toReturn;
+    return left.concat(right);
   }
 }

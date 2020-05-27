@@ -51,8 +51,8 @@ export abstract class ElbowMove {
       }
 
       const currentPiece = horizontal
-        ? board.getPieceAtCoordinate(currCoord, coordinate.y)
-        : board.getPieceAtCoordinate(coordinate.x, currCoord);
+        ? board.getPieceAtCoordinate(new Coordinate(currCoord, coordinate.y))
+        : board.getPieceAtCoordinate(new Coordinate(coordinate.x, currCoord));
 
       if (currentPiece && !this.canFly) {
         return false;
@@ -73,7 +73,10 @@ export abstract class ElbowMove {
       (this.canWalkTo(board, piece.Coordinate, horizontalMax, deltaX, true) &&
         this.canWalkTo(
           board,
-          { x: piece.Coordinate.x + horizontalMax, y: piece.Coordinate.y },
+          new Coordinate(
+            piece.Coordinate.x + horizontalMax,
+            piece.Coordinate.y
+          ),
           verticalMax,
           deltaY,
           false
@@ -81,17 +84,17 @@ export abstract class ElbowMove {
       (this.canWalkTo(board, piece.Coordinate, verticalMax, deltaY, false) &&
         this.canWalkTo(
           board,
-          { x: piece.Coordinate.x, y: piece.Coordinate.y + verticalMax },
+          new Coordinate(piece.Coordinate.x, piece.Coordinate.y + verticalMax),
           horizontalMax,
           deltaX,
           true
         ))
     ) {
       return [
-        {
-          x: piece.Coordinate.x + horizontalMax * deltaX,
-          y: piece.Coordinate.y + verticalMax * deltaY,
-        },
+        new Coordinate(
+          piece.Coordinate.x + horizontalMax * deltaX,
+          piece.Coordinate.y + verticalMax * deltaY
+        )
       ];
     }
 

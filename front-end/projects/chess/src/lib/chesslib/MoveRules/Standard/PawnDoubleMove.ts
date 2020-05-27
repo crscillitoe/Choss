@@ -13,10 +13,12 @@ export class PawnDoubleMove implements MoveRule {
     }
 
     const targetY = piece.Coordinate.y + 2 * piece.Team.direction();
-    if (board.getPieceAtCoordinate(piece.Coordinate.x, targetY)) {
+    if (
+      board.getPieceAtCoordinate(new Coordinate(piece.Coordinate.x, targetY))
+    ) {
       return [];
     }
 
-    return [{ x: piece.Coordinate.x, y: targetY }];
+    return [new Coordinate(piece.Coordinate.x, targetY)];
   }
 }

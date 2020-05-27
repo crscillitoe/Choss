@@ -13,52 +13,19 @@ export class DiagonalRightMove implements MoveRule {
   }
 
   ValidSquares(piece: Piece, board: Board): Coordinate[] {
-    let toReturn: Coordinate[] = [];
+    const upRight = board.stopAtPiece(
+      piece.Coordinate.getAllCoordinatesInDirection(1, 1, this.distance, board)
+    );
 
-    const PieceX = piece.Coordinate.x;
-    const PieceY = piece.Coordinate.y;
+    const downLeft = board.stopAtPiece(
+      piece.Coordinate.getAllCoordinatesInDirection(
+        -1,
+        -1,
+        this.distance,
+        board
+      )
+    );
 
-    // Iterate over the entire row
-    for (let xCoord = PieceX; xCoord <= board.Width; xCoord++) {
-      // If distance is set to -1, that means we can move anywhere on the row.
-      if (Math.abs(xCoord - PieceX) <= this.distance || this.distance === -1) {
-        if (xCoord !== PieceX) {
-          const toAddX: number = xCoord;
-          const toAddY: number = PieceY - (xCoord - PieceX);
-          const toAdd: Coordinate = {
-            x: toAddX,
-            y: toAddY,
-          };
-
-          toReturn.push(toAdd);
-
-          if (board.getPieceAtCoordinate(toAddX, toAddY)) {
-            break;
-          }
-        }
-      }
-    }
-
-    for (let xCoord = PieceX; xCoord >= 1; xCoord--) {
-      // If distance is set to -1, that means we can move anywhere on the row.
-      if (Math.abs(xCoord - PieceX) <= this.distance || this.distance === -1) {
-        if (xCoord !== PieceX) {
-          const toAddX: number = xCoord;
-          const toAddY: number = PieceY - (xCoord - PieceX);
-          const toAdd: Coordinate = {
-            x: toAddX,
-            y: toAddY,
-          };
-
-          toReturn.push(toAdd);
-
-          if (board.getPieceAtCoordinate(toAddX, toAddY)) {
-            break;
-          }
-        }
-      }
-    }
-
-    return toReturn;
+    return upRight.concat(downLeft);
   }
 }

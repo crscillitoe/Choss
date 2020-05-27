@@ -8,9 +8,9 @@ import { Coordinate } from "../../Coordinate";
  */
 export class CannotAttackPiecesVertically implements MoveRule {
   ValidSquares(piece: Piece, board: Board): Coordinate[] {
-    return board.getAllSquares().filter((square) => {
+    return board.getAllSquares().filter(square => {
       if (square.x === piece.Coordinate.x) {
-        if (board.getPieceAtCoordinate(square.x, square.y)) {
+        if (board.getPieceAtCoordinate(square)) {
           return false;
         } else {
           return true;

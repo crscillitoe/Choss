@@ -35,14 +35,10 @@ export class DoubleMove implements GameMode {
    * @param Move The desired move to be performed
    */
   HandleMove(Player: TeamOption, Move: Move, BoardGameState: Game): boolean {
-    let Piece = BoardGameState.BoardState.getPieceAtCoordinate(
-      Move.PointA.x,
-      Move.PointA.y
-    );
+    let Piece = BoardGameState.BoardState.getPieceAtCoordinate(Move.PointA);
 
     let TargetPiece = BoardGameState.BoardState.getPieceAtCoordinate(
-      Move.PointB.x,
-      Move.PointB.y
+      Move.PointB
     );
 
     if (Piece) {

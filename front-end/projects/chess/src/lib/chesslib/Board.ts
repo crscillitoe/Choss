@@ -27,7 +27,7 @@ export class Board {
     this.MoveHistory.push({
       PointA: pointA,
       PointB: pointB,
-      PieceMoved: piece,
+      PieceMoved: piece
     });
 
     piece.TimesMoved++;
@@ -42,12 +42,13 @@ export class Board {
    * @param x The x coordinate of the piece (1,1 is top left)
    * @param y The y coordinate of the piece (1,1 is top left)
    */
-  getPieceAtCoordinate(x: number, y: number): Piece {
+  getPieceAtCoordinate(coord: Coordinate): Piece {
     for (let Piece of this.Pieces) {
-      if (Piece.Coordinate.x === x && Piece.Coordinate.y === y) {
+      if (Coordinate.equals(Piece.Coordinate, coord)) {
         return Piece;
       }
     }
+
     return null;
   }
 
@@ -58,7 +59,41 @@ export class Board {
    * @param Prey Piece to remove from the board
    */
   killPiece(Prey: Piece): void {
-    this.Pieces = this.Pieces.filter((piece) => piece !== Prey);
+    this.Pieces = this.Pieces.filter(piece => piece !== Prey);
+  }
+
+  /**
+   * Iterates over the given coords, and stops when a piece is found.
+   * returns all coords up to the piece, including the coord of the piece.
+   *
+   * @param coords
+   */
+  stopAtPiece(coords: Coordinate[]): Coordinate[] {
+    let toReturn: Coordinate[] = [];
+
+    for (const coord of coords) {
+      toReturn.push(coord);
+
+      if (this.getPieceAtCoordinate(coord)) {
+        break;
+      }
+    }
+
+    return toReturn;
+  }
+
+  /**
+   * Returns true if the given coordinate is on the board.
+   *
+   * @param coord
+   */
+  isOnBoard(coord: Coordinate): boolean {
+    return (
+      coord.x <= this.Width &&
+      coord.y <= this.Height &&
+      coord.x >= 1 &&
+      coord.y >= 1
+    );
   }
 
   /**
@@ -69,10 +104,7 @@ export class Board {
     let toReturn: Coordinate[] = [];
     for (let x = 1; x <= this.Width; x++) {
       for (let y = 1; y <= this.Height; y++) {
-        toReturn.push({
-          x: x,
-          y: y,
-        });
+        toReturn.push(new Coordinate(x, y));
       }
     }
 

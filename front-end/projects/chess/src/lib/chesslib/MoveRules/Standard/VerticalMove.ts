@@ -13,24 +13,14 @@ export class VerticalMove implements MoveRule {
   }
 
   ValidSquares(piece: Piece, board: Board): Coordinate[] {
-    let toReturn: Coordinate[] = [];
+    const up = board.stopAtPiece(
+      piece.Coordinate.getAllCoordinatesInDirection(0, 1, this.distance, board)
+    );
 
-    const PieceX = piece.Coordinate.x;
-    const PieceY = piece.Coordinate.y;
+    const down = board.stopAtPiece(
+      piece.Coordinate.getAllCoordinatesInDirection(0, -1, this.distance, board)
+    );
 
-    // Iterate over the entire column
-    for (let yCoord = 1; yCoord <= board.Height; yCoord++) {
-      // If distance is set to -1, that means we can move anywhere on the column.
-      if (Math.abs(yCoord - PieceY) <= this.distance || this.distance === -1) {
-        if (yCoord !== PieceY) {
-          toReturn.push({
-            x: PieceX,
-            y: yCoord,
-          });
-        }
-      }
-    }
-
-    return toReturn;
+    return up.concat(down);
   }
 }

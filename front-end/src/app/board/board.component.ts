@@ -4,7 +4,7 @@ import { Board } from "../../../projects/chess/src/lib/chesslib/Board";
 import { King } from "../../../projects/chess/src/lib/chesslib/Pieces/Standard/King";
 import {
   Team,
-  TeamOption,
+  TeamOption
 } from "../../../projects/chess/src/lib/chesslib/Team";
 import { Piece } from "projects/chess/src/lib/chesslib/Piece";
 import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
@@ -16,7 +16,7 @@ import { GameState } from "projects/chess/src/lib/chesslib/GameState";
 @Component({
   selector: "app-board",
   templateUrl: "./board.component.html",
-  styleUrls: ["./board.component.css"],
+  styleUrls: ["./board.component.css"]
 })
 export class BoardComponent implements OnInit {
   Board: Board;
@@ -32,7 +32,7 @@ export class BoardComponent implements OnInit {
     private tunnelService: TunnelService,
     private route: ActivatedRoute
   ) {
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.subscribe(params => {
       console.log(params);
       this.player = new Team(parseInt(params["team"]));
     });
@@ -79,7 +79,7 @@ export class BoardComponent implements OnInit {
       (this.player.equals(TeamOption.BLACK) &&
         this.Status === GameState.IN_PROGRESS_BLACK_TURN)
     ) {
-      const Piece = this.Board.getPieceAtCoordinate(x, y);
+      const Piece = this.Board.getPieceAtCoordinate(new Coordinate(x, y));
       if (Piece && this.player.equals(Piece.Team.teamOption)) {
         if (this.selectedPiece === Piece) {
           this.selectedPiece = null;
@@ -89,10 +89,7 @@ export class BoardComponent implements OnInit {
           this.tunnelService.requestValidSquares(Piece);
         }
       } else if (this.selectedPiece) {
-        const location: Coordinate = {
-          x: x,
-          y: y,
-        };
+        const location = new Coordinate(x, y);
         this.tunnelService.makeMove(this.selectedPiece.Coordinate, location);
         this.pieceMoves = [];
         this.selectedPiece = null;
@@ -109,7 +106,7 @@ export class BoardComponent implements OnInit {
    */
   getSVG(x: number, y: number) {
     if (this.Board) {
-      const Piece = this.Board.getPieceAtCoordinate(x, y);
+      const Piece = this.Board.getPieceAtCoordinate(new Coordinate(x, y));
       if (Piece) {
         return `assets/chess_pieces/${Piece.SVGName}`;
       }
@@ -119,7 +116,7 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.tunnelService.receiveBoardState().subscribe((data) => {
+    this.tunnelService.receiveBoardState().subscribe(data => {
       if (data) {
         this.Board = data.BoardState;
         this.Status = data.State;
@@ -133,7 +130,7 @@ export class BoardComponent implements OnInit {
       }
     });
 
-    this.tunnelService.getValidSquares().subscribe((data) => {
+    this.tunnelService.getValidSquares().subscribe(data => {
       this.pieceMoves = data;
     });
   }

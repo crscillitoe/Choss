@@ -9,12 +9,12 @@ import { TeamOption } from "../../Team";
  */
 export class DiagonalMoveOnlyIfAttack implements MoveRule {
   ValidSquares(piece: Piece, board: Board): Coordinate[] {
-    return board.getAllSquares().filter((square) => {
+    return board.getAllSquares().filter(square => {
       if (
         Math.abs(square.x - piece.Coordinate.x) ===
         Math.abs(square.y - piece.Coordinate.y)
       ) {
-        if (board.getPieceAtCoordinate(square.x, square.y)) {
+        if (board.getPieceAtCoordinate(square)) {
           return true;
         } else {
           return false;
