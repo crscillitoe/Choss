@@ -67,7 +67,60 @@ export class Coordinate {
     target: Coordinate,
     board: Board
   ): Array<Coordinate[]> {
-    throw new Error("Not implemented");
+    const toReturn: Array<Coordinate[]> = [];
+
+    const deltaX = target.x - this.x > 0 ? 1 : -1;
+    const deltaY = target.y - this.y > 0 ? 1 : -1;
+
+    const checkSinglePath = (
+      getFirstCoord: (coord: Coordinate) => number,
+      getSecondCoord: (coord: Coordinate) => number,
+      deltaFirst: number,
+      deltaSecond: number
+    ): Coordinate[] => {
+      const singlePath: Coordinate[] = [];
+      for (
+        let iterableCoord = getFirstCoord(this);
+        iterableCoord !== getFirstCoord(target) + deltaFirst;
+        iterableCoord += deltaFirst
+      ) {
+        const potentialCoord = new Coordinate(
+          iterableCoord,
+          getSecondCoord(this)
+        );
+        if (!board.isOnBoard(potentialCoord)) return [];
+        singlePath.push(potentialCoord);
+      }
+      for (
+        let iterableCoord = getSecondCoord(this);
+        iterableCoord !== getSecondCoord(target) + deltaSecond;
+        iterableCoord += deltaSecond
+      ) {
+        const potentialCoord = new Coordinate(
+          getFirstCoord(target),
+          iterableCoord
+        );
+        if (!board.isOnBoard(potentialCoord)) return [];
+        singlePath.push(potentialCoord);
+      }
+      return singlePath;
+    };
+
+    const horizontalPath = checkSinglePath(
+      (coord: Coordinate) => coord.x,
+      (coord: Coordinate) => coord.y,
+      deltaX,
+      deltaY
+    );
+    if (horizontalPath.length > 0) toReturn.push(horizontalPath);
+
+    const verticalPath = checkSinglePath(
+      (coord: Coordinate) => coord.y,
+      (coord: Coordinate) => coord.x,
+      deltaY,
+      deltaX
+    );
+    if (verticalPath.length > 0) toReturn.push(verticalPath);
   }
 
   /**
