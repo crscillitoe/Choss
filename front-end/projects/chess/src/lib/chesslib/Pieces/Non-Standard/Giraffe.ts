@@ -17,12 +17,10 @@ export class Giraffe extends Piece {
       new ElbowMoveFrontLeft({
         distanceLength: 2,
         distanceWidth: 1,
-        canFly: true,
       }),
       new ElbowMoveBackRight({
         distanceLength: 2,
         distanceWidth: 1,
-        canFly: true,
       }),
     ];
   }

@@ -121,6 +121,7 @@ export class Coordinate {
       deltaX
     );
     if (verticalPath.length > 0) toReturn.push(verticalPath);
+    return toReturn;
   }
 
   /**

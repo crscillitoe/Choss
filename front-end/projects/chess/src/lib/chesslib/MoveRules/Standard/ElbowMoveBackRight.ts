@@ -13,26 +13,24 @@ export class ElbowMoveBackRight extends ElbowMove implements MoveRule {
   ValidSquares(piece: Piece, board: Board): Coordinate[] {
     let valid: Coordinate[] = [];
     const delta = piece.Team.equals(TeamOption.WHITE) ? -1 : 1;
-    valid = valid.concat(
-      this.checkPath(
-        piece,
-        board,
-        this.distanceLength,
-        this.distanceWidth,
-        delta * -1,
-        delta
-      )
+    const firstTarget = new Coordinate(
+      piece.Coordinate.x + this.distanceLength * delta * -1,
+      piece.Coordinate.y + this.distanceWidth * delta
     );
-    valid = valid.concat(
-      this.checkPath(
-        piece,
-        board,
-        this.distanceWidth,
-        this.distanceLength,
-        delta * -1,
-        delta
-      )
+    if (board.isOnBoard(firstTarget)) {
+      valid = valid.concat(
+        this.getStations(piece.Coordinate, firstTarget, board)
+      );
+    }
+    const secondTarget = new Coordinate(
+      piece.Coordinate.x + this.distanceWidth * delta * -1,
+      piece.Coordinate.y + this.distanceLength * delta
     );
+    if (board.isOnBoard(secondTarget)) {
+      valid = valid.concat(
+        this.getStations(piece.Coordinate, secondTarget, board)
+      );
+    }
     return valid;
   }
 }

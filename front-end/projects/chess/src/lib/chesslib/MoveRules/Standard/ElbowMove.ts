@@ -4,15 +4,11 @@ import { Piece } from "../../Piece";
 import { Coordinate } from "../../Coordinate";
 import { Quadrant } from "../../Quadrant";
 
-/**
- * Allows the piece to move `distanceLength`, `distanceWidth` spaces.
- * The piece may optionally move to `numStations` coordinates along
- * that path. If the destination station is blocked, the piece may move
- * to any earlier station if the `mustReachDestination` flag is set to False.
- * If `canFly` is set to True, the piece may move over any piece not found
- * within `tallPieces` on the board. ElbowMove will refuse to allow moves
- * into the `Quadrants` defined in `disallowedQuadrants`.
- */
+interface WalkResult {
+  canReachDestination: boolean;
+  intermediateCoordinates: Coordinate[];
+}
+
 export abstract class ElbowMove {
   protected distanceLength: number;
   protected distanceWidth: number;
@@ -34,118 +30,31 @@ export abstract class ElbowMove {
     this.mustReachDestination = moveOptions.mustReachDestination || true;
   }
 
-  private canWalkTo(
-    board: Board,
-    movingPiece: Piece,
-    coordinate: Coordinate,
-    max: number,
-    delta: number,
-    horizontal: boolean
-  ): boolean {
-    for (
-      let coordDelta = 1 * delta;
-      coordDelta < max * delta;
-      coordDelta += delta
-    ) {
-      const currCoord = horizontal
-        ? coordinate.x + coordDelta
-        : coordinate.y + coordDelta;
-
-      if (currCoord === board.Height || currCoord < 1) {
-        return false;
-      }
-
-      const blockingPiece = horizontal
-        ? board.getPieceAtCoordinate(new Coordinate(currCoord, coordinate.y))
-        : board.getPieceAtCoordinate(new Coordinate(coordinate.x, currCoord));
-
-      if (blockingPiece && this.isTallPiece(movingPiece, blockingPiece)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  protected checkPath(
-    piece: Piece,
-    board: Board,
-    verticalMax: number,
-    horizontalMax: number,
-    deltaX: number,
-    deltaY: number
-  ): Coordinate[] {
-    if (
-      (this.canWalkTo(
-        board,
-        piece,
-        piece.Coordinate,
-        horizontalMax,
-        deltaX,
-        true
-      ) &&
-        this.canWalkTo(
-          board,
-          piece,
-          new Coordinate(
-            piece.Coordinate.x + horizontalMax,
-            piece.Coordinate.y
-          ),
-          verticalMax,
-          deltaY,
-          false
-        )) ||
-      (this.canWalkTo(
-        board,
-        piece,
-        piece.Coordinate,
-        verticalMax,
-        deltaY,
-        false
-      ) &&
-        this.canWalkTo(
-          board,
-          piece,
-          new Coordinate(piece.Coordinate.x, piece.Coordinate.y + verticalMax),
-          horizontalMax,
-          deltaX,
-          true
-        ))
-    ) {
-      return [
-        new Coordinate(
-          piece.Coordinate.x + horizontalMax * deltaX,
-          piece.Coordinate.y + verticalMax * deltaY
-        ),
-      ];
-    }
-
-    return [];
-  }
-
   protected getStations(
     source: Coordinate,
     target: Coordinate,
     board: Board
   ): Coordinate[] {
-    const pathways = source.getAllCoordinatesInLMove(target);
+    const pathways = source.getAllCoordinatesInLMove(target, board);
+    const movingPiece = board.getPieceAtCoordinate(source);
     let anyValidPath = false;
 
-    for (const path in pathways) {
+    for (const path of pathways) {
       const pieceIndices = board.identifyPieces(path);
       const pieces = pieceIndices.map((i) =>
         board.getPieceAtCoordinate(path[i])
       );
       let currentPathValid = true;
-      pieces.forEach((piece) => {
+      pieces.forEach((blockingPiece) => {
         if (
-          this.isTallPiece(piece) &&
-          !Coordinate.equals(piece.Coordinate, target) &&
+          this.isTallPiece(movingPiece, blockingPiece) &&
+          !Coordinate.equals(blockingPiece.Coordinate, target) &&
           this.mustReachDestination
         ) {
           currentPathValid = false;
         }
       });
-      anyValidPath ||= currentPathValid;
+      anyValidPath = anyValidPath || currentPathValid;
     }
     return anyValidPath ? [target] : [];
   }
@@ -165,3 +74,9 @@ export interface ElbowMoveOptions {
   mustReachDestination?: boolean;
   isTallPiece?: (movingPiece: Piece, blockingPiece: Piece) => boolean;
 }
+
+/**
+ * Distance to destination (including dest) / number of stops - 1
+ * Round to the nearest whole number
+ * Walk from src to dest once, walk from dest to src once
+ */

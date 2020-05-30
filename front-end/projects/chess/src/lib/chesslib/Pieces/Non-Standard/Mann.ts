@@ -17,22 +17,18 @@ export class Mann extends Piece {
       new ElbowMoveBackLeft({
         distanceLength: 2,
         distanceWidth: 1,
-        canFly: true,
       }),
       new ElbowMoveFrontLeft({
         distanceLength: 4,
         distanceWidth: 2,
-        canFly: true,
       }),
       new ElbowMoveBackRight({
         distanceLength: 2,
         distanceWidth: 1,
-        canFly: true,
       }),
       new ElbowMoveFrontRight({
         distanceLength: 4,
         distanceWidth: 2,
-        canFly: true,
       }),
     ];
   }
