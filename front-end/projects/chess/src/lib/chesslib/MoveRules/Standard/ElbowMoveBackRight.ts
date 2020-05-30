@@ -14,7 +14,7 @@ export class ElbowMoveBackRight extends ElbowMove implements MoveRule {
     let valid: Coordinate[] = [];
     const delta = piece.Team.equals(TeamOption.WHITE) ? -1 : 1;
     const firstTarget = new Coordinate(
-      piece.Coordinate.x + this.distanceLength * delta * -1,
+      piece.Coordinate.x + this.distanceLength * delta,
       piece.Coordinate.y + this.distanceWidth * delta
     );
     if (board.isOnBoard(firstTarget)) {
@@ -23,7 +23,7 @@ export class ElbowMoveBackRight extends ElbowMove implements MoveRule {
       );
     }
     const secondTarget = new Coordinate(
-      piece.Coordinate.x + this.distanceWidth * delta * -1,
+      piece.Coordinate.x + this.distanceWidth * delta,
       piece.Coordinate.y + this.distanceLength * delta
     );
     if (board.isOnBoard(secondTarget)) {

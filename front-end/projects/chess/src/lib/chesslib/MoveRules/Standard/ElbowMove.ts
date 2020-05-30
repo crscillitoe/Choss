@@ -37,26 +37,42 @@ export abstract class ElbowMove {
   ): Coordinate[] {
     const pathways = source.getAllCoordinatesInLMove(target, board);
     const movingPiece = board.getPieceAtCoordinate(source);
+    let toReturn: Coordinate[] = [];
+    const distanceBetweenStops = Math.round(
+      source.manhattanDistance(target) / (this.numStations - 1)
+    );
     let anyValidPath = false;
 
-    for (const path of pathways) {
+    for (let pathIndex = 0; pathIndex < pathways.length; pathIndex++) {
+      const path = pathways[pathIndex];
       const pieceIndices = board.identifyPieces(path);
-      const pieces = pieceIndices.map((i) =>
-        board.getPieceAtCoordinate(path[i])
-      );
       let currentPathValid = true;
-      pieces.forEach((blockingPiece) => {
+      let validPath = path;
+      pieceIndices.forEach((i) => {
+        const blockingPiece = board.getPieceAtCoordinate(path[i]);
         if (
           this.isTallPiece(movingPiece, blockingPiece) &&
-          !Coordinate.equals(blockingPiece.Coordinate, target) &&
-          this.mustReachDestination
+          !Coordinate.equals(blockingPiece.Coordinate, target)
         ) {
-          currentPathValid = false;
+          if (this.mustReachDestination) currentPathValid = false;
+          else validPath = path.slice(0, i + 1);
         }
       });
       anyValidPath = anyValidPath || currentPathValid;
+      if (!currentPathValid) continue;
+      const stationReferenceCoord = pathIndex === 1 ? source : target;
+      const stations = validPath
+        .filter(
+          (coord) =>
+            coord.manhattanDistance(stationReferenceCoord) %
+              distanceBetweenStops ==
+            0
+        )
+        .slice(0, this.numStations - 1);
+      toReturn = toReturn.concat(stations);
+      if (path.length === validPath.length) toReturn.push(target);
     }
-    return anyValidPath ? [target] : [];
+    return anyValidPath ? toReturn : [];
   }
 }
 
@@ -74,9 +90,3 @@ export interface ElbowMoveOptions {
   mustReachDestination?: boolean;
   isTallPiece?: (movingPiece: Piece, blockingPiece: Piece) => boolean;
 }
-
-/**
- * Distance to destination (including dest) / number of stops - 1
- * Round to the nearest whole number
- * Walk from src to dest once, walk from dest to src once
- */
