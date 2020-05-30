@@ -72,56 +72,37 @@ export class Coordinate {
     const deltaX = target.x - this.x > 0 ? 1 : -1;
     const deltaY = target.y - this.y > 0 ? 1 : -1;
 
-    const checkSinglePath = (
-      getFirstCoord: (coord: Coordinate) => number,
-      getSecondCoord: (coord: Coordinate) => number,
-      deltaFirst: number,
-      deltaSecond: number
-    ): Coordinate[] => {
-      const singlePath: Coordinate[] = [];
-      for (
-        let iterableCoord = getFirstCoord(this);
-        iterableCoord !== getFirstCoord(target) + deltaFirst;
-        iterableCoord += deltaFirst
-      ) {
-        const potentialCoord = new Coordinate(
-          iterableCoord,
-          getSecondCoord(this)
-        );
-        if (!board.isOnBoard(potentialCoord)) return [];
-        singlePath.push(potentialCoord);
-      }
-      for (
-        let iterableCoord = getSecondCoord(this);
-        iterableCoord !== getSecondCoord(target) + deltaSecond;
-        iterableCoord += deltaSecond
-      ) {
-        const potentialCoord = new Coordinate(
-          getFirstCoord(target),
-          iterableCoord
-        );
-        if (!board.isOnBoard(potentialCoord)) return [];
-        singlePath.push(potentialCoord);
-      }
-      return singlePath;
-    };
-
-    const horizontalPath = checkSinglePath(
-      (coord: Coordinate) => coord.x,
-      (coord: Coordinate) => coord.y,
+    let path1 = this.getAllCoordinatesInDirection(
       deltaX,
-      deltaY
+      0,
+      Math.abs(target.x - this.x),
+      board
     );
-    if (horizontalPath.length > 0) toReturn.push(horizontalPath);
+    path1 = path1.concat(
+      this.getAllCoordinatesInDirection(
+        0,
+        deltaY,
+        Math.abs(target.y - this.y),
+        board
+      )
+    );
 
-    const verticalPath = checkSinglePath(
-      (coord: Coordinate) => coord.y,
-      (coord: Coordinate) => coord.x,
+    let path2 = this.getAllCoordinatesInDirection(
+      0,
       deltaY,
-      deltaX
+      Math.abs(target.y - this.y),
+      board
     );
-    if (verticalPath.length > 0) toReturn.push(verticalPath);
-    return toReturn;
+    path2 = path2.concat(
+      this.getAllCoordinatesInDirection(
+        deltaX,
+        0,
+        Math.abs(target.x - this.x),
+        board
+      )
+    );
+
+    return [path1, path2];
   }
 
   /**
