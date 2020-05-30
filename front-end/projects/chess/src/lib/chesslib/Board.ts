@@ -102,6 +102,22 @@ export class Board {
   }
 
   /**
+   * Iterates over the given coords and finds the indices
+   * of all pieces within
+   * @param coords
+   */
+  identifyPieces(coords: Coordinate[]): number[] {
+    let toReturn: number[] = [];
+    for (let i = 0; i < coords.length; i++) {
+      const coord = coords[i];
+      if (this.getPieceAtCoordinate(coord)) {
+        toReturn.push(i);
+      }
+    }
+    return toReturn;
+  }
+
+  /**
    * Iterates over the given coords, and stops when a piece is found.
    * returns all coords up to the piece, including the coord of the piece.
    *

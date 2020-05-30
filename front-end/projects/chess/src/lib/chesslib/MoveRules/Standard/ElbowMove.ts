@@ -121,6 +121,34 @@ export abstract class ElbowMove {
 
     return [];
   }
+
+  protected getStations(
+    source: Coordinate,
+    target: Coordinate,
+    board: Board
+  ): Coordinate[] {
+    const pathways = source.getAllCoordinatesInLMove(target);
+    let anyValidPath = false;
+
+    for (const path in pathways) {
+      const pieceIndices = board.identifyPieces(path);
+      const pieces = pieceIndices.map((i) =>
+        board.getPieceAtCoordinate(path[i])
+      );
+      let currentPathValid = true;
+      pieces.forEach((piece) => {
+        if (
+          this.isTallPiece(piece) &&
+          !Coordinate.equals(piece.Coordinate, target) &&
+          this.mustReachDestination
+        ) {
+          currentPathValid = false;
+        }
+      });
+      anyValidPath ||= currentPathValid;
+    }
+    return anyValidPath ? [target] : [];
+  }
 }
 
 /**
