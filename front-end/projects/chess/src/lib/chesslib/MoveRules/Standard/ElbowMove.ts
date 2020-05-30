@@ -33,6 +33,19 @@ export abstract class ElbowMove {
         : true;
   }
 
+  protected getStationsForTargets(
+    source: Coordinate,
+    targets: Coordinate[],
+    board: Board
+  ): Coordinate[] {
+    let toReturn: Coordinate[] = [];
+    for (let target of targets) {
+      if (!board.isOnBoard(target)) continue;
+      toReturn = toReturn.concat(this.getStations(source, target, board));
+    }
+    return toReturn;
+  }
+
   protected getStations(
     source: Coordinate,
     target: Coordinate,
