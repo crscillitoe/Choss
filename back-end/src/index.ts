@@ -1,9 +1,8 @@
 import express from "express";
 import { TeamOption } from "../../front-end/projects/chess/src/lib/chesslib/Team";
-import { DoubleMove } from "../../front-end/projects/chess/src/lib/chesslib/GameModes/DoubleMove";
-import { RandomAtomic } from "../../front-end/projects/chess/src/lib/chesslib/GameModes/RandomAtomic";
 import { Move } from "../../front-end/projects/chess/src/lib/chesslib/Move";
 import { Piece } from "../../front-end/projects/chess/src/lib/chesslib/Piece";
+import { boardGame } from "../../front-end/projects/chess/src/localConfiguration";
 
 const app = express();
 app.set("port", process.env.PORT || 3000);
@@ -17,7 +16,6 @@ app.get("/", (req: any, res: any) => {
   res.send("hello world");
 });
 
-const boardGame = new RandomAtomic();
 const board = boardGame.BuildFreshGame();
 
 io.on("connection", (socket: SocketIO.Socket) => {

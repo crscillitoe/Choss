@@ -6,13 +6,14 @@ import { Move } from "../../../projects/chess/src/lib/chesslib/Move";
 import { Coordinate } from "../../../projects/chess/src/lib/chesslib/Coordinate";
 import { Piece } from "projects/chess/src/lib/chesslib/Piece";
 import { Game } from "projects/chess/src/lib/chesslib/Game";
+import { serverIp } from "projects/chess/src/localConfiguration";
 
 @Injectable({
   providedIn: "root",
 })
 export class TunnelService {
   private socket: SocketIOClient.Socket;
-  private server_ip: string = "api.woohoojin.dev";
+  private server_ip: string = serverIp || "api.woohoojin.dev";
 
   private boardState: BehaviorSubject<Game> = new BehaviorSubject<Game>(null);
   private validSquares: BehaviorSubject<Coordinate[]> = new BehaviorSubject<
