@@ -12,6 +12,7 @@ import { GameMode } from "projects/chess/src/lib/chesslib/GameMode";
 import { DoubleMove } from "projects/chess/src/lib/chesslib/GameModes/DoubleMove";
 import { ActivatedRoute } from "@angular/router";
 import { GameState } from "projects/chess/src/lib/chesslib/GameState";
+import { MusicService } from "../services/music.service";
 
 @Component({
   selector: "app-board",
@@ -30,12 +31,14 @@ export class BoardComponent implements OnInit {
 
   constructor(
     private tunnelService: TunnelService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private musicService: MusicService
   ) {
     this.route.queryParams.subscribe((params) => {
-      console.log(params);
       this.player = new Team(parseInt(params["team"]));
     });
+
+    musicService.play();
   }
 
   /**
@@ -62,6 +65,20 @@ export class BoardComponent implements OnInit {
             return "salmon";
           }
         }
+      }
+    }
+
+    const movedCoords = this.Board.getMovedTo();
+    if (movedCoords.length >= 2) {
+      if (
+        Coordinate.equals(movedCoords[0], new Coordinate(x, y)) ||
+        Coordinate.equals(movedCoords[1], new Coordinate(x, y))
+      ) {
+        if ((x + y) % 2 === 1) {
+          return "#bd9b2d";
+        }
+
+        return "#f5cb42";
       }
     }
 

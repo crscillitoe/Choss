@@ -6,18 +6,27 @@ import { AppComponent } from "./app.component";
 import { BoardComponent } from "./board/board.component";
 import { HomeComponent } from "./home/home.component";
 import { MatButtonModule } from "@angular/material";
+import { MatToolbarModule } from "@angular/material";
+import { MatIconModule } from "@angular/material";
+import { MatProgressSpinnerModule } from "@angular/material";
+import { MatMenuModule } from "@angular/material";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { HeaderComponent } from "./header/header.component";
 
 @NgModule({
-  declarations: [AppComponent, BoardComponent, HomeComponent],
+  declarations: [AppComponent, BoardComponent, HomeComponent, HeaderComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     MatButtonModule,
-    BrowserAnimationsModule
+    MatToolbarModule,
+    MatProgressSpinnerModule,
+    MatIconModule,
+    MatMenuModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
-  schemas: [NO_ERRORS_SCHEMA]
+  schemas: [NO_ERRORS_SCHEMA],
 })
 export class AppModule {}

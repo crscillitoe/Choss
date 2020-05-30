@@ -19,6 +19,15 @@ export class Board {
     this.Width = Width;
   }
 
+  getMovedTo(): Coordinate[] {
+    if (this.MoveHistory.length > 0) {
+      const move = this.MoveHistory[this.MoveHistory.length - 1];
+      return [move.PointA, move.PointB];
+    }
+
+    return [];
+  }
+
   expand() {
     this.Width += 2;
     this.Height += 2;

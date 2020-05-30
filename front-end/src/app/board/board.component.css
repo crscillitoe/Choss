@@ -23,8 +23,8 @@
 }
 
 .chess-game {
-  height: min(calc(100vh - 4rem), calc(100vw - 250px));
-  width: min(calc(100vh - 4rem), calc(100vw - 250px));
+  height: min(calc(90vh - 4rem), calc(90vw - 250px));
+  width: min(calc(90vh - 4rem), calc(90vw - 250px));
 
   box-shadow: 0px 0px 5px 10px #555555;
 }
@@ -32,18 +32,16 @@
 .horizontal-center-game {
   display: flex;
   justify-content: center;
-  height: 100vh;
-  width: 100vw;
-  position: absolute;
-  top: 0;
-  left: 0;
+  height: 100%;
+  width: 100%;
 }
 
 .vertical-center-game {
   display: flex;
   justify-content: center;
   flex-direction: column;
-  height: 100%;
+  height: calc(100% - 100px);
+  padding-top: 30px;
 }
 
 .chess-image {

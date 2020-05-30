@@ -1,6 +1,6 @@
 <div class="horizontal-center-game">
   <div class="vertical-center-game">
-    <div class="chess-game">
+    <div class="chess-game" *ngIf="Board">
       <ng-container *ngIf="rows">
         <ng-container *ngIf="player.teamOption === 0">
           <div *ngFor="let row of rows; let y = index" class="chess-row">
@@ -34,5 +34,7 @@
         </ng-container>
       </ng-container>
     </div>
+
+    <mat-spinner *ngIf="!Board"></mat-spinner>
   </div>
 </div>

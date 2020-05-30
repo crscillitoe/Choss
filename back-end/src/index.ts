@@ -19,7 +19,7 @@ app.get("/", (req: any, res: any) => {
   res.send("hello world");
 });
 
-const board = boardGame.BuildFreshGame();
+let board = boardGame.BuildFreshGame();
 
 io.on("connection", (socket: SocketIO.Socket) => {
   console.log(`Received connection from client: ${socket.client.id}`);
@@ -29,6 +29,11 @@ io.on("connection", (socket: SocketIO.Socket) => {
     if (boardGame.HandleMove(move, board)) {
       io.emit("board-update", board);
     }
+  });
+
+  socket.on("reset", () => {
+    board = boardGame.BuildFreshGame();
+    io.emit("board-update", board);
   });
 
   socket.on("valid-squares", (piece: Piece) => {

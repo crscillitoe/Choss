@@ -24,11 +24,15 @@ export class TunnelService {
     this.socket = io.connect(this.server_ip);
 
     this.socket.on("board-update", (data: Game) => {
-      data.BoardState = new Board(
+      let temp = new Board(
         data.BoardState.Pieces,
         data.BoardState.Height,
         data.BoardState.Width
       );
+
+      temp.MoveHistory = data.BoardState.MoveHistory;
+      data.BoardState = temp;
+
       this.boardState.next(data);
     });
 
@@ -51,6 +55,13 @@ export class TunnelService {
    */
   requestValidSquares(piece: Piece) {
     this.socket.emit("valid-squares", piece);
+  }
+
+  /**
+   * Tells the server to reset the board.
+   */
+  resetGame() {
+    this.socket.emit("reset");
   }
 
   /**

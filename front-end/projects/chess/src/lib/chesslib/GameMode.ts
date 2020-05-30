@@ -46,6 +46,8 @@ export abstract class GameMode {
         return false;
       }
 
+      BoardGameState.BoardState.logMove(Piece, Move.PointA, Move.PointB);
+
       if (TargetPiece) {
         this.TakePiece(Piece, TargetPiece, BoardGameState);
 
@@ -75,8 +77,6 @@ export abstract class GameMode {
           }
         }
       }
-
-      BoardGameState.BoardState.logMove(Piece, Move.PointA, Move.PointB);
 
       if (BoardGameState.State === GameState.IN_PROGRESS_WHITE_TURN) {
         BoardGameState.State = GameState.IN_PROGRESS_BLACK_TURN;
