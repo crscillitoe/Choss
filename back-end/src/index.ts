@@ -2,6 +2,7 @@ import express from "express";
 import { TeamOption } from "../../front-end/projects/chess/src/lib/chesslib/Team";
 import { DoubleMove } from "../../front-end/projects/chess/src/lib/chesslib/GameModes/DoubleMove";
 import { RandomAtomic } from "../../front-end/projects/chess/src/lib/chesslib/GameModes/RandomAtomic";
+import { War } from "../../front-end/projects/chess/src/lib/chesslib/GameModes/War";
 import { Move } from "../../front-end/projects/chess/src/lib/chesslib/Move";
 import { Piece } from "../../front-end/projects/chess/src/lib/chesslib/Piece";
 

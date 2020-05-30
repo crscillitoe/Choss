@@ -1,6 +1,8 @@
 import { Piece } from "./Piece";
 import { Coordinate } from "./Coordinate";
 import { Move } from "./Move";
+import { TeamOption, Team } from "./Team";
+import { Pawn } from "./Pieces/Standard/Pawn";
 
 /**
  * A board contains a list of pieces on the board.
@@ -15,6 +17,36 @@ export class Board {
     this.Pieces = Pieces;
     this.Height = Height;
     this.Width = Width;
+  }
+
+  expand() {
+    this.Width += 2;
+    this.Height += 2;
+
+    let piecesToUpdate: Piece[] = [];
+    for (const coord of this.getAllSquares()) {
+      const piece = this.getPieceAtCoordinate(coord);
+      if (piece) {
+        piecesToUpdate.push(piece);
+      }
+    }
+
+    for (const piece of piecesToUpdate) {
+      piece.Coordinate.x += 1;
+      piece.Coordinate.y += 1;
+    }
+  }
+
+  /**
+   * Fills the given row with pawns.
+   *
+   * @param row
+   * @param team
+   */
+  fillRowWithPawns(row: number, team: TeamOption) {
+    for (let i = 1; i <= this.Width; i++) {
+      this.Pieces.push(new Pawn(i, row, new Team(team)));
+    }
   }
 
   /**

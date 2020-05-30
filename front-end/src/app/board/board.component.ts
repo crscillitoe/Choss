@@ -47,7 +47,7 @@ export class BoardComponent implements OnInit {
   getColor(x: number, y: number) {
     const piece = this.Board.getPieceAtCoordinate(new Coordinate(x, y));
     if (piece) {
-      if (piece.IsBomb && piece.Team.teamOption !== this.player.teamOption) {
+      if (piece.IsBomb && piece.Team.teamOption === this.player.teamOption) {
         return "red";
       }
     }
