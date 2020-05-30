@@ -28,12 +28,10 @@ export class Pawn extends Piece {
       new ElbowMoveFrontRight({
         distanceLength: 1,
         distanceWidth: 1,
-        canFly: true,
       }),
       new ElbowMoveFrontLeft({
         distanceLength: 1,
         distanceWidth: 1,
-        canFly: true,
       }),
       new VerticalMove(1),
       new PawnDoubleMove(),
