@@ -27,7 +27,10 @@ export abstract class ElbowMove {
       this.numStations = 2;
     }
     this.isTallPiece = moveOptions.isTallPiece || this.ALL_SHORT;
-    this.mustReachDestination = moveOptions.mustReachDestination || true;
+    this.mustReachDestination =
+      moveOptions.mustReachDestination !== undefined
+        ? moveOptions.mustReachDestination
+        : true;
   }
 
   protected getStations(
@@ -54,8 +57,11 @@ export abstract class ElbowMove {
           this.isTallPiece(movingPiece, blockingPiece) &&
           !Coordinate.equals(blockingPiece.Coordinate, target)
         ) {
-          if (this.mustReachDestination) currentPathValid = false;
-          else validPath = path.slice(0, i + 1);
+          if (this.mustReachDestination) {
+            currentPathValid = false;
+          } else {
+            validPath = path.slice(0, i + 1);
+          }
         }
       });
       anyValidPath = anyValidPath || currentPathValid;
