@@ -17,8 +17,12 @@ export abstract class ElbowMove {
   protected distanceLength: number;
   protected distanceWidth: number;
   protected numStations: number;
-  protected canFly: boolean;
-  protected tallPieces: Piece[];
+  protected mustReachDestination: boolean;
+  protected isTallPiece: (movingPiece: Piece, blockingPiece: Piece) => boolean;
+
+  ALL_TALL = (movingPiece: Piece, blockingPiece: Piece): boolean => true;
+  ALL_SHORT = (movingPiece: Piece, blockingPiece: Piece): boolean => false;
+
   constructor(moveOptions: ElbowMoveOptions) {
     this.distanceLength = moveOptions.distanceLength || 1;
     this.distanceWidth = moveOptions.distanceWidth || 1;
@@ -26,12 +30,13 @@ export abstract class ElbowMove {
     if (this.numStations < 2) {
       this.numStations = 2;
     }
-    this.canFly = moveOptions.canFly || false;
-    this.tallPieces = moveOptions.tallPieces || [];
+    this.isTallPiece = moveOptions.isTallPiece || this.ALL_SHORT;
+    this.mustReachDestination = moveOptions.mustReachDestination || true;
   }
 
   private canWalkTo(
     board: Board,
+    movingPiece: Piece,
     coordinate: Coordinate,
     max: number,
     delta: number,
@@ -50,11 +55,11 @@ export abstract class ElbowMove {
         return false;
       }
 
-      const currentPiece = horizontal
+      const blockingPiece = horizontal
         ? board.getPieceAtCoordinate(new Coordinate(currCoord, coordinate.y))
         : board.getPieceAtCoordinate(new Coordinate(coordinate.x, currCoord));
 
-      if (currentPiece && !this.canFly) {
+      if (blockingPiece && this.isTallPiece(movingPiece, blockingPiece)) {
         return false;
       }
     }
@@ -70,9 +75,17 @@ export abstract class ElbowMove {
     deltaY: number
   ): Coordinate[] {
     if (
-      (this.canWalkTo(board, piece.Coordinate, horizontalMax, deltaX, true) &&
+      (this.canWalkTo(
+        board,
+        piece,
+        piece.Coordinate,
+        horizontalMax,
+        deltaX,
+        true
+      ) &&
         this.canWalkTo(
           board,
+          piece,
           new Coordinate(
             piece.Coordinate.x + horizontalMax,
             piece.Coordinate.y
@@ -81,9 +94,17 @@ export abstract class ElbowMove {
           deltaY,
           false
         )) ||
-      (this.canWalkTo(board, piece.Coordinate, verticalMax, deltaY, false) &&
+      (this.canWalkTo(
+        board,
+        piece,
+        piece.Coordinate,
+        verticalMax,
+        deltaY,
+        false
+      ) &&
         this.canWalkTo(
           board,
+          piece,
           new Coordinate(piece.Coordinate.x, piece.Coordinate.y + verticalMax),
           horizontalMax,
           deltaX,
@@ -94,7 +115,7 @@ export abstract class ElbowMove {
         new Coordinate(
           piece.Coordinate.x + horizontalMax * deltaX,
           piece.Coordinate.y + verticalMax * deltaY
-        )
+        ),
       ];
     }
 
@@ -107,16 +128,12 @@ export abstract class ElbowMove {
  * @param distanceWidth: Short arm of maximal elbow move
  * @param numStations: Number of stations between source and maximal elbow move. Minimum of 2.
  * @param mustReachDestination: True if a piece must be able to make the maximal elbow move in order to move to any of its stations.
- * @param canFly: True if a piece may move with other pieces in its path
- * @param tallPieces: List of Pieces that prevent this piece from moving if they are in its path.
- * @param canKillFriends: Can take friendly pieces
+ * @param isTallPiece: Function to determine whether or not a piece may block the moving piece
  */
 export interface ElbowMoveOptions {
   distanceLength?: number;
   distanceWidth?: number;
   numStations?: number;
   mustReachDestination?: boolean;
-  canFly?: boolean;
-  tallPieces?: Piece[];
-  canKillFriends?: boolean;
+  isTallPiece?: (movingPiece: Piece, blockingPiece: Piece) => boolean;
 }
