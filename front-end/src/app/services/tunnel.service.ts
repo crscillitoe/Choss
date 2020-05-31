@@ -22,6 +22,9 @@ export class TunnelService {
 
   constructor() {
     this.socket = io.connect(this.server_ip);
+    this.socket.on("initial-connect", () => {
+      this.socket.emit("connect-to-room", "placeholder-room");
+    });
 
     this.socket.on("board-update", (data: Game) => {
       let temp = new Board(
