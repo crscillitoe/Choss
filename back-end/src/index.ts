@@ -7,6 +7,10 @@ import { Move } from "../../front-end/projects/chess/src/lib/chesslib/Move";
 import { Piece } from "../../front-end/projects/chess/src/lib/chesslib/Piece";
 import { boardGame } from "../../front-end/projects/chess/src/localConfiguration";
 import { Game } from "../../front-end/projects/chess/src/lib/chesslib/Game";
+import {
+  getGameModeDescriptions,
+  getGameModeById,
+} from "../../front-end/projects/chess/src/lib/chesslib/GameModes/GameModeRegistry";
 
 const app = express();
 app.set("port", process.env.PORT || 3000);
@@ -14,15 +18,17 @@ app.set("port", process.env.PORT || 3000);
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const clientIdToRooms: { [clientId: string]: string } = {};
-const roomIdToGames: { [clientId: string]: Game } = {};
+const roomIdToGames: { [roomId: string]: Game } = {};
+
+app.get("/listGameModes", async (request: any, response: any) => {
+  const gameModeDescriptions = getGameModeDescriptions();
+  response.send(gameModeDescriptions);
+});
 
 const getBoardFromClientId = (clientId: string): Game => {
   const roomId = clientIdToRooms[clientId];
   return roomIdToGames[roomId];
 };
-
-// simple '/' endpoint sending a Hello World
-// response
 
 io.on("connection", (socket: SocketIO.Socket) => {
   console.log(`Received connection from client: ${socket.client.id}`);

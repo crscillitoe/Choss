@@ -39,7 +39,7 @@ export abstract class ElbowMove {
     board: Board
   ): Coordinate[] {
     let toReturn: Coordinate[] = [];
-    for (let target of targets) {
+    for (const target of targets) {
       if (!board.isOnBoard(target)) continue;
       toReturn = toReturn.concat(this.getStations(source, target, board));
     }
