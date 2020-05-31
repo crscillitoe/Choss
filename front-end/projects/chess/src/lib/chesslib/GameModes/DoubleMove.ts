@@ -54,4 +54,14 @@ export class DoubleMove extends GameMode {
 
     return movePerformed;
   }
+
+  /**
+   * Set turncounter to 0 since we are doublemove
+   */
+  static BuildFreshGame(): Game {
+    let game = super.BuildFreshGame();
+    let doubleGame = new DoubleMove();
+    doubleGame.turnCounter = 0;
+    return game;
+  }
 }

@@ -1,5 +1,6 @@
 import { Board } from "./Board";
 import { GameState } from "./GameState";
+import { GameMode } from "./GameMode";
 
 export class Game {
   BoardState: Board;

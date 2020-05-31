@@ -6,7 +6,7 @@ import { Move } from "../../../projects/chess/src/lib/chesslib/Move";
 import { Coordinate } from "../../../projects/chess/src/lib/chesslib/Coordinate";
 import { Piece } from "projects/chess/src/lib/chesslib/Piece";
 import { Game } from "projects/chess/src/lib/chesslib/Game";
-import { serverIp, socketIp } from "projects/chess/src/localConfiguration";
+import { socketIp } from "projects/chess/src/localConfiguration";
 import { ActivatedRoute } from "@angular/router";
 import { GameModeDescription } from "projects/chess/src/lib/chesslib/GameModes/GameModeRegistry";
 import { HttpClient } from "@angular/common/http";
@@ -16,7 +16,6 @@ import { HttpClient } from "@angular/common/http";
 })
 export class TunnelService {
   private socket: SocketIOClient.Socket;
-  private server_ip: string = serverIp;
   private socket_ip: string = socketIp;
 
   private boardState: BehaviorSubject<Game> = new BehaviorSubject<Game>(null);
@@ -24,11 +23,26 @@ export class TunnelService {
     Coordinate[]
   >(null);
 
-  constructor(private route: ActivatedRoute, private http: HttpClient) {
+  private gameId: number = 0;
+
+  constructor(private route: ActivatedRoute, private http: HttpClient) {}
+
+  /**
+   * Disconnect from the server
+   */
+  closeConnection() {
+    this.socket.disconnect();
+  }
+
+  /**
+   * Connect to the server
+   */
+  connect() {
     this.socket = io.connect(this.socket_ip);
     this.socket.on("initial-connect", () => {
       this.route.queryParams.subscribe((params) => {
-        this.socket.emit("connect-to-room", params["roomId"]);
+        this.gameId = params["gameId"];
+        this.socket.emit("connect-to-room", params["roomId"], params["gameId"]);
       });
     });
 
@@ -70,7 +84,7 @@ export class TunnelService {
    * Tells the server to reset the board.
    */
   resetGame() {
-    this.socket.emit("reset");
+    this.socket.emit("reset", this.gameId);
   }
 
   /**
@@ -110,7 +124,7 @@ export class TunnelService {
    */
   getAvailableGameModes(): Observable<GameModeDescription[]> {
     return this.http.get<GameModeDescription[]>(
-      `http://${this.server_ip}/listGameModes`
+      `https://${socketIp}/listGameModes`
     );
   }
 }

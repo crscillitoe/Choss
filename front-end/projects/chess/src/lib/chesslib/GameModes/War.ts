@@ -35,7 +35,7 @@ export class War extends GameMode {
     return success;
   }
 
-  BuildFreshGame(): Game {
+  static BuildFreshGame(): Game {
     const board: Board = GameModeShared.StandardChessBoard();
     board.killPiece(board.getPieceAtCoordinate(new Coordinate(4, 2)));
     board.killPiece(board.getPieceAtCoordinate(new Coordinate(5, 2)));

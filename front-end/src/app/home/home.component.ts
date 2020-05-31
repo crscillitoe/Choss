@@ -10,6 +10,8 @@ import { GameModeDescription } from "projects/chess/src/lib/chesslib/GameModes/G
 })
 export class HomeComponent implements OnInit {
   private gameModeDescriptions: GameModeDescription[] = [];
+  private gamemodeID: number;
+
   constructor(private router: Router, private tunnel: TunnelService) {
     tunnel.getAvailableGameModes().subscribe((gameModeDescriptions) => {
       console.log(gameModeDescriptions);
@@ -21,7 +23,13 @@ export class HomeComponent implements OnInit {
 
   newGame() {
     const roomId = this.uuidv4();
-    this.router.navigateByUrl(`/play?roomId=${roomId}&team=1`);
+    this.router.navigateByUrl(
+      `/play?roomId=${roomId}&gameId=${this.gamemodeID}&team=1`
+    );
+  }
+
+  setGamemode(id: number) {
+    this.gamemodeID = id;
   }
 
   uuidv4(): string {

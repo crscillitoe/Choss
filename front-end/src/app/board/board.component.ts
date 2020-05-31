@@ -47,6 +47,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+    this.tunnelService.closeConnection();
   }
 
   /**
@@ -147,6 +148,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.tunnelService.connect();
     this.subscriptions.push(
       this.tunnelService.receiveBoardState().subscribe((data) => {
         if (data) {

@@ -7,24 +7,24 @@ export interface GameModeDescription {
   displayName: string;
   description: string;
   id?: number;
-  buildNewGameMode: () => GameMode;
+  gameMode: typeof GameMode;
 }
 
 const allGameModeDescriptions: GameModeDescription[] = [
   {
     displayName: "Double Move",
     description: "Description text here",
-    buildNewGameMode: () => new DoubleMove(),
+    gameMode: DoubleMove,
   },
   {
     displayName: "Random Atomic",
     description: "Description text here",
-    buildNewGameMode: () => new RandomAtomic(),
+    gameMode: RandomAtomic,
   },
   {
     displayName: "War",
     description: "Description text here",
-    buildNewGameMode: () => new War(),
+    gameMode: War,
   },
 ];
 
@@ -35,6 +35,6 @@ export const getGameModeDescriptions = (): GameModeDescription[] => {
   return allGameModeDescriptions;
 };
 
-export const getGameModeById = (id: number): GameMode => {
-  return allGameModeDescriptions[id].buildNewGameMode();
+export const getGameModeById = (id: number): typeof GameMode => {
+  return allGameModeDescriptions[id].gameMode;
 };

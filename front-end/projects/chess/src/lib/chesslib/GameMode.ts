@@ -9,12 +9,13 @@ import { GameModeShared } from "./GameModes/GameModeShared";
 import { King } from "./Pieces/Standard/King";
 import { Pawn } from "./Pieces/Standard/Pawn";
 import { Queen } from "./Pieces/Standard/Queen";
+import { DoubleMove } from "./GameModes/DoubleMove";
 
 export abstract class GameMode {
   /**
    * Sets the board up for a brand new game.
    */
-  BuildFreshGame(): Game {
+  static BuildFreshGame(): Game {
     return new Game(
       GameModeShared.StandardChessBoard(),
       GameState.IN_PROGRESS_WHITE_TURN

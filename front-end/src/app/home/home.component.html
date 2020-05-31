@@ -7,7 +7,11 @@
         </mat-label>
 
         <mat-select>
-          <mat-option *ngFor="let gameMode of gameModeDescriptions">
+          <mat-option
+            [value]="gameMode.id"
+            *ngFor="let gameMode of gameModeDescriptions"
+            (click)="setGamemode(gameMode.id)"
+          >
             {{ gameMode.displayName }}
           </mat-option>
         </mat-select>
@@ -18,6 +22,7 @@
         color="primary"
         class="slidey-button"
         (click)="newGame()"
+        [disabled]="gamemodeID == null"
       >
         Create Game
       </button>
