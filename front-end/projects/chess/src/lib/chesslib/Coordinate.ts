@@ -79,10 +79,10 @@ export class Coordinate {
       board
     );
     path1 = path1.concat(
-      this.getAllCoordinatesInDirection(
+      path1[path1.length - 1].getAllCoordinatesInDirection(
         0,
         deltaY,
-        Math.abs(target.y - this.y),
+        Math.abs(target.y - path1[path1.length - 1].y),
         board
       )
     );
@@ -94,10 +94,10 @@ export class Coordinate {
       board
     );
     path2 = path2.concat(
-      this.getAllCoordinatesInDirection(
+      path2[path2.length - 1].getAllCoordinatesInDirection(
         deltaX,
         0,
-        Math.abs(target.x - this.x),
+        Math.abs(target.x - path2[path2.length - 1].x),
         board
       )
     );
@@ -140,6 +140,14 @@ export class Coordinate {
     }
 
     return toReturn;
+  }
+
+  /**
+   * Calculates the distance between the two coordinates measured along axes of right angles
+   * @param otherCoord
+   */
+  manhattanDistance(otherCoord: Coordinate): number {
+    return Math.abs(this.x - otherCoord.x) + Math.abs(this.y - otherCoord.y);
   }
 
   /**

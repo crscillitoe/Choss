@@ -7,6 +7,7 @@ import { Coordinate } from "../../../projects/chess/src/lib/chesslib/Coordinate"
 import { Piece } from "projects/chess/src/lib/chesslib/Piece";
 import { Game } from "projects/chess/src/lib/chesslib/Game";
 import { serverIp } from "projects/chess/src/localConfiguration";
+import { ActivatedRoute } from "@angular/router";
 
 @Injectable({
   providedIn: "root",
@@ -20,8 +21,13 @@ export class TunnelService {
     Coordinate[]
   >(null);
 
-  constructor() {
+  constructor(private route: ActivatedRoute) {
     this.socket = io.connect(this.server_ip);
+    this.socket.on("initial-connect", () => {
+      this.route.queryParams.subscribe((params) => {
+        this.socket.emit("connect-to-room", params["roomId"]);
+      });
+    });
 
     this.socket.on("board-update", (data: Game) => {
       let temp = new Board(
