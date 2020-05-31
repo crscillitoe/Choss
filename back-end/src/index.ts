@@ -21,8 +21,9 @@ const clientIdToRooms: { [clientId: string]: string } = {};
 const roomIdToGames: { [roomId: string]: Game } = {};
 
 app.get("/listGameModes", async (request: any, response: any) => {
+  console.log("asdfaslkdfjalsdkjf");
   const gameModeDescriptions = getGameModeDescriptions();
-  response.send(gameModeDescriptions);
+  response.status(200).send(gameModeDescriptions);
 });
 
 const getBoardFromClientId = (clientId: string): Game => {

@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { TunnelService } from "../services/tunnel.service";
+import { GameModeDescription } from "projects/chess/src/lib/chesslib/GameModes/GameModeRegistry";
 
 @Component({
   selector: "app-home",
@@ -7,7 +9,13 @@ import { Router } from "@angular/router";
   styleUrls: ["./home.component.css"],
 })
 export class HomeComponent implements OnInit {
-  constructor(private router: Router) {}
+  private gameModeDescriptions: GameModeDescription[] = [];
+  constructor(private router: Router, private tunnel: TunnelService) {
+    tunnel.getAvailableGameModes().subscribe((gameModeDescriptions) => {
+      console.log(gameModeDescriptions);
+      this.gameModeDescriptions = gameModeDescriptions;
+    });
+  }
 
   ngOnInit() {}
 

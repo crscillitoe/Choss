@@ -8,6 +8,8 @@ import { Piece } from "projects/chess/src/lib/chesslib/Piece";
 import { Game } from "projects/chess/src/lib/chesslib/Game";
 import { serverIp, socketIp } from "projects/chess/src/localConfiguration";
 import { ActivatedRoute } from "@angular/router";
+import { GameModeDescription } from "projects/chess/src/lib/chesslib/GameModes/GameModeRegistry";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",
@@ -22,7 +24,7 @@ export class TunnelService {
     Coordinate[]
   >(null);
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute, private http: HttpClient) {
     this.socket = io.connect(this.socket_ip);
     this.socket.on("initial-connect", () => {
       this.route.queryParams.subscribe((params) => {
@@ -101,5 +103,14 @@ export class TunnelService {
     };
 
     this.socket.emit("make-move", move);
+  }
+
+  /**
+   * List all supported game modes
+   */
+  getAvailableGameModes(): Observable<GameModeDescription[]> {
+    return this.http.get<GameModeDescription[]>(
+      `http://${this.server_ip}/listGameModes`
+    );
   }
 }
