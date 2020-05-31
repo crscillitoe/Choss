@@ -14,6 +14,7 @@ import { ForwardRestriction } from "../../MoveRestrictions/Standard/ForwardRestr
 import { DiagonalMoveOnlyIfAttack } from "../../MoveRestrictions/Standard/DiagonalMoveOnlyIfAttack";
 import { CannotAttackPiecesVertically } from "../../MoveRestrictions/Standard/CannotAttackPiecesVertically";
 import { CannotAttackFriends } from "../../MoveRestrictions/Standard/CannotAttackFriends";
+import { EnPassant } from "../../SpecialRules/Standard/EnPassant";
 
 export class Pawn extends Piece {
   constructor(x: number, y: number, team: Team) {
@@ -36,6 +37,8 @@ export class Pawn extends Piece {
       new VerticalMove(1),
       new PawnDoubleMove(),
     ];
+
+    this.SpecialMoves = [new EnPassant()];
 
     this.MoveRestrictions = [
       new ForwardRestriction(),

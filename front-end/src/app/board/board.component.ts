@@ -20,6 +20,7 @@ import { MusicService } from "../services/music.service";
   styleUrls: ["./board.component.css"],
 })
 export class BoardComponent implements OnInit {
+  initialLoad: boolean = true;
   Board: Board;
   Status: GameState;
   rows = [];
@@ -37,8 +38,6 @@ export class BoardComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       this.player = new Team(parseInt(params["team"]));
     });
-
-    musicService.play();
   }
 
   /**
@@ -141,6 +140,12 @@ export class BoardComponent implements OnInit {
   ngOnInit() {
     this.tunnelService.receiveBoardState().subscribe((data) => {
       if (data) {
+        if (!this.initialLoad) {
+          this.musicService.playClick();
+        } else {
+          this.initialLoad = false;
+        }
+
         this.Board = data.BoardState;
         this.Status = data.State;
 

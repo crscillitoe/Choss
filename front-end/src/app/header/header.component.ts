@@ -9,12 +9,17 @@ import { TunnelService } from "../services/tunnel.service";
 })
 export class HeaderComponent implements OnInit {
   isPlaying: boolean = false;
+  playClicks: boolean = false;
   constructor(
     private musicSerivce: MusicService,
     private tunnelService: TunnelService
   ) {
     musicSerivce.playing().subscribe((isPlaying) => {
       this.isPlaying = isPlaying;
+    });
+
+    musicSerivce.playClicks().subscribe((playClicks) => {
+      this.playClicks = playClicks;
     });
   }
 
@@ -34,6 +39,13 @@ export class HeaderComponent implements OnInit {
     } else {
       this.musicSerivce.play();
     }
+  }
+
+  /**
+   * Toggles whether or not to mute clicks.
+   */
+  muteClicks() {
+    this.musicSerivce.muteClicks();
   }
 
   ngOnInit() {}

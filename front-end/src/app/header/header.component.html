@@ -7,6 +7,16 @@
 
   <span class="fill-remaining-space"></span>
 
+  <button mat-flat-button color="primary" (click)="muteClicks()">
+    <mat-icon *ngIf="playClicks">
+      alarm_add
+    </mat-icon>
+
+    <mat-icon *ngIf="!playClicks">
+      alarm_off
+    </mat-icon>
+  </button>
+
   <button mat-flat-button color="primary" (click)="toggleMusic()">
     <mat-icon *ngIf="isPlaying">
       volume_up

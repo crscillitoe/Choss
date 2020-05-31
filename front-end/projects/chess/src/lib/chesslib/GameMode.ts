@@ -46,6 +46,38 @@ export abstract class GameMode {
         return false;
       }
 
+      if (BoardGameState.State === GameState.IN_PROGRESS_WHITE_TURN) {
+        BoardGameState.State = GameState.IN_PROGRESS_BLACK_TURN;
+      } else {
+        BoardGameState.State = GameState.IN_PROGRESS_WHITE_TURN;
+      }
+
+      if (Piece.SpecialMoves) {
+        for (const specialRule of Piece.SpecialMoves) {
+          for (const validSpecialSquare of specialRule.ValidSquares(
+            Piece,
+            BoardGameState.BoardState
+          )) {
+            if (Coordinate.equals(Move.PointB, validSpecialSquare.target)) {
+              const success = validSpecialSquare.makeMove(
+                Piece,
+                BoardGameState.BoardState,
+                Move.PointB
+              );
+
+              if (success) {
+                BoardGameState.BoardState.logMove(
+                  Piece,
+                  Move.PointA,
+                  Move.PointB
+                );
+                return true;
+              }
+            }
+          }
+        }
+      }
+
       BoardGameState.BoardState.logMove(Piece, Move.PointA, Move.PointB);
 
       if (TargetPiece) {
@@ -58,11 +90,7 @@ export abstract class GameMode {
       } else {
         // No killing has been done.
         Piece.Coordinate = new Coordinate(Move.PointB.x, Move.PointB.y);
-        console.log(
-          `${Piece.Coordinate.x} ${Piece.Coordinate.y} ${
-            Piece.Team.teamOption
-          } ${Piece instanceof Pawn}`
-        );
+
         if (Piece instanceof Pawn) {
           if (
             (Piece.Coordinate.y === BoardGameState.BoardState.Height &&
@@ -73,15 +101,8 @@ export abstract class GameMode {
             BoardGameState.BoardState.Pieces.push(
               new Queen(Move.PointB.x, Move.PointB.y, Piece.Team)
             );
-            console.log("queen");
           }
         }
-      }
-
-      if (BoardGameState.State === GameState.IN_PROGRESS_WHITE_TURN) {
-        BoardGameState.State = GameState.IN_PROGRESS_BLACK_TURN;
-      } else {
-        BoardGameState.State = GameState.IN_PROGRESS_WHITE_TURN;
       }
 
       return true;
