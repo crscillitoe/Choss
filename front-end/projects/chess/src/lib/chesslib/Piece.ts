@@ -79,8 +79,6 @@ export abstract class Piece {
       }
     }
 
-    console.log(specialRules);
-
     return new Set(
       [...rules]
         .filter((coord) => {

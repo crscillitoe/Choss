@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { MusicService } from "../services/music.service";
 import { TunnelService } from "../services/tunnel.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-header",
@@ -12,7 +13,8 @@ export class HeaderComponent implements OnInit {
   playClicks: boolean = false;
   constructor(
     private musicSerivce: MusicService,
-    private tunnelService: TunnelService
+    private tunnelService: TunnelService,
+    private router: Router
   ) {
     musicSerivce.playing().subscribe((isPlaying) => {
       this.isPlaying = isPlaying;
@@ -46,6 +48,13 @@ export class HeaderComponent implements OnInit {
    */
   muteClicks() {
     this.musicSerivce.muteClicks();
+  }
+
+  /**
+   * Take the user back to the home screen.
+   */
+  home() {
+    this.router.navigateByUrl("");
   }
 
   ngOnInit() {}

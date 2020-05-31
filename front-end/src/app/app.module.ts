@@ -8,6 +8,7 @@ import { HomeComponent } from "./home/home.component";
 import { MatButtonModule } from "@angular/material";
 import { MatToolbarModule } from "@angular/material";
 import { MatIconModule } from "@angular/material";
+import { MatSelectModule } from "@angular/material";
 import { MatProgressSpinnerModule } from "@angular/material";
 import { MatMenuModule } from "@angular/material";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -20,6 +21,7 @@ import { HeaderComponent } from "./header/header.component";
     AppRoutingModule,
     MatButtonModule,
     MatToolbarModule,
+    MatSelectModule,
     MatProgressSpinnerModule,
     MatIconModule,
     MatMenuModule,

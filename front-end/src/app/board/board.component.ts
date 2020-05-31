@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { TunnelService } from "../services/tunnel.service";
 import { Board } from "../../../projects/chess/src/lib/chesslib/Board";
 import { King } from "../../../projects/chess/src/lib/chesslib/Pieces/Standard/King";
@@ -13,13 +13,14 @@ import { DoubleMove } from "projects/chess/src/lib/chesslib/GameModes/DoubleMove
 import { ActivatedRoute } from "@angular/router";
 import { GameState } from "projects/chess/src/lib/chesslib/GameState";
 import { MusicService } from "../services/music.service";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-board",
   templateUrl: "./board.component.html",
   styleUrls: ["./board.component.css"],
 })
-export class BoardComponent implements OnInit {
+export class BoardComponent implements OnInit, OnDestroy {
   initialLoad: boolean = true;
   Board: Board;
   Status: GameState;
@@ -30,14 +31,22 @@ export class BoardComponent implements OnInit {
   selectedPiece: Piece = null;
   pieceMoves: Coordinate[] = null;
 
+  subscriptions: Subscription[] = [];
+
   constructor(
     private tunnelService: TunnelService,
     private route: ActivatedRoute,
     private musicService: MusicService
   ) {
-    this.route.queryParams.subscribe((params) => {
-      this.player = new Team(parseInt(params["team"]));
-    });
+    this.subscriptions.push(
+      this.route.queryParams.subscribe((params) => {
+        this.player = new Team(parseInt(params["team"]));
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   /**
@@ -138,28 +147,32 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.tunnelService.receiveBoardState().subscribe((data) => {
-      if (data) {
-        if (!this.initialLoad) {
-          this.musicService.playClick();
-        } else {
-          this.initialLoad = false;
+    this.subscriptions.push(
+      this.tunnelService.receiveBoardState().subscribe((data) => {
+        if (data) {
+          if (!this.initialLoad) {
+            this.musicService.playClick();
+          } else {
+            this.initialLoad = false;
+          }
+
+          this.Board = data.BoardState;
+          this.Status = data.State;
+
+          this.rows = [];
+          this.columns = [];
+          for (let i = 0; i < this.Board.Width; i++) {
+            this.rows.push(i + 1);
+            this.columns.push(this.alphabet[i]);
+          }
         }
+      })
+    );
 
-        this.Board = data.BoardState;
-        this.Status = data.State;
-
-        this.rows = [];
-        this.columns = [];
-        for (let i = 0; i < this.Board.Width; i++) {
-          this.rows.push(i + 1);
-          this.columns.push(this.alphabet[i]);
-        }
-      }
-    });
-
-    this.tunnelService.getValidSquares().subscribe((data) => {
-      this.pieceMoves = data;
-    });
+    this.subscriptions.push(
+      this.tunnelService.getValidSquares().subscribe((data) => {
+        this.pieceMoves = data;
+      })
+    );
   }
 }
