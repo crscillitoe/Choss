@@ -6,14 +6,14 @@ import { GameModeDescription } from "projects/chess/src/lib/chesslib/GameModes/G
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
-  styleUrls: ["./home.component.css"],
+  styleUrls: ["./home.component.css"]
 })
 export class HomeComponent implements OnInit {
-  private gameModeDescriptions: GameModeDescription[] = [];
-  private gamemodeID: number;
+  gameModeDescriptions: GameModeDescription[] = [];
+  gamemodeID: number;
 
   constructor(private router: Router, private tunnel: TunnelService) {
-    tunnel.getAvailableGameModes().subscribe((gameModeDescriptions) => {
+    tunnel.getAvailableGameModes().subscribe(gameModeDescriptions => {
       console.log(gameModeDescriptions);
       this.gameModeDescriptions = gameModeDescriptions;
     });
@@ -33,9 +33,7 @@ export class HomeComponent implements OnInit {
   }
 
   uuidv4(): string {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
-      c
-    ) {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
       let r = (Math.random() * 16) | 0,
         v = c == "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);

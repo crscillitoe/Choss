@@ -15,22 +15,25 @@ import { MatMenuModule } from "@angular/material";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { HeaderComponent } from "./header/header.component";
 
+import { DragDropModule } from "@angular/cdk/drag-drop";
+
 @NgModule({
   declarations: [AppComponent, BoardComponent, HomeComponent, HeaderComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     MatButtonModule,
+    DragDropModule,
     MatToolbarModule,
     MatSelectModule,
     MatProgressSpinnerModule,
     MatIconModule,
     MatMenuModule,
     BrowserAnimationsModule,
-    HttpClientModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent],
-  schemas: [NO_ERRORS_SCHEMA],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class AppModule {}

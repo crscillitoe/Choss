@@ -12,7 +12,9 @@
               <img
                 (click)="selectPiece(x + 1, y + 1)"
                 [src]="getSVG(x + 1, y + 1)"
-                class="chess-image"
+                class="chess-image draggable-source"
+                cdkDrag
+                (cdkDragEnded)="onDragEnded($event)"
               />
             </div>
           </div>
@@ -28,6 +30,8 @@
                 (click)="selectPiece(Board.Width - x, Board.Height - y)"
                 [src]="getSVG(Board.Width - x, Board.Height - y)"
                 class="chess-image"
+                cdkDrag
+                (cdkDragEnded)="onDragEnded($event)"
               />
             </div>
           </div>

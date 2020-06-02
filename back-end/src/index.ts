@@ -9,7 +9,7 @@ import { boardGame } from "../../front-end/projects/chess/src/localConfiguration
 import { Game } from "../../front-end/projects/chess/src/lib/chesslib/Game";
 import {
   getGameModeDescriptions,
-  getGameModeById,
+  getGameModeById
 } from "../../front-end/projects/chess/src/lib/chesslib/GameModes/GameModeRegistry";
 import cors from "cors";
 import { GameMode } from "../../front-end/projects/chess/src/lib/chesslib/GameMode";
@@ -21,17 +21,18 @@ const options: cors.CorsOptions = {
     "X-Requested-With",
     "Content-Type",
     "Accept",
-    "X-Access-Token",
+    "X-Access-Token"
   ],
   credentials: true,
   methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
   origin: "*",
-  preflightContinue: false,
+  preflightContinue: false
 };
 
 app.use(cors(options));
 
-app.set("port", process.env.PORT || 3000);
+const port = process.env.PORT || 3000;
+app.set("port", port);
 
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
@@ -108,6 +109,6 @@ io.on("connection", (socket: SocketIO.Socket) => {
 });
 
 // start our simple server up on localhost:3000
-const server = http.listen(3000, () => {
-  console.log("listening on *:3000");
+const server = http.listen(port, () => {
+  console.log(`listening on *:${port}`);
 });
