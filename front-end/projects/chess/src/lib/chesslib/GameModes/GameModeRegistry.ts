@@ -2,6 +2,7 @@ import { GameMode } from "../GameMode";
 import { DoubleMove } from "./DoubleMove";
 import { RandomAtomic } from "./RandomAtomic";
 import { War } from "./War";
+import { Duplicate } from "./Duplicate";
 
 export interface GameModeDescription {
   displayName: string;
@@ -25,6 +26,11 @@ const allGameModeDescriptions: GameModeDescription[] = [
     displayName: "War",
     description: "Description text here",
     gameMode: War,
+  },
+  {
+    displayName: "Duplicate",
+    description: "Description text here",
+    gameMode: Duplicate,
   },
 ];
 

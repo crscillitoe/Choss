@@ -3,7 +3,7 @@ import { TunnelService } from "../services/tunnel.service";
 import { Board } from "../../../projects/chess/src/lib/chesslib/Board";
 import {
   Team,
-  TeamOption
+  TeamOption,
 } from "../../../projects/chess/src/lib/chesslib/Team";
 import { Piece } from "projects/chess/src/lib/chesslib/Piece";
 import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
@@ -17,7 +17,7 @@ import { CdkDragEnd } from "@angular/cdk/drag-drop";
 @Component({
   selector: "app-board",
   templateUrl: "./board.component.html",
-  styleUrls: ["./board.component.css"]
+  styleUrls: ["./board.component.css"],
 })
 export class BoardComponent implements OnInit, OnDestroy {
   initialLoad: boolean = true;
@@ -38,14 +38,14 @@ export class BoardComponent implements OnInit, OnDestroy {
     private musicService: MusicService
   ) {
     this.subscriptions.push(
-      this.route.queryParams.subscribe(params => {
+      this.route.queryParams.subscribe((params) => {
         this.player = new Team(parseInt(params["team"]));
       })
     );
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
     this.tunnelService.closeConnection();
   }
 
@@ -153,7 +153,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.tunnelService.connect();
     this.subscriptions.push(
-      this.tunnelService.receiveBoardState().subscribe(data => {
+      this.tunnelService.receiveBoardState().subscribe((data) => {
         if (data) {
           if (!this.initialLoad) {
             this.musicService.playClick();
@@ -175,7 +175,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.tunnelService.getValidSquares().subscribe(data => {
+      this.tunnelService.getValidSquares().subscribe((data) => {
         this.pieceMoves = data;
       })
     );

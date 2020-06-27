@@ -10,6 +10,13 @@ export class Team {
     this.teamOption = teamOption;
   }
 
+  /**
+   * Returns the opposite team
+   */
+  opposite(): TeamOption {
+    return this.equals(TeamOption.WHITE) ? TeamOption.BLACK : TeamOption.WHITE;
+  }
+
   equals(otherTeamOption: TeamOption): boolean {
     return (
       this.teamOption === TeamOption.ANY || this.teamOption === otherTeamOption

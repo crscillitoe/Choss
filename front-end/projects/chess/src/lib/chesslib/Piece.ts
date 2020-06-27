@@ -25,17 +25,22 @@ export abstract class Piece {
   IsBomb: boolean = false;
 
   PointValue: number;
+  pieceName: string;
 
   constructor(x: number, y: number, team: Team, SVGName: string) {
     this.Coordinate = new Coordinate(x, y);
 
-    if (team.equals(TeamOption.WHITE)) {
-      this.SVGName = `White_${SVGName}.svg`;
-    } else {
-      this.SVGName = `Black_${SVGName}.svg`;
-    }
-
+    this.pieceName = SVGName;
     this.Team = team;
+    this.updatePieceImage();
+  }
+
+  updatePieceImage() {
+    if (this.Team.equals(TeamOption.WHITE)) {
+      this.SVGName = `White_${this.pieceName}.svg`;
+    } else {
+      this.SVGName = `Black_${this.pieceName}.svg`;
+    }
   }
 
   /**
