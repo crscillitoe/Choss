@@ -30,6 +30,8 @@ export class BoardComponent implements OnInit, OnDestroy {
   player = new Team(TeamOption.BLACK);
   selectedPiece: Piece = null;
   pieceMoves: Coordinate[] = null;
+  pendingMoves: Coordinate[] = [];
+  pendingMoveColors = ["lightblue", "blue", "darkblue"];
 
   subscriptions: Subscription[] = [];
 
@@ -61,6 +63,12 @@ export class BoardComponent implements OnInit, OnDestroy {
     if (piece) {
       if (piece.IsBomb && piece.Team.teamOption === this.player.teamOption) {
         return "red";
+      }
+    }
+    for (let i = 0; i < this.pendingMoves.length; i++) {
+      const pendingMove = this.pendingMoves[i];
+      if (pendingMove.x === x && pendingMove.y === y) {
+        return this.pendingMoveColors[Math.floor(i / 2)];
       }
     }
     if (this.selectedPiece) {
@@ -105,27 +113,22 @@ export class BoardComponent implements OnInit, OnDestroy {
    * @param y The y coordinate on the board of the piece
    */
   selectPiece(x: number, y: number) {
-    if (
-      (this.player.equals(TeamOption.WHITE) &&
-        this.Status === GameState.IN_PROGRESS_WHITE_TURN) ||
-      (this.player.equals(TeamOption.BLACK) &&
-        this.Status === GameState.IN_PROGRESS_BLACK_TURN)
-    ) {
-      const Piece = this.Board.getPieceAtCoordinate(new Coordinate(x, y));
-      if (Piece && this.player.equals(Piece.Team.teamOption)) {
-        if (this.selectedPiece === Piece) {
-          this.selectedPiece = null;
-        } else {
-          this.selectedPiece = Piece;
-          this.pieceMoves = [];
-          this.tunnelService.requestValidSquares(Piece);
-        }
-      } else if (this.selectedPiece) {
-        const location = new Coordinate(x, y);
-        this.tunnelService.makeMove(this.selectedPiece.Coordinate, location);
-        this.pieceMoves = [];
+    const Piece = this.Board.getPieceAtCoordinate(new Coordinate(x, y));
+    if (Piece && this.player.equals(Piece.Team.teamOption)) {
+      if (this.selectedPiece === Piece) {
         this.selectedPiece = null;
+      } else {
+        this.selectedPiece = Piece;
+        this.pieceMoves = [];
+        this.tunnelService.requestValidSquares(Piece);
       }
+    } else if (this.selectedPiece) {
+      const location = new Coordinate(x, y);
+      this.pendingMoves.push(location);
+      this.pendingMoves.push(this.selectedPiece.Coordinate);
+      this.tunnelService.makeMove(this.selectedPiece.Coordinate, location);
+      this.pieceMoves = [];
+      this.selectedPiece = null;
     }
   }
 
@@ -151,6 +154,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.tunnelService.connect();
     this.subscriptions.push(
       this.tunnelService.receiveBoardState().subscribe((data) => {
+        this.pendingMoves = [];
         if (data) {
           if (!this.initialLoad) {
             this.musicService.playClick();

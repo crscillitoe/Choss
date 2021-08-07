@@ -23,16 +23,16 @@ export class War extends GameMode {
     this.turncounter = 0;
   }
 
-  HandleMove(Move: Move, BoardGameState: Game): boolean {
-    const success = super.HandleMove(Move, BoardGameState);
-    if (success) {
+  HandleMove(Move: Move, BoardGameState: Game): Game[] {
+    const boardGameStates = super.HandleMove(Move, BoardGameState);
+    if (boardGameStates.length !== 0) {
       this.turncounter++;
       if (this.turncounter % 5 === 0) {
         BoardGameState.BoardState.expand();
       }
     }
 
-    return success;
+    return boardGameStates;
   }
 
   static BuildFreshGame(): Game {

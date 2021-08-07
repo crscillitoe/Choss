@@ -75,10 +75,18 @@ io.on("connection", (socket: SocketIO.Socket) => {
     }
   });
 
-  socket.on("make-move", (move: Move) => {
+  socket.on("make-move", async (move: Move) => {
     const board = getBoardFromClientId(socket.client.id);
-    if (getGameModeFromClientId(socket.client.id).HandleMove(move, board)) {
-      io.to(clientIdToRooms[socket.client.id]).emit("board-update", board);
+    const gameMode = getGameModeFromClientId(socket.client.id);
+    const displayStates = gameMode.HandleMove(move, board);
+
+    for (let i = 0; i < displayStates.length; i++) {
+      setTimeout(() => {
+        io.to(clientIdToRooms[socket.client.id]).emit(
+          "board-update",
+          displayStates[i]
+        );
+      }, 1000 * i);
     }
   });
 

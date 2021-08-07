@@ -29,7 +29,7 @@ export abstract class GameMode {
    * @param Move The desired move to be performed
    * @param GameState The current board state
    */
-  HandleMove(Move: Move, BoardGameState: Game): boolean {
+  HandleMove(Move: Move, BoardGameState: Game): Game[] {
     let Piece = BoardGameState.BoardState.getPieceAtCoordinate(Move.PointA);
 
     let TargetPiece = BoardGameState.BoardState.getPieceAtCoordinate(
@@ -44,7 +44,7 @@ export abstract class GameMode {
           BoardGameState.BoardState
         )
       ) {
-        return false;
+        return [];
       }
 
       if (BoardGameState.State === GameState.IN_PROGRESS_WHITE_TURN) {
@@ -72,7 +72,7 @@ export abstract class GameMode {
                   Move.PointA,
                   Move.PointB
                 );
-                return true;
+                return [BoardGameState];
               }
             }
           }
@@ -86,7 +86,7 @@ export abstract class GameMode {
 
         // TakePiece may cause the game to end, if we are taking a king.
         if (BoardGameState.isGameOver()) {
-          return true;
+          return [BoardGameState];
         }
       } else {
         // No killing has been done.
@@ -106,10 +106,10 @@ export abstract class GameMode {
         }
       }
 
-      return true;
+      return [BoardGameState];
     }
 
-    return false;
+    return [];
   }
 
   /**

@@ -1,6 +1,7 @@
 import { GameMode } from "../GameMode";
 import { DoubleMove } from "./DoubleMove";
 import { RandomAtomic } from "./RandomAtomic";
+import { QChess } from "./QChess";
 import { War } from "./War";
 
 export interface GameModeDescription {
@@ -25,6 +26,11 @@ const allGameModeDescriptions: GameModeDescription[] = [
     displayName: "War",
     description: "Description text here",
     gameMode: War,
+  },
+  {
+    displayName: "Q Chess God Help Us",
+    description: "Description text here",
+    gameMode: QChess,
   },
 ];
 

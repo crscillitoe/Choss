@@ -35,13 +35,13 @@ export class DoubleMove extends GameMode {
    * @param Player The player making the move
    * @param Move The desired move to be performed
    */
-  HandleMove(Move: Move, BoardGameState: Game): boolean {
-    const movePerformed = super.HandleMove(Move, BoardGameState);
+  HandleMove(Move: Move, BoardGameState: Game): Game[] {
+    const boardGameStates = super.HandleMove(Move, BoardGameState);
     if (BoardGameState.isGameOver()) {
-      return true;
+      return [BoardGameState];
     }
 
-    if (movePerformed) {
+    if (boardGameStates.length !== 0) {
       this.turnCounter++;
 
       // Next players' turn
@@ -52,7 +52,7 @@ export class DoubleMove extends GameMode {
       }
     }
 
-    return movePerformed;
+    return boardGameStates;
   }
 
   /**
