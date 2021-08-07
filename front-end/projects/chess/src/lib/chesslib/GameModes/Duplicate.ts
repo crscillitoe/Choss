@@ -17,6 +17,7 @@ import { Mann } from "../Pieces/Non-Standard/Mann";
 import { Coordinate } from "../Coordinate";
 
 export class Duplicate extends GameMode {
+  repeatTurn: boolean = false;
   TakePiece(Predator: Piece, Prey: Piece, BoardGameState: Game): void {
     // this.KillPiece(Predator, Prey, BoardGameState);
 
@@ -29,9 +30,22 @@ export class Duplicate extends GameMode {
     } else {
       Prey.Team.teamOption = Prey.Team.opposite();
       Prey.updatePieceImage();
-      // const oldCoord = Prey.Coordinate;
-      // Prey = JSON.parse(JSON.stringify(Predator));
-      // Prey.Coordinate = oldCoord;
+      this.repeatTurn = true;
     }
+  }
+
+  HandleMove(Move: Move, BoardGameState: Game): boolean {
+    this.repeatTurn = false;
+    const success = super.HandleMove(Move, BoardGameState);
+
+    if (success && this.repeatTurn) {
+      if (BoardGameState.State === GameState.IN_PROGRESS_WHITE_TURN) {
+        BoardGameState.State = GameState.IN_PROGRESS_BLACK_TURN;
+      } else {
+        BoardGameState.State = GameState.IN_PROGRESS_WHITE_TURN;
+      }
+    }
+
+    return success;
   }
 }
