@@ -1,0 +1,3 @@
+[submodule "front-end-lichess/projects/chessground"]
+	path = front-end-lichess/projects/chessground
+	url = https://github.com/crscillitoe/chessground
