@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { DoubleMove } from 'projects/chess/src/lib/chesslib/GameModes/DoubleMove';
+import { DoubleMove } from 'projects/chessground/chess/src/lib/chesslib/GameModes/DoubleMove';
 import Chessground from 'projects/chessground/src';
 import { Api } from 'projects/chessground/src/api';
 
