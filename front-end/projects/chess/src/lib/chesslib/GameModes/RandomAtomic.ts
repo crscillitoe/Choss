@@ -24,9 +24,10 @@ export class RandomAtomic extends GameMode {
     Predator.Coordinate = new Coordinate(Prey.Coordinate.x, Prey.Coordinate.y);
     BoardGameState.BoardState.killPiece(Predator);
 
-    const deadBoys: Coordinate[] = Prey.Coordinate.getAllAdjacentCoordinatesOnBoard(
-      BoardGameState.BoardState
-    );
+    const deadBoys: Coordinate[] =
+      Prey.Coordinate.getAllAdjacentCoordinatesOnBoard(
+        BoardGameState.BoardState
+      );
 
     for (const boy of deadBoys) {
       const piece = BoardGameState.BoardState.getPieceAtCoordinate(boy);
@@ -36,9 +37,8 @@ export class RandomAtomic extends GameMode {
           for (const moreDeadBoy of piece.Coordinate.getAllAdjacentCoordinatesOnBoard(
             BoardGameState.BoardState
           )) {
-            const otherPiece = BoardGameState.BoardState.getPieceAtCoordinate(
-              moreDeadBoy
-            );
+            const otherPiece =
+              BoardGameState.BoardState.getPieceAtCoordinate(moreDeadBoy);
             if (otherPiece) {
               super.KillPiece(Predator, otherPiece, BoardGameState);
             }
@@ -60,8 +60,21 @@ export class RandomAtomic extends GameMode {
   static BuildFreshGame(): Game {
     let standardGame: Game = super.BuildFreshGame();
 
-    standardGame.BoardState.getRandomPiece().IsBomb = true;
-    standardGame.BoardState.getRandomPiece().IsBomb = true;
+    while (true) {
+      const piece = standardGame.BoardState.getRandomPiece();
+      if (piece.Team.equals(TeamOption.WHITE) && !piece.isKing()) {
+        piece.IsBomb = true;
+        break;
+      }
+    }
+
+    while (true) {
+      const piece = standardGame.BoardState.getRandomPiece();
+      if (piece.Team.equals(TeamOption.BLACK) && !piece.isKing()) {
+        piece.IsBomb = true;
+        break;
+      }
+    }
 
     return standardGame;
   }

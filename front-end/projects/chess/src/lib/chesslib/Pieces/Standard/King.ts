@@ -24,4 +24,8 @@ export class King extends Piece {
 
     this.MoveRestrictions = [new CannotAttackFriends()];
   }
+
+  isKing(): boolean {
+    return true;
+  }
 }

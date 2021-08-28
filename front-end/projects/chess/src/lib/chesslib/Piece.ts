@@ -38,6 +38,10 @@ export abstract class Piece {
     this.Team = team;
   }
 
+  isKing(): boolean {
+    return false;
+  }
+
   /**
    * Returns a set of squares that this piece can legally move to.
    */
