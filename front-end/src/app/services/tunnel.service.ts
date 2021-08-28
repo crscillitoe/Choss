@@ -118,6 +118,15 @@ export class TunnelService {
     this.socket.emit("make-move", move);
   }
 
+  makePremove(pointA: Coordinate, pointB: Coordinate) {
+    const move: Move = {
+      PointA: pointA,
+      PointB: pointB,
+    };
+
+    this.socket.emit("make-premove", move);
+  }
+
   /**
    * List all supported game modes
    */

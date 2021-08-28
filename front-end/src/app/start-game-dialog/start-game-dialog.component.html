@@ -1,0 +1,35 @@
+<div mat-dialog-content>
+  <div class="centered">
+    <mat-button-toggle-group
+      [(value)]="selection"
+      name="playerColor"
+      aria-label="Player Color"
+    >
+      <mat-button-toggle (click)="updateInviteLink()" value="white"
+        >White</mat-button-toggle
+      >
+      <mat-button-toggle (click)="updateInviteLink()" value="random"
+        >Random</mat-button-toggle
+      >
+      <mat-button-toggle (click)="updateInviteLink()" value="black"
+        >Black</mat-button-toggle
+      >
+    </mat-button-toggle-group>
+  </div>
+  <div id="inviteLink" class="centered">
+    <mat-form-field>
+      <input matInput [(ngModel)]="inviteLink" [disabled]="true" />
+    </mat-form-field>
+    <button mat-button (click)="copyInviteLink()">
+      <mat-icon>content_paste</mat-icon>
+    </button>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <div class="centered">
+    <button mat-button (click)="onNoClick()">Nah</button>
+    <button mat-button [mat-dialog-close]="getTeamId()" cdkFocusInitial>
+      Start Game
+    </button>
+  </div>
+</div>

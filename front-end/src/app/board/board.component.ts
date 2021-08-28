@@ -14,6 +14,8 @@ import { ActivatedRoute } from "@angular/router";
 import { GameState } from "projects/chess/src/lib/chesslib/GameState";
 import { MusicService } from "../services/music.service";
 import { Subscription } from "rxjs";
+import { MatDialog } from "@angular/material";
+import { StartGameDialogComponent } from "../start-game-dialog/start-game-dialog.component";
 
 @Component({
   selector: "app-board",
@@ -30,15 +32,15 @@ export class BoardComponent implements OnInit, OnDestroy {
   player = new Team(TeamOption.BLACK);
   selectedPiece: Piece = null;
   pieceMoves: Coordinate[] = null;
-  pendingMoves: Coordinate[] = [];
-  pendingMoveColors = ["lightblue", "blue", "darkblue"];
+  preMoves: Coordinate[] = [];
 
   subscriptions: Subscription[] = [];
 
   constructor(
     private tunnelService: TunnelService,
     private route: ActivatedRoute,
-    private musicService: MusicService
+    private musicService: MusicService,
+    public dialog: MatDialog
   ) {
     this.subscriptions.push(
       this.route.queryParams.subscribe((params) => {
@@ -50,6 +52,14 @@ export class BoardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
     this.tunnelService.closeConnection();
+  }
+
+  drop(x, y) {
+    console.log("Dropped at", x, y);
+  }
+
+  dragEnd(event) {
+    console.log("Element was dragged", event);
   }
 
   /**
@@ -65,23 +75,14 @@ export class BoardComponent implements OnInit, OnDestroy {
         return "red";
       }
     }
-    for (let i = 0; i < this.pendingMoves.length; i++) {
-      const pendingMove = this.pendingMoves[i];
-      if (pendingMove.x === x && pendingMove.y === y) {
-        return this.pendingMoveColors[Math.floor(i / 2)];
-      }
-    }
-    if (this.selectedPiece) {
-      if (this.pieceMoves) {
-        for (const coordinate of this.pieceMoves) {
-          if (coordinate.x === x && coordinate.y === y) {
-            if ((x + y) % 2 === 0) {
-              return "indianred";
-            }
 
-            return "salmon";
-          }
+    for (const coordinate of this.preMoves) {
+      if (coordinate.x === x && coordinate.y === y) {
+        if ((x + y) % 2 === 0) {
+          return "#5f637d";
         }
+
+        return "#43465d";
       }
     }
 
@@ -100,10 +101,10 @@ export class BoardComponent implements OnInit, OnDestroy {
     }
 
     if ((x + y) % 2 === 1) {
-      return "#303030";
+      return "#878787";
     }
 
-    return "#888888";
+    return "#ADADAD";
   }
 
   /**
@@ -113,23 +114,42 @@ export class BoardComponent implements OnInit, OnDestroy {
    * @param y The y coordinate on the board of the piece
    */
   selectPiece(x: number, y: number) {
+    this.preMoves = [];
     const Piece = this.Board.getPieceAtCoordinate(new Coordinate(x, y));
-    if (Piece && this.player.equals(Piece.Team.teamOption)) {
-      if (this.selectedPiece === Piece) {
-        this.selectedPiece = null;
-      } else {
-        this.selectedPiece = Piece;
-        this.pieceMoves = [];
-        this.tunnelService.requestValidSquares(Piece);
-      }
-    } else if (this.selectedPiece) {
-      const location = new Coordinate(x, y);
-      this.pendingMoves.push(location);
-      this.pendingMoves.push(this.selectedPiece.Coordinate);
-      this.tunnelService.makeMove(this.selectedPiece.Coordinate, location);
-      this.pieceMoves = [];
-      this.selectedPiece = null;
+    if (!Piece || !this.player.equals(Piece.Team.teamOption)) {
+      return;
     }
+
+    this.selectedPiece = Piece;
+    this.pieceMoves = [];
+    this.tunnelService.requestValidSquares(Piece);
+  }
+
+  placePiece(x: number, y: number) {
+    if (!this.selectedPiece) return;
+
+    const location = new Coordinate(x, y);
+    if (!this.isOurTurn()) {
+      if (Coordinate.equals(this.selectedPiece.Coordinate, location)) {
+        return;
+      }
+
+      this.preMoves = [this.selectedPiece.Coordinate, location];
+    } else {
+      this.tunnelService.makeMove(this.selectedPiece.Coordinate, location);
+    }
+
+    this.pieceMoves = [];
+    this.selectedPiece = null;
+  }
+
+  isOurTurn(): boolean {
+    return (
+      (this.Status === GameState.IN_PROGRESS_BLACK_TURN &&
+        this.player.teamOption === TeamOption.BLACK) ||
+      (this.Status === GameState.IN_PROGRESS_WHITE_TURN &&
+        this.player.teamOption === TeamOption.WHITE)
+    );
   }
 
   /**
@@ -145,16 +165,27 @@ export class BoardComponent implements OnInit, OnDestroy {
       if (Piece) {
         return `assets/chess_pieces/${Piece.SVGName}`;
       }
+
+      if (this.pieceMoves) {
+        for (const coordinate of this.pieceMoves) {
+          if (coordinate.x === x && coordinate.y === y) {
+            return `assets/chess_pieces/dot.svg`;
+          }
+        }
+      }
     }
 
     return "assets/chess_pieces/Blank.svg";
   }
 
   ngOnInit() {
+    this.preMoves = [];
+    this.pieceMoves = [];
+    this.selectedPiece = null;
+
     this.tunnelService.connect();
     this.subscriptions.push(
       this.tunnelService.receiveBoardState().subscribe((data) => {
-        this.pendingMoves = [];
         if (data) {
           if (!this.initialLoad) {
             this.musicService.playClick();
@@ -164,6 +195,11 @@ export class BoardComponent implements OnInit, OnDestroy {
 
           this.Board = data.BoardState;
           this.Status = data.State;
+
+          if (this.isOurTurn() && this.preMoves.length !== 0) {
+            this.tunnelService.makeMove(this.preMoves[0], this.preMoves[1]);
+            this.preMoves = [];
+          }
 
           this.rows = [];
           this.columns = [];

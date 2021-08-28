@@ -5,12 +5,16 @@
         <ng-container *ngIf="player.teamOption === 0">
           <div *ngFor="let row of rows; let y = index" class="chess-row">
             <div
+              mwlDroppable
+              (drop)="placePiece(x + 1, y + 1)"
               [style.background]="getColor(x + 1, y + 1)"
               *ngFor="let col of columns; let x = index"
               class="chess-tile"
             >
               <img
-                (click)="selectPiece(x + 1, y + 1)"
+                mwlDraggable
+                (dragStart)="selectPiece(x + 1, y + 1)"
+                (dragEnd)="dragEnd($event)"
                 [src]="getSVG(x + 1, y + 1)"
                 class="chess-image"
               />
@@ -20,12 +24,16 @@
         <ng-container *ngIf="player.teamOption === 1">
           <div *ngFor="let row of rows; let y = index" class="chess-row">
             <div
+              mwlDroppable
+              (drop)="placePiece(Board.Width - x, Board.Height - y)"
               [style.background]="getColor(Board.Width - x, Board.Height - y)"
               *ngFor="let col of columns; let x = index"
               class="chess-tile"
             >
               <img
-                (click)="selectPiece(Board.Width - x, Board.Height - y)"
+                mwlDraggable
+                (dragStart)="selectPiece(Board.Width - x, Board.Height - y)"
+                (dragEnd)="dragEnd($event)"
                 [src]="getSVG(Board.Width - x, Board.Height - y)"
                 class="chess-image"
               />

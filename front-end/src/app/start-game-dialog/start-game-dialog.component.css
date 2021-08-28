@@ -1,0 +1,9 @@
+.centered {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+#inviteLink {
+  margin-top: 1em;
+}

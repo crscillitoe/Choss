@@ -5,7 +5,6 @@ import { RandomAtomic } from "../../front-end/projects/chess/src/lib/chesslib/Ga
 import { War } from "../../front-end/projects/chess/src/lib/chesslib/GameModes/War";
 import { Move } from "../../front-end/projects/chess/src/lib/chesslib/Move";
 import { Piece } from "../../front-end/projects/chess/src/lib/chesslib/Piece";
-import { boardGame } from "../../front-end/projects/chess/src/localConfiguration";
 import { Game } from "../../front-end/projects/chess/src/lib/chesslib/Game";
 import {
   getGameModeDescriptions,
