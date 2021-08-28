@@ -16,7 +16,7 @@ import { HttpClient } from "@angular/common/http";
 export class TunnelService {
   private socket: SocketIOClient.Socket;
   private waitSocket: SocketIOClient.Socket;
-  private socket_ip: string = "https://dev-api.woohoojin.dev";
+  private socket_ip: string = "https://api.woohoojin.dev";
 
   private boardState: BehaviorSubject<Game> = new BehaviorSubject<Game>(null);
   private validSquares: BehaviorSubject<Coordinate[]> = new BehaviorSubject<
@@ -145,7 +145,7 @@ export class TunnelService {
    */
   getAvailableGameModes(): Observable<GameModeDescription[]> {
     return this.http.get<GameModeDescription[]>(
-      `https://dev-api.woohoojin.dev/listGameModes`
+      `https://api.woohoojin.dev/listGameModes`
     );
   }
 }

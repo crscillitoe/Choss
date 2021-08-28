@@ -128,6 +128,6 @@ io.on("connection", (socket: SocketIO.Socket) => {
 });
 
 // start our simple server up on localhost:3000
-const server = http.listen(3000, () => {
-  console.log("listening on *:3000");
+const server = http.listen(process.env.PORT || 3000, () => {
+  console.log(`listening on *:${process.env.PORT || 3000}`);
 });
