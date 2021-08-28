@@ -32,6 +32,14 @@ export class Board {
     this.Width += 2;
     this.Height += 2;
 
+    if (this.MoveHistory.length > 0) {
+      const lastMove = this.MoveHistory[this.MoveHistory.length - 1];
+      lastMove.PointA.x += 1;
+      lastMove.PointA.y += 1;
+      lastMove.PointB.x += 1;
+      lastMove.PointB.y += 1;
+    }
+
     let piecesToUpdate: Piece[] = [];
     for (const coord of this.getAllSquares()) {
       const piece = this.getPieceAtCoordinate(coord);

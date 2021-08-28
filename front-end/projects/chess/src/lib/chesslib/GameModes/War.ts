@@ -27,7 +27,7 @@ export class War extends GameMode {
     const boardGameStates = super.HandleMove(Move, BoardGameState);
     if (boardGameStates.length !== 0) {
       this.turncounter++;
-      if (this.turncounter % 5 === 0) {
+      if (this.turncounter % 10 === 0) {
         BoardGameState.BoardState.expand();
       }
     }
@@ -37,16 +37,6 @@ export class War extends GameMode {
 
   static BuildFreshGame(): Game {
     const board: Board = GameModeShared.StandardChessBoard();
-    board.killPiece(board.getPieceAtCoordinate(new Coordinate(4, 2)));
-    board.killPiece(board.getPieceAtCoordinate(new Coordinate(5, 2)));
-    board.killPiece(board.getPieceAtCoordinate(new Coordinate(4, 7)));
-    board.killPiece(board.getPieceAtCoordinate(new Coordinate(5, 7)));
-
-    board.Pieces.push(new Mann(4, 2, new Team(TeamOption.WHITE)));
-    board.Pieces.push(new Giraffe(5, 2, new Team(TeamOption.WHITE)));
-    board.Pieces.push(new Mann(4, 7, new Team(TeamOption.BLACK)));
-    board.Pieces.push(new Mann(5, 7, new Team(TeamOption.BLACK)));
-
     return new Game(board, GameState.IN_PROGRESS_WHITE_TURN);
   }
 }

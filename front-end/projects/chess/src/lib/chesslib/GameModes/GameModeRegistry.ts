@@ -29,12 +29,13 @@ const allGameModeDescriptions: GameModeDescription[] = [
     description: "Every 10 turns the board gets bigger!",
     gameMode: War,
   },
-  {
-    displayName: "Q Chess",
-    description:
-      "Instead of turns, each player queues up 3 moves. The game will then play those moves out 1 by 1.",
-    gameMode: QChess,
-  },
+  // Disabled until we fix game state stuff
+  // {
+  //   displayName: "Q Chess",
+  //   description:
+  //     "Instead of turns, each player queues up 3 moves. The game will then play those moves out 1 by 1.",
+  //   gameMode: QChess,
+  // },
 ];
 
 export const getGameModeDescriptions = (): GameModeDescription[] => {
