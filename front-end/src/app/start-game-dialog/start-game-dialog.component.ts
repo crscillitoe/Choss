@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { MatDialogRef, MatSnackBar, MAT_DIALOG_DATA } from "@angular/material";
 import { TunnelService } from "../services/tunnel.service";
 
@@ -7,7 +7,7 @@ import { TunnelService } from "../services/tunnel.service";
   templateUrl: "./start-game-dialog.component.html",
   styleUrls: ["./start-game-dialog.component.css"],
 })
-export class StartGameDialogComponent implements OnInit {
+export class StartGameDialogComponent implements OnInit, OnDestroy {
   inviteLink: string = "";
   teamId: 0 | 1;
   constructor(
@@ -16,6 +16,10 @@ export class StartGameDialogComponent implements OnInit {
     private snackBar: MatSnackBar,
     private tunnelService: TunnelService
   ) {}
+
+  ngOnDestroy(): void {
+    this.tunnelService.closeWaitConnection();
+  }
 
   ngOnInit() {}
   onNoClick(): void {

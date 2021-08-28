@@ -34,14 +34,18 @@ export class TunnelService {
     this.socket.disconnect();
   }
 
+  closeWaitConnection() {
+    this.waitSocket.disconnect();
+  }
+
   createGameWait(uuid: string, callback: () => any) {
-    const waitSocket = io.connect(this.socket_ip);
-    waitSocket.on("initial-connect", () => {
-      waitSocket.emit("host-room", uuid);
+    this.waitSocket = io.connect(this.socket_ip);
+    this.waitSocket.on("initial-connect", () => {
+      this.waitSocket.emit("host-room", uuid);
     });
 
-    waitSocket.on("game-ready", () => {
-      waitSocket.disconnect();
+    this.waitSocket.on("game-ready", () => {
+      this.waitSocket.disconnect();
       callback();
     });
   }
