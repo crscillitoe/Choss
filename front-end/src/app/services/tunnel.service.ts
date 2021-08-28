@@ -6,7 +6,6 @@ import { Move } from "../../../projects/chess/src/lib/chesslib/Move";
 import { Coordinate } from "../../../projects/chess/src/lib/chesslib/Coordinate";
 import { Piece } from "projects/chess/src/lib/chesslib/Piece";
 import { Game } from "projects/chess/src/lib/chesslib/Game";
-import { socketIp } from "projects/chess/src/localConfiguration";
 import { ActivatedRoute } from "@angular/router";
 import { GameModeDescription } from "projects/chess/src/lib/chesslib/GameModes/GameModeRegistry";
 import { HttpClient } from "@angular/common/http";
@@ -16,7 +15,7 @@ import { HttpClient } from "@angular/common/http";
 })
 export class TunnelService {
   private socket: SocketIOClient.Socket;
-  private socket_ip: string = socketIp;
+  private socket_ip: string = "https://dev-api.woohoojin.dev";
 
   private boardState: BehaviorSubject<Game> = new BehaviorSubject<Game>(null);
   private validSquares: BehaviorSubject<Coordinate[]> = new BehaviorSubject<
@@ -124,7 +123,7 @@ export class TunnelService {
    */
   getAvailableGameModes(): Observable<GameModeDescription[]> {
     return this.http.get<GameModeDescription[]>(
-      `https://${socketIp}/listGameModes`
+      `https://dev-api.woohoojin.dev/listGameModes`
     );
   }
 }
