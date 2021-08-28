@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { MatDialogRef, MatSnackBar, MAT_DIALOG_DATA } from "@angular/material";
+import { TunnelService } from "../services/tunnel.service";
 
 @Component({
   selector: "app-start-game-dialog",
@@ -7,23 +8,27 @@ import { MatDialogRef, MatSnackBar, MAT_DIALOG_DATA } from "@angular/material";
   styleUrls: ["./start-game-dialog.component.css"],
 })
 export class StartGameDialogComponent implements OnInit {
-  selection: string = "random";
   inviteLink: string = "";
+  teamId: 0 | 1;
   constructor(
     public dialogRef: MatDialogRef<StartGameDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private tunnelService: TunnelService
   ) {}
 
-  ngOnInit() {
-    this.updateInviteLink();
-  }
+  ngOnInit() {}
   onNoClick(): void {
     this.dialogRef.close();
   }
 
-  updateInviteLink() {
-    this.inviteLink = this.getInviteLink(this.getOtherTeamId(this.getTeamId()));
+  updateInviteLink(selection: string) {
+    this.teamId = this.getTeamId(selection);
+    this.inviteLink = this.getInviteLink(this.getOtherTeamId(this.teamId));
+
+    this.tunnelService.createGameWait(this.data.roomId, () => {
+      this.play();
+    });
   }
 
   copyInviteLink() {
@@ -61,14 +66,18 @@ export class StartGameDialogComponent implements OnInit {
     );
   }
 
-  getTeamId(): 0 | 1 {
-    if (this.selection === "random") {
+  getTeamId(selection: string): 0 | 1 {
+    if (selection === "random") {
       return Math.floor(Math.random() * 2) as 0 | 1;
     }
-    if (this.selection === "white") {
+    if (selection === "white") {
       return 1;
     }
     return 0;
+  }
+
+  play() {
+    this.dialogRef.close(this.teamId);
   }
 
   getOtherTeamId(teamId: 0 | 1): 1 | 0 {

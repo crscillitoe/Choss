@@ -2,6 +2,7 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
 @import "@angular/material/prebuilt-themes/deeppurple-amber.css";
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
 
 html {
   height: 100vh;
@@ -11,4 +12,8 @@ html {
 
 * {
   font-family: "Roboto";
+}
+
+.mat-toolbar.mat-primary {
+  background: #2f343a;
 }

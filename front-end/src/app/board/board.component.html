@@ -1,4 +1,7 @@
-<div class="horizontal-center-game">
+<div
+  class="horizontal-center-game"
+  (click)="selectedPiece = null; pieceMoves = []"
+>
   <div class="vertical-center-game">
     <div class="chess-game" *ngIf="Board">
       <ng-container *ngIf="rows">
@@ -14,7 +17,6 @@
               <img
                 mwlDraggable
                 (dragStart)="selectPiece(x + 1, y + 1)"
-                (dragEnd)="dragEnd($event)"
                 [src]="getSVG(x + 1, y + 1)"
                 class="chess-image"
               />
@@ -33,7 +35,6 @@
               <img
                 mwlDraggable
                 (dragStart)="selectPiece(Board.Width - x, Board.Height - y)"
-                (dragEnd)="dragEnd($event)"
                 [src]="getSVG(Board.Width - x, Board.Height - y)"
                 class="chess-image"
               />

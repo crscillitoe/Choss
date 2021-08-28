@@ -39,6 +39,8 @@ const clientIdToRooms: { [clientId: string]: string } = {};
 const roomIdToGames: { [roomId: string]: Game } = {};
 const roomIdToGameModes: { [roomId: string]: GameMode } = {};
 
+const waitingRooms: { [roomId: string]: boolean } = {};
+
 app.get("/listGameModes", async (request: any, response: any) => {
   const gameModeDescriptions = getGameModeDescriptions();
   response.status(200).send(gameModeDescriptions);
@@ -58,8 +60,19 @@ io.on("connection", (socket: SocketIO.Socket) => {
   console.log(`Received connection from client: ${socket.client.id}`);
   socket.emit("initial-connect");
 
+  socket.on("host-room", (roomId: string) => {
+    console.log(`Client ${socket.client.id} is hosting room ${roomId}`);
+    socket.join(roomId);
+    waitingRooms[roomId] = true;
+  });
+
   socket.on("connect-to-room", (roomId: string, gameId: number) => {
     if (roomId != null && gameId != null) {
+      if (waitingRooms[roomId]) {
+        waitingRooms[roomId] = false;
+        io.to(roomId).emit("game-ready");
+      }
+
       clientIdToRooms[socket.client.id] = roomId;
       socket.join(roomId);
       if (!roomIdToGames[roomId]) {

@@ -213,7 +213,9 @@ export class BoardComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.tunnelService.getValidSquares().subscribe((data) => {
-        this.pieceMoves = data;
+        if (this.selectedPiece) {
+          this.pieceMoves = data;
+        }
       })
     );
   }

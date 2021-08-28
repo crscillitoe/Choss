@@ -1,31 +1,25 @@
 <div class="page">
   <div class="horizontal-align max-height">
     <div class="vertical-align">
-      <mat-form-field style="color: white;">
-        <mat-label style="color: white;">
-          Select a Variant...
-        </mat-label>
-
-        <mat-select>
-          <mat-option
-            [value]="gameMode.id"
-            *ngFor="let gameMode of gameModeDescriptions"
-            (click)="setGamemode(gameMode.id)"
-          >
+      <div class="games">
+        <div class="game-mode" *ngFor="let gameMode of gameModeDescriptions">
+          <div class="game-name">
             {{ gameMode.displayName }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <button
-        mat-raised-button
-        color="primary"
-        class="slidey-button"
-        (click)="newGame()"
-        [disabled]="gamemodeID == null"
-      >
-        Create Game
-      </button>
+          </div>
+          <div class="game-description">
+            {{ gameMode.description }}
+          </div>
+          <div class="game-buttons">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="setGamemode(gameMode.id); newGame()"
+            >
+              Play
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

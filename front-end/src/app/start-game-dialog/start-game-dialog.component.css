@@ -7,3 +7,11 @@
 #inviteLink {
   margin-top: 1em;
 }
+
+.vertical {
+  text-align: center;
+}
+
+.copy-button {
+  margin: 15px;
+}

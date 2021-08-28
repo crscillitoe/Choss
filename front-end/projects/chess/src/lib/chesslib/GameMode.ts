@@ -30,7 +30,6 @@ export abstract class GameMode {
    * @param GameState The current board state
    */
   HandleMove(Move: Move, BoardGameState: Game): Game[] {
-    console.log("fuck");
     let Piece = BoardGameState.BoardState.getPieceAtCoordinate(Move.PointA);
 
     let TargetPiece = BoardGameState.BoardState.getPieceAtCoordinate(
@@ -38,7 +37,6 @@ export abstract class GameMode {
     );
 
     if (Piece) {
-      console.log(Piece);
       if (
         (Piece.Team.equals(TeamOption.WHITE) &&
           BoardGameState.State === GameState.IN_PROGRESS_BLACK_TURN) ||

@@ -1,35 +1,38 @@
 <div mat-dialog-content>
-  <div class="centered">
-    <mat-button-toggle-group
-      [(value)]="selection"
-      name="playerColor"
-      aria-label="Player Color"
-    >
-      <mat-button-toggle (click)="updateInviteLink()" value="white"
+  <div class="centered" *ngIf="teamId == undefined">
+    <mat-button-toggle-group name="playerColor" aria-label="Player Color">
+      <mat-button-toggle (click)="updateInviteLink('white')" value="white"
         >White</mat-button-toggle
       >
-      <mat-button-toggle (click)="updateInviteLink()" value="random"
+      <mat-button-toggle (click)="updateInviteLink('random')" value="random"
         >Random</mat-button-toggle
       >
-      <mat-button-toggle (click)="updateInviteLink()" value="black"
+      <mat-button-toggle (click)="updateInviteLink('black')" value="black"
         >Black</mat-button-toggle
       >
     </mat-button-toggle-group>
   </div>
-  <div id="inviteLink" class="centered">
-    <mat-form-field>
-      <input matInput [(ngModel)]="inviteLink" [disabled]="true" />
-    </mat-form-field>
-    <button mat-button (click)="copyInviteLink()">
-      <mat-icon>content_paste</mat-icon>
-    </button>
+  <div id="inviteLink" class="vertical" *ngIf="teamId != undefined">
+    To invite someone to play, give this URL:
+    <div class="centered">
+      <mat-form-field>
+        <input matInput [(ngModel)]="inviteLink" [disabled]="true" />
+      </mat-form-field>
+      <button
+        class="copy-button"
+        mat-raised-button
+        color="accent"
+        (click)="copyInviteLink()"
+      >
+        <mat-icon>content_paste</mat-icon>
+      </button>
+    </div>
+    The first person to come to this URL will play with you.
   </div>
 </div>
+<hr />
 <div mat-dialog-actions>
   <div class="centered">
-    <button mat-button (click)="onNoClick()">Nah</button>
-    <button mat-button [mat-dialog-close]="getTeamId()" cdkFocusInitial>
-      Start Game
-    </button>
+    <button mat-raised-button color="warn" (click)="onNoClick()">Cancel</button>
   </div>
 </div>
