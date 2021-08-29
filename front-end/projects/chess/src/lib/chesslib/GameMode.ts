@@ -22,11 +22,11 @@ export abstract class GameMode {
     );
 
     game.BoardState.Timer = {
-      StartTime: Date.now(),
+      PreviousTime: Date.now(),
       WhiteClock: 60 * 10 * 1000, // 10 minutes in milliseconds
       BlackClock: 60 * 10 * 1000, // 10 minutes in milliseconds
-      PreviousWhiteMoveTime: Date.now(),
-      PreviousBlackMoveTime: Date.now(),
+      WhiteTicking: true,
+      BlackTicking: false,
     };
 
     return game;
@@ -40,49 +40,37 @@ export abstract class GameMode {
     if (result.length > 0 && turnBeforeMove !== turnAfterMove) {
       // We've made a move.
       const time = Date.now();
-      if (turnBeforeMove === GameState.IN_PROGRESS_BLACK_TURN) {
-        const timeSpent =
-          time - BoardGameState.BoardState.Timer.PreviousWhiteMoveTime;
-        BoardGameState.BoardState.Timer.PreviousBlackMoveTime = time;
+      const timeSpent = time - BoardGameState.BoardState.Timer.PreviousTime;
+      BoardGameState.BoardState.Timer.PreviousTime = time;
+      if (BoardGameState.BoardState.Timer.BlackTicking) {
         BoardGameState.BoardState.Timer.BlackClock -= timeSpent;
-        if (BoardGameState.BoardState.Timer.BlackClock <= 0) {
-          // Game over, black out of time
-          result[result.length - 1].State = GameState.WHITE_WIN;
-        }
-      } else if (turnBeforeMove === GameState.IN_PROGRESS_WHITE_TURN) {
-        const timeSpent =
-          time - BoardGameState.BoardState.Timer.PreviousBlackMoveTime;
-        BoardGameState.BoardState.Timer.PreviousWhiteMoveTime = time;
-        BoardGameState.BoardState.Timer.WhiteClock -= timeSpent;
-        if (BoardGameState.BoardState.Timer.WhiteClock <= 0) {
-          // Game over, white out of time
-          result[result.length - 1].State = GameState.BLACK_WIN;
-        }
-      } else {
-        let timeSpent =
-          time - BoardGameState.BoardState.Timer.PreviousWhiteMoveTime;
-
-        if (turnAfterMove === GameState.IN_PROGRESS_BLACK_TURN) {
-          BoardGameState.BoardState.Timer.PreviousBlackMoveTime = time;
-        } else {
-          timeSpent =
-            time - BoardGameState.BoardState.Timer.PreviousBlackMoveTime;
-          BoardGameState.BoardState.Timer.PreviousWhiteMoveTime = time;
-        }
-
-        BoardGameState.BoardState.Timer.WhiteClock -= timeSpent;
-        BoardGameState.BoardState.Timer.BlackClock -= timeSpent;
-
-        if (BoardGameState.BoardState.Timer.WhiteClock <= 0) {
-          // Game over, white out of time
-          result[result.length - 1].State = GameState.BLACK_WIN;
-        }
-
         if (BoardGameState.BoardState.Timer.BlackClock <= 0) {
           // Game over, black out of time
           result[result.length - 1].State = GameState.WHITE_WIN;
         }
       }
+
+      if (BoardGameState.BoardState.Timer.WhiteTicking) {
+        BoardGameState.BoardState.Timer.WhiteClock -= timeSpent;
+        if (BoardGameState.BoardState.Timer.WhiteClock <= 0) {
+          // Game over, white out of time
+          result[result.length - 1].State = GameState.BLACK_WIN;
+        }
+      }
+    }
+
+    if (BoardGameState.State === GameState.IN_PROGRESS_BLACK_TURN) {
+      BoardGameState.BoardState.Timer.WhiteTicking = false;
+      BoardGameState.BoardState.Timer.BlackTicking = true;
+    } else if (BoardGameState.State === GameState.IN_PROGRESS_WHITE_TURN) {
+      BoardGameState.BoardState.Timer.WhiteTicking = true;
+      BoardGameState.BoardState.Timer.BlackTicking = false;
+    } else if (BoardGameState.State === GameState.IN_PROGRESS_BOTH_TURN) {
+      BoardGameState.BoardState.Timer.WhiteTicking = true;
+      BoardGameState.BoardState.Timer.BlackTicking = true;
+    } else {
+      BoardGameState.BoardState.Timer.WhiteTicking = false;
+      BoardGameState.BoardState.Timer.BlackTicking = false;
     }
 
     return result;
@@ -104,10 +92,11 @@ export abstract class GameMode {
 
     if (Piece) {
       if (
-        (Piece.Team.equals(TeamOption.WHITE) &&
-          BoardGameState.State === GameState.IN_PROGRESS_BLACK_TURN) ||
+        (BoardGameState.State !== GameState.IN_PROGRESS_BOTH_TURN &&
+          Piece.Team.equals(TeamOption.WHITE) &&
+          BoardGameState.State !== GameState.IN_PROGRESS_WHITE_TURN) ||
         (Piece.Team.equals(TeamOption.BLACK) &&
-          BoardGameState.State === GameState.IN_PROGRESS_WHITE_TURN)
+          BoardGameState.State !== GameState.IN_PROGRESS_BLACK_TURN)
       ) {
         return [];
       }

@@ -119,6 +119,10 @@ export class QChess extends GameMode {
     completedMoves[completedMoves.length - 1].BoardState.ColorMap = {};
     completedMoves[completedMoves.length - 1].State =
       GameState.IN_PROGRESS_BOTH_TURN;
+    completedMoves[completedMoves.length - 1].BoardState.Timer.BlackTicking =
+      true;
+    completedMoves[completedMoves.length - 1].BoardState.Timer.WhiteTicking =
+      true;
     return completedMoves;
   }
 
@@ -129,6 +133,7 @@ export class QChess extends GameMode {
     game.BoardState = board;
     board.Timer = timer;
     game.State = GameState.IN_PROGRESS_BOTH_TURN;
+    board.Timer.BlackTicking = true;
 
     board.Pieces.push(new King(6, 1, new Team(TeamOption.WHITE)));
 

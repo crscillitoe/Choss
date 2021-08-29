@@ -1,7 +1,7 @@
 export interface Timer {
-  StartTime: number;
   WhiteClock: number;
   BlackClock: number;
-  PreviousWhiteMoveTime: number;
-  PreviousBlackMoveTime: number;
+  PreviousTime: number;
+  BlackTicking: boolean;
+  WhiteTicking: boolean;
 }

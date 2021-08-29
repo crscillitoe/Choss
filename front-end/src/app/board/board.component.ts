@@ -26,8 +26,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   initialLoad: boolean = true;
   Board: Board;
   Status: GameState;
-  ourTimeoutId: any;
-  theirTimeoutId: any;
+  timerId: any;
   rows = [];
   columns = [];
   alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
@@ -56,11 +55,8 @@ export class BoardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
     this.tunnelService.closeConnection();
-    if (this.ourTimeoutId) {
-      window.clearTimeout(this.ourTimeoutId);
-    }
-    if (this.theirTimeoutId) {
-      window.clearTimeout(this.theirTimeoutId);
+    if (this.timerId) {
+      window.clearTimeout(this.timerId);
     }
   }
 
@@ -236,92 +232,52 @@ export class BoardComponent implements OnInit, OnDestroy {
       : this.Board.Timer.WhiteClock;
   }
 
-  getClockForCurrentTurn() {
-    const OurClock = this.getOurClock();
-    const TheirClock = this.getTheirClock();
+  handleTimers() {
+    const ourTimer = document.getElementById("ourtimer");
+    const theirTimer = document.getElementById("theirtimer");
 
-    return this.isOurTurn() ? OurClock : TheirClock;
-  }
+    const time = +new Date();
+    const timeDiff = time - this.Board.Timer.PreviousTime;
 
-  getOurPreviousTime() {
-    return this.player.teamOption === TeamOption.WHITE
-      ? this.Board.Timer.PreviousWhiteMoveTime
-      : this.Board.Timer.PreviousBlackMoveTime;
-  }
+    console.log(this.Board.Timer);
 
-  getTheirPreviousTime() {
-    return this.player.teamOption === TeamOption.WHITE
-      ? this.Board.Timer.PreviousBlackMoveTime
-      : this.Board.Timer.PreviousWhiteMoveTime;
-  }
+    if (
+      (ourTimer &&
+        this.Board.Timer.BlackTicking &&
+        this.player.teamOption === TeamOption.BLACK) ||
+      (this.Board.Timer.WhiteTicking &&
+        this.player.teamOption === TeamOption.WHITE)
+    ) {
+      // Our timer
+      const diff = this.getOurClock() - timeDiff;
+      const minutes = Math.trunc(diff / (60 * 1000)) % 60;
+      const seconds = Math.trunc(diff / 1000) % 60;
 
-  getPreviousTimeForCurrentTurn() {
-    const OurPreviousMove = this.getOurPreviousTime();
-    const TheirPreviousMove = this.getTheirPreviousTime();
-
-    return this.isOurTurn() ? TheirPreviousMove : OurPreviousMove;
-  }
-
-  handleOurTimer() {
-    if (this.isTheirTurn()) {
-      this.ourTimeoutId = setTimeout(() => this.handleOurTimer(), 50);
-      return;
-    }
-
-    const done = this.handleTimer(
-      "ourtimer",
-      this.getOurClock(),
-      this.getTheirPreviousTime()
-    );
-
-    if (!done) {
-      this.ourTimeoutId = setTimeout(() => this.handleOurTimer(), 50);
-    } else {
-      this.weLoseLocalTimer = true;
-    }
-  }
-
-  handleTheirTimer() {
-    if (this.isOurTurn()) {
-      this.theirTimeoutId = setTimeout(() => this.handleTheirTimer(), 50);
-      return;
-    }
-    const done = this.handleTimer(
-      "theirtimer",
-      this.getTheirClock(),
-      this.getOurPreviousTime()
-    );
-
-    if (!done) {
-      this.theirTimeoutId = setTimeout(() => this.handleTheirTimer(), 50);
-    } else {
-      this.weWinLocalTimer = true;
-    }
-  }
-
-  handleTimer(elementId: string, clock: number, previousTime: number) {
-    const display = document.getElementById(elementId);
-
-    let done = false;
-
-    if (display) {
-      const now = +new Date();
-      const diff = clock - (now - previousTime);
-      let minutes = Math.trunc(diff / (60 * 1000)) % 60;
-      let seconds = Math.trunc(diff / 1000) % 60;
-
-      if (diff <= 0) {
-        minutes = 0;
-        seconds = 0;
-        done = true;
-      }
-
-      display.textContent =
+      ourTimer.textContent =
         (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") +
         ":" +
         (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00");
     }
-    return done;
+
+    if (
+      (theirTimer &&
+        this.Board.Timer.BlackTicking &&
+        this.player.teamOption === TeamOption.WHITE) ||
+      (this.Board.Timer.WhiteTicking &&
+        this.player.teamOption === TeamOption.BLACK)
+    ) {
+      // Our timer
+      const diff = this.getTheirClock() - timeDiff;
+      const minutes = Math.trunc(diff / (60 * 1000)) % 60;
+      const seconds = Math.trunc(diff / 1000) % 60;
+
+      theirTimer.textContent =
+        (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") +
+        ":" +
+        (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00");
+    }
+
+    this.timerId = setTimeout(() => this.handleTimers(), 200);
   }
 
   ngOnInit() {
@@ -333,16 +289,13 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.tunnelService.receiveBoardState().subscribe((data) => {
         if (data) {
-          console.log(data);
-          console.log(data.BoardState.Timer);
           this.Board = data.BoardState;
           this.Status = data.State;
 
           if (!this.initialLoad) {
             this.musicService.playClick();
           } else {
-            this.handleOurTimer();
-            this.handleTheirTimer();
+            this.handleTimers();
             this.initialLoad = false;
           }
 
