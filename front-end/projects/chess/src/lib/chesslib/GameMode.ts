@@ -155,18 +155,18 @@ export abstract class GameMode {
       } else {
         // No killing has been done.
         Piece.Coordinate = new Coordinate(Move.PointB.x, Move.PointB.y);
+      }
 
-        if (Piece instanceof Pawn) {
-          if (
-            (Piece.Coordinate.y === BoardGameState.BoardState.Height &&
-              Piece.Team.equals(TeamOption.WHITE)) ||
-            (Piece.Coordinate.y === 1 && Piece.Team.equals(TeamOption.BLACK))
-          ) {
-            BoardGameState.BoardState.killPiece(Piece);
-            BoardGameState.BoardState.Pieces.push(
-              new Queen(Move.PointB.x, Move.PointB.y, Piece.Team)
-            );
-          }
+      if (Piece instanceof Pawn) {
+        if (
+          (Piece.Coordinate.y === BoardGameState.BoardState.Height &&
+            Piece.Team.equals(TeamOption.WHITE)) ||
+          (Piece.Coordinate.y === 1 && Piece.Team.equals(TeamOption.BLACK))
+        ) {
+          BoardGameState.BoardState.killPiece(Piece);
+          BoardGameState.BoardState.Pieces.push(
+            new Queen(Move.PointB.x, Move.PointB.y, Piece.Team)
+          );
         }
       }
 
