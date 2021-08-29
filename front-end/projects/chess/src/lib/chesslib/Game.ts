@@ -16,10 +16,9 @@ export class Game {
 
   isGameOver() {
     return (
-      this.State === GameState.BLACK_WIN_CHECKMATE ||
-      this.State === GameState.BLACK_WIN_VARIANT ||
-      this.State === GameState.WHITE_WIN_CHECKMATE ||
-      this.State === GameState.WHITE_WIN_VARIANT
+      this.State === GameState.BLACK_WIN ||
+      this.State === GameState.WHITE_WIN ||
+      this.State === GameState.DRAW
     );
   }
 }

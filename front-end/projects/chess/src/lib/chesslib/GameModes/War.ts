@@ -36,7 +36,6 @@ export class War extends GameMode {
   }
 
   static BuildFreshGame(): Game {
-    const board: Board = GameModeShared.StandardChessBoard();
-    return new Game(board, GameState.IN_PROGRESS_WHITE_TURN);
+    return super.BuildFreshGame();
   }
 }

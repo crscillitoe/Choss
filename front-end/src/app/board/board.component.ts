@@ -26,6 +26,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   initialLoad: boolean = true;
   Board: Board;
   Status: GameState;
+  timeoutId: any;
   rows = [];
   columns = [];
   alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
@@ -33,6 +34,8 @@ export class BoardComponent implements OnInit, OnDestroy {
   selectedPiece: Piece = null;
   pieceMoves: Coordinate[] = null;
   preMoves: Coordinate[] = [];
+  weWinLocalTimer: boolean = false;
+  weLoseLocalTimer: boolean = false;
 
   subscriptions: Subscription[] = [];
 
@@ -52,6 +55,9 @@ export class BoardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
     this.tunnelService.closeConnection();
+    if (this.timeoutId) {
+      window.clearTimeout(this.timeoutId);
+    }
   }
 
   drop(x, y) {
@@ -143,12 +149,43 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.selectedPiece = null;
   }
 
+  weWin(): boolean {
+    return (
+      this.weWinLocalTimer ||
+      (this.Status === GameState.WHITE_WIN &&
+        this.player.teamOption === TeamOption.WHITE) ||
+      (this.Status === GameState.BLACK_WIN &&
+        this.player.teamOption === TeamOption.BLACK)
+    );
+  }
+
+  theyWin(): boolean {
+    return (
+      this.weLoseLocalTimer ||
+      (this.Status === GameState.WHITE_WIN &&
+        this.player.teamOption === TeamOption.BLACK) ||
+      (this.Status === GameState.BLACK_WIN &&
+        this.player.teamOption === TeamOption.WHITE)
+    );
+  }
+
+  isTheirTurn(): boolean {
+    return (
+      !this.weWinLocalTimer &&
+      ((this.Status === GameState.IN_PROGRESS_BLACK_TURN &&
+        this.player.teamOption === TeamOption.WHITE) ||
+        (this.Status === GameState.IN_PROGRESS_WHITE_TURN &&
+          this.player.teamOption === TeamOption.BLACK))
+    );
+  }
+
   isOurTurn(): boolean {
     return (
-      (this.Status === GameState.IN_PROGRESS_BLACK_TURN &&
+      !this.weLoseLocalTimer &&
+      ((this.Status === GameState.IN_PROGRESS_BLACK_TURN &&
         this.player.teamOption === TeamOption.BLACK) ||
-      (this.Status === GameState.IN_PROGRESS_WHITE_TURN &&
-        this.player.teamOption === TeamOption.WHITE)
+        (this.Status === GameState.IN_PROGRESS_WHITE_TURN &&
+          this.player.teamOption === TeamOption.WHITE))
     );
   }
 
@@ -178,23 +215,97 @@ export class BoardComponent implements OnInit, OnDestroy {
     return "assets/chess_pieces/Blank.svg";
   }
 
+  getClockForCurrentTurn() {
+    const OurClock =
+      this.player.teamOption === TeamOption.WHITE
+        ? this.Board.Timer.WhiteClock
+        : this.Board.Timer.BlackClock;
+    const TheirClock =
+      this.player.teamOption === TeamOption.WHITE
+        ? this.Board.Timer.BlackClock
+        : this.Board.Timer.WhiteClock;
+
+    return this.isOurTurn() ? OurClock : TheirClock;
+  }
+
+  getPreviousTimeForCurrentTurn() {
+    const OurPreviousMove =
+      this.player.teamOption === TeamOption.WHITE
+        ? this.Board.Timer.PreviousWhiteMoveTime
+        : this.Board.Timer.PreviousBlackMoveTime;
+    const TheirPreviousMove =
+      this.player.teamOption === TeamOption.WHITE
+        ? this.Board.Timer.PreviousBlackMoveTime
+        : this.Board.Timer.PreviousWhiteMoveTime;
+
+    return this.isOurTurn() ? TheirPreviousMove : OurPreviousMove;
+  }
+
+  handleTimer() {
+    const id = this.isOurTurn() ? "ourtimer" : "theirtimer";
+    const display = document.getElementById(id);
+
+    let done = false;
+    const clock = this.getClockForCurrentTurn();
+    const previousTime = this.getPreviousTimeForCurrentTurn();
+
+    if (display) {
+      const now = +new Date();
+      const diff = clock - (now - previousTime);
+      let minutes = Math.trunc(diff / (60 * 1000)) % 60;
+      let seconds = Math.trunc(diff / 1000) % 60;
+      let millis = diff % 1000;
+
+      if (diff <= 0) {
+        minutes = 0;
+        seconds = 0;
+        millis = 0;
+        done = true;
+      }
+
+      display.textContent =
+        (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") +
+        ":" +
+        (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00") +
+        "." +
+        (millis
+          ? millis > 99
+            ? millis
+            : millis > 9
+            ? "0" + millis
+            : "00" + millis
+          : "000");
+    }
+    if (!done) {
+      this.timeoutId = setTimeout(() => this.handleTimer(), 50);
+    } else {
+      if (id === "theirtimer") {
+        this.weWinLocalTimer = true;
+      } else {
+        this.weLoseLocalTimer = true;
+      }
+    }
+  }
+
   ngOnInit() {
     this.preMoves = [];
     this.pieceMoves = [];
     this.selectedPiece = null;
-
     this.tunnelService.connect();
     this.subscriptions.push(
       this.tunnelService.receiveBoardState().subscribe((data) => {
         if (data) {
+          console.log(data);
+          console.log(data.BoardState.Timer);
+          this.Board = data.BoardState;
+          this.Status = data.State;
+
           if (!this.initialLoad) {
             this.musicService.playClick();
           } else {
+            this.handleTimer();
             this.initialLoad = false;
           }
-
-          this.Board = data.BoardState;
-          this.Status = data.State;
 
           if (this.isOurTurn() && this.preMoves.length !== 0) {
             this.tunnelService.makeMove(this.preMoves[0], this.preMoves[1]);

@@ -3,6 +3,7 @@ import { Coordinate } from "./Coordinate";
 import { Move } from "./Move";
 import { TeamOption, Team } from "./Team";
 import { Pawn } from "./Pieces/Standard/Pawn";
+import { Timer } from "./Timer";
 
 /**
  * A board contains a list of pieces on the board.
@@ -12,6 +13,7 @@ export class Board {
   Height: number;
   Width: number;
   MoveHistory: Move[] = [];
+  Timer: Timer;
 
   constructor(Pieces: Piece[], Height: number, Width: number) {
     this.Pieces = Pieces;

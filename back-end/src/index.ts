@@ -12,6 +12,7 @@ import {
 } from "../../front-end/projects/chess/src/lib/chesslib/GameModes/GameModeRegistry";
 import cors from "cors";
 import { GameMode } from "../../front-end/projects/chess/src/lib/chesslib/GameMode";
+import { GameState } from "../../front-end/projects/chess/src/lib/chesslib/GameState";
 
 const app = express();
 const options: cors.CorsOptions = {
@@ -90,7 +91,7 @@ io.on("connection", (socket: SocketIO.Socket) => {
   socket.on("make-move", async (move: Move) => {
     const board = getBoardFromClientId(socket.client.id);
     const gameMode = getGameModeFromClientId(socket.client.id);
-    const displayStates = gameMode.HandleMove(move, board);
+    const displayStates = gameMode.TimerHandleMove(move, board);
 
     for (let i = 0; i < displayStates.length; i++) {
       setTimeout(() => {

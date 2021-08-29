@@ -69,6 +69,8 @@ export class TunnelService {
         data.BoardState.Width
       );
 
+      temp.Timer = data.BoardState.Timer;
+
       temp.MoveHistory = data.BoardState.MoveHistory;
       data.BoardState = temp;
 

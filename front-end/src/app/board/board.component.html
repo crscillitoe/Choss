@@ -3,47 +3,66 @@
   (click)="selectedPiece = null; pieceMoves = []"
 >
   <div class="vertical-center-game">
-    <div class="chess-game" *ngIf="Board">
-      <ng-container *ngIf="rows">
-        <ng-container *ngIf="player.teamOption === 0">
-          <div *ngFor="let row of rows; let y = index" class="chess-row">
-            <div
-              mwlDroppable
-              (drop)="placePiece(x + 1, y + 1)"
-              [style.background]="getColor(x + 1, y + 1)"
-              *ngFor="let col of columns; let x = index"
-              class="chess-tile"
-            >
-              <img
-                mwlDraggable
-                (dragStart)="selectPiece(x + 1, y + 1)"
-                [src]="getSVG(x + 1, y + 1)"
-                class="chess-image"
-              />
-            </div>
-          </div>
-        </ng-container>
-        <ng-container *ngIf="player.teamOption === 1">
-          <div *ngFor="let row of rows; let y = index" class="chess-row">
-            <div
-              mwlDroppable
-              (drop)="placePiece(Board.Width - x, Board.Height - y)"
-              [style.background]="getColor(Board.Width - x, Board.Height - y)"
-              *ngFor="let col of columns; let x = index"
-              class="chess-tile"
-            >
-              <img
-                mwlDraggable
-                (dragStart)="selectPiece(Board.Width - x, Board.Height - y)"
-                [src]="getSVG(Board.Width - x, Board.Height - y)"
-                class="chess-image"
-              />
-            </div>
-          </div>
-        </ng-container>
-      </ng-container>
-    </div>
+    <div class="board-and-timer">
+      <div class="fake-timer timer-width"></div>
+      <div
+        class="vertical-center-game"
+        [ngClass]="{
+          'our-turn': isOurTurn(),
+          'their-turn': isTheirTurn(),
+          'we-win': weWin(),
+          'they-win': theyWin()
+        }"
+      >
+        <div class="chess-game" *ngIf="Board">
+          <ng-container *ngIf="rows">
+            <ng-container *ngIf="player.teamOption === 0">
+              <div *ngFor="let row of rows; let y = index" class="chess-row">
+                <div
+                  mwlDroppable
+                  (drop)="placePiece(x + 1, y + 1)"
+                  [style.background]="getColor(x + 1, y + 1)"
+                  *ngFor="let col of columns; let x = index"
+                  class="chess-tile"
+                >
+                  <img
+                    mwlDraggable
+                    (dragStart)="selectPiece(x + 1, y + 1)"
+                    [src]="getSVG(x + 1, y + 1)"
+                    class="chess-image"
+                  />
+                </div>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="player.teamOption === 1">
+              <div *ngFor="let row of rows; let y = index" class="chess-row">
+                <div
+                  mwlDroppable
+                  (drop)="placePiece(Board.Width - x, Board.Height - y)"
+                  [style.background]="
+                    getColor(Board.Width - x, Board.Height - y)
+                  "
+                  *ngFor="let col of columns; let x = index"
+                  class="chess-tile"
+                >
+                  <img
+                    mwlDraggable
+                    (dragStart)="selectPiece(Board.Width - x, Board.Height - y)"
+                    [src]="getSVG(Board.Width - x, Board.Height - y)"
+                    class="chess-image"
+                  />
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
 
+      <div class="timer timer-width">
+        <a id="theirtimer" class="monospace time">10:00.000</a>
+        <a id="ourtimer" class="monospace time">10:00.000</a>
+      </div>
+    </div>
     <mat-spinner *ngIf="!Board"></mat-spinner>
   </div>
 </div>

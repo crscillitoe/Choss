@@ -16,10 +16,62 @@ export abstract class GameMode {
    * Sets the board up for a brand new game.
    */
   static BuildFreshGame(): Game {
-    return new Game(
+    const game = new Game(
       GameModeShared.StandardChessBoard(),
       GameState.IN_PROGRESS_WHITE_TURN
     );
+
+    game.BoardState.Timer = {
+      StartTime: Date.now(),
+      WhiteClock: 60 * 10 * 1000, // 10 minutes in milliseconds
+      BlackClock: 60 * 10 * 1000, // 10 minutes in milliseconds
+      PreviousWhiteMoveTime: Date.now(),
+      PreviousBlackMoveTime: Date.now(),
+    };
+
+    return game;
+  }
+
+  TimerHandleMove(Move: Move, BoardGameState: Game): Game[] {
+    const turnBeforeMove =
+      BoardGameState.State === GameState.IN_PROGRESS_BLACK_TURN
+        ? "black"
+        : "white";
+
+    const result = this.HandleMove(Move, BoardGameState);
+    const turnAfterMove =
+      BoardGameState.State === GameState.IN_PROGRESS_BLACK_TURN
+        ? "black"
+        : "white";
+
+    if (result.length > 0 && turnBeforeMove !== turnAfterMove) {
+      console.log("editing shit");
+      // We've made a move.
+      const time = Date.now();
+      if (turnBeforeMove === "black") {
+        const timeSpent =
+          time - BoardGameState.BoardState.Timer.PreviousWhiteMoveTime;
+        BoardGameState.BoardState.Timer.PreviousBlackMoveTime = time;
+        BoardGameState.BoardState.Timer.BlackClock -= timeSpent;
+        if (BoardGameState.BoardState.Timer.BlackClock <= 0) {
+          // Game over, black out of time
+          result[result.length - 1].State = GameState.WHITE_WIN;
+        }
+      } else if (turnBeforeMove === "white") {
+        const timeSpent =
+          time - BoardGameState.BoardState.Timer.PreviousBlackMoveTime;
+        BoardGameState.BoardState.Timer.PreviousWhiteMoveTime = time;
+        BoardGameState.BoardState.Timer.WhiteClock -= timeSpent;
+        if (BoardGameState.BoardState.Timer.WhiteClock <= 0) {
+          // Game over, white out of time
+          result[result.length - 1].State = GameState.BLACK_WIN;
+        }
+      } else {
+        throw new Error("???");
+      }
+    }
+
+    return result;
   }
 
   /**
@@ -134,9 +186,9 @@ export abstract class GameMode {
 
     if (Prey instanceof King) {
       if (Prey.Team === new Team(TeamOption.WHITE)) {
-        BoardGameState.State = GameState.BLACK_WIN_VARIANT;
+        BoardGameState.State = GameState.BLACK_WIN;
       } else {
-        BoardGameState.State = GameState.WHITE_WIN_VARIANT;
+        BoardGameState.State = GameState.WHITE_WIN;
       }
     }
   }
