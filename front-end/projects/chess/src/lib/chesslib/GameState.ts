@@ -18,4 +18,10 @@ export enum GameState {
 
   // The game is not over, it is in progress, and it is black's turn
   IN_PROGRESS_BLACK_TURN,
+
+  // The game is not over, it is in progress, but it is both player's turns
+  IN_PROGRESS_BOTH_TURN,
+
+  // The game is not over, it is in progress, but it is nobody's turn
+  IN_PROGRESS_NO_TURN,
 }

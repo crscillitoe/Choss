@@ -150,6 +150,10 @@ export class Coordinate {
     return Math.abs(this.x - otherCoord.x) + Math.abs(this.y - otherCoord.y);
   }
 
+  toString(): string {
+    return `${this.x},${this.y}`;
+  }
+
   /**
    * Returns true if the given coordinate has the same x and y values
    * as this coordinate.

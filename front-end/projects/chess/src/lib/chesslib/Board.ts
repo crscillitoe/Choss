@@ -4,6 +4,7 @@ import { Move } from "./Move";
 import { TeamOption, Team } from "./Team";
 import { Pawn } from "./Pieces/Standard/Pawn";
 import { Timer } from "./Timer";
+import { ColoredSquare } from "./ColoredSquare";
 
 /**
  * A board contains a list of pieces on the board.
@@ -14,6 +15,7 @@ export class Board {
   Width: number;
   MoveHistory: Move[] = [];
   Timer: Timer;
+  ColorMap: { [coordinate: string]: ColoredSquare } = {};
 
   constructor(Pieces: Piece[], Height: number, Width: number) {
     this.Pieces = Pieces;

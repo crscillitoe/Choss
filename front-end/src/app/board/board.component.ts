@@ -26,7 +26,8 @@ export class BoardComponent implements OnInit, OnDestroy {
   initialLoad: boolean = true;
   Board: Board;
   Status: GameState;
-  timeoutId: any;
+  ourTimeoutId: any;
+  theirTimeoutId: any;
   rows = [];
   columns = [];
   alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
@@ -55,8 +56,11 @@ export class BoardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
     this.tunnelService.closeConnection();
-    if (this.timeoutId) {
-      window.clearTimeout(this.timeoutId);
+    if (this.ourTimeoutId) {
+      window.clearTimeout(this.ourTimeoutId);
+    }
+    if (this.theirTimeoutId) {
+      window.clearTimeout(this.theirTimeoutId);
     }
   }
 
@@ -75,6 +79,11 @@ export class BoardComponent implements OnInit, OnDestroy {
    * @param y Y coordinate of the tile
    */
   getColor(x: number, y: number) {
+    const lookupKey = new Coordinate(x, y).toString();
+    const coloredSquare = this.Board.ColorMap[lookupKey];
+    if (coloredSquare && coloredSquare.viewableBy === this.player.teamOption) {
+      return coloredSquare.color;
+    }
     const piece = this.Board.getPieceAtCoordinate(new Coordinate(x, y));
     if (piece) {
       if (piece.IsBomb && piece.Team.teamOption === this.player.teamOption) {
@@ -135,7 +144,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     if (!this.selectedPiece) return;
 
     const location = new Coordinate(x, y);
-    if (!this.isOurTurn()) {
+    if (this.isTheirTurn()) {
       if (Coordinate.equals(this.selectedPiece.Coordinate, location)) {
         return;
       }
@@ -215,76 +224,104 @@ export class BoardComponent implements OnInit, OnDestroy {
     return "assets/chess_pieces/Blank.svg";
   }
 
+  getOurClock() {
+    return this.player.teamOption === TeamOption.WHITE
+      ? this.Board.Timer.WhiteClock
+      : this.Board.Timer.BlackClock;
+  }
+
+  getTheirClock() {
+    return this.player.teamOption === TeamOption.WHITE
+      ? this.Board.Timer.BlackClock
+      : this.Board.Timer.WhiteClock;
+  }
+
   getClockForCurrentTurn() {
-    const OurClock =
-      this.player.teamOption === TeamOption.WHITE
-        ? this.Board.Timer.WhiteClock
-        : this.Board.Timer.BlackClock;
-    const TheirClock =
-      this.player.teamOption === TeamOption.WHITE
-        ? this.Board.Timer.BlackClock
-        : this.Board.Timer.WhiteClock;
+    const OurClock = this.getOurClock();
+    const TheirClock = this.getTheirClock();
 
     return this.isOurTurn() ? OurClock : TheirClock;
   }
 
+  getOurPreviousTime() {
+    return this.player.teamOption === TeamOption.WHITE
+      ? this.Board.Timer.PreviousWhiteMoveTime
+      : this.Board.Timer.PreviousBlackMoveTime;
+  }
+
+  getTheirPreviousTime() {
+    return this.player.teamOption === TeamOption.WHITE
+      ? this.Board.Timer.PreviousBlackMoveTime
+      : this.Board.Timer.PreviousWhiteMoveTime;
+  }
+
   getPreviousTimeForCurrentTurn() {
-    const OurPreviousMove =
-      this.player.teamOption === TeamOption.WHITE
-        ? this.Board.Timer.PreviousWhiteMoveTime
-        : this.Board.Timer.PreviousBlackMoveTime;
-    const TheirPreviousMove =
-      this.player.teamOption === TeamOption.WHITE
-        ? this.Board.Timer.PreviousBlackMoveTime
-        : this.Board.Timer.PreviousWhiteMoveTime;
+    const OurPreviousMove = this.getOurPreviousTime();
+    const TheirPreviousMove = this.getTheirPreviousTime();
 
     return this.isOurTurn() ? TheirPreviousMove : OurPreviousMove;
   }
 
-  handleTimer() {
-    const id = this.isOurTurn() ? "ourtimer" : "theirtimer";
-    const display = document.getElementById(id);
+  handleOurTimer() {
+    if (this.isTheirTurn()) {
+      this.ourTimeoutId = setTimeout(() => this.handleOurTimer(), 50);
+      return;
+    }
+
+    const done = this.handleTimer(
+      "ourtimer",
+      this.getOurClock(),
+      this.getTheirPreviousTime()
+    );
+
+    if (!done) {
+      this.ourTimeoutId = setTimeout(() => this.handleOurTimer(), 50);
+    } else {
+      this.weLoseLocalTimer = true;
+    }
+  }
+
+  handleTheirTimer() {
+    if (this.isOurTurn()) {
+      this.theirTimeoutId = setTimeout(() => this.handleTheirTimer(), 50);
+      return;
+    }
+    const done = this.handleTimer(
+      "theirtimer",
+      this.getTheirClock(),
+      this.getOurPreviousTime()
+    );
+
+    if (!done) {
+      this.theirTimeoutId = setTimeout(() => this.handleTheirTimer(), 50);
+    } else {
+      this.weWinLocalTimer = true;
+    }
+  }
+
+  handleTimer(elementId: string, clock: number, previousTime: number) {
+    const display = document.getElementById(elementId);
 
     let done = false;
-    const clock = this.getClockForCurrentTurn();
-    const previousTime = this.getPreviousTimeForCurrentTurn();
 
     if (display) {
       const now = +new Date();
       const diff = clock - (now - previousTime);
       let minutes = Math.trunc(diff / (60 * 1000)) % 60;
       let seconds = Math.trunc(diff / 1000) % 60;
-      let millis = diff % 1000;
 
       if (diff <= 0) {
         minutes = 0;
         seconds = 0;
-        millis = 0;
         done = true;
       }
 
       display.textContent =
         (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") +
         ":" +
-        (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00") +
-        "." +
-        (millis
-          ? millis > 99
-            ? millis
-            : millis > 9
-            ? "0" + millis
-            : "00" + millis
-          : "000");
+        (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00");
     }
-    if (!done) {
-      this.timeoutId = setTimeout(() => this.handleTimer(), 50);
-    } else {
-      if (id === "theirtimer") {
-        this.weWinLocalTimer = true;
-      } else {
-        this.weLoseLocalTimer = true;
-      }
-    }
+    return done;
   }
 
   ngOnInit() {
@@ -292,6 +329,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.pieceMoves = [];
     this.selectedPiece = null;
     this.tunnelService.connect();
+    this.Board = null;
     this.subscriptions.push(
       this.tunnelService.receiveBoardState().subscribe((data) => {
         if (data) {
@@ -303,7 +341,8 @@ export class BoardComponent implements OnInit, OnDestroy {
           if (!this.initialLoad) {
             this.musicService.playClick();
           } else {
-            this.handleTimer();
+            this.handleOurTimer();
+            this.handleTheirTimer();
             this.initialLoad = false;
           }
 

@@ -70,6 +70,7 @@ export class TunnelService {
       );
 
       temp.Timer = data.BoardState.Timer;
+      temp.ColorMap = data.BoardState.ColorMap;
 
       temp.MoveHistory = data.BoardState.MoveHistory;
       data.BoardState = temp;
