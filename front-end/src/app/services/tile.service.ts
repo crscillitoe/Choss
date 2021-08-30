@@ -3,6 +3,7 @@ import { Board } from "projects/chess/src/lib/chesslib/Board";
 import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
 import { TeamOption } from "projects/chess/src/lib/chesslib/Team";
 import { BoardService } from "./board.service";
+import { DragService } from "./drag.service";
 import { PlayerService } from "./player.service";
 
 @Injectable({
@@ -11,7 +12,8 @@ import { PlayerService } from "./player.service";
 export class TileService {
   constructor(
     private boardService: BoardService,
-    private playerSerivce: PlayerService
+    private playerSerivce: PlayerService,
+    private dragService: DragService
   ) {}
 
   /**

@@ -13,6 +13,8 @@ import { TileService } from "../services/tile.service";
 import { TimerService } from "../services/timer.service";
 import { PlayerService } from "../services/player.service";
 import { Move } from "projects/chess/src/lib/chesslib/Move";
+import { PieceService } from "../services/piece.service";
+import { DragService } from "../services/drag.service";
 
 @Component({
   selector: "app-board",
@@ -22,7 +24,6 @@ import { Move } from "projects/chess/src/lib/chesslib/Move";
 export class BoardComponent implements OnInit, OnDestroy {
   initialLoad: boolean = true;
   Board: Board;
-  selectedPiece: Piece = null;
   rows = [];
 
   subscriptions: Subscription[] = [];
@@ -35,6 +36,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     private boardService: BoardService,
     private timerService: TimerService,
     public playerService: PlayerService,
+    public dragService: DragService,
     public dialog: MatDialog
   ) {
     this.subscriptions.push(
@@ -52,51 +54,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.timerService.stopTimer();
   }
 
-  /**
-   * Selects the given piece (or unselects it, if it is already selected.)
-   *
-   * @param x The x coordinate on the board of the piece
-   * @param y The y coordinate on the board of the piece
-   */
-  selectPiece(x: number, y: number) {
-    this.boardService.clearPreMove();
-    const Piece = this.Board.getPieceAtCoordinate(new Coordinate(x, y));
-    if (
-      !Piece ||
-      !(this.playerService.getPlayerTeam() === Piece.Team.teamOption)
-    ) {
-      return;
-    }
-
-    this.selectedPiece = Piece;
-    this.boardService.clearPieceSelection();
-    this.boardService.requestValidSquares(Piece);
-  }
-
-  placePiece(x: number, y: number) {
-    if (!this.selectedPiece) return;
-
-    const location = new Coordinate(x, y);
-    if (this.playerService.isTheirTurn()) {
-      if (Coordinate.equals(this.selectedPiece.Coordinate, location)) {
-        return;
-      }
-
-      const preMove: Move = {
-        PointA: this.selectedPiece.Coordinate,
-        PointB: location,
-      };
-      this.boardService.makePreMove(preMove);
-    } else {
-      this.tunnelService.makeMove(this.selectedPiece.Coordinate, location);
-    }
-
-    this.boardService.clearPieceSelection();
-    this.selectedPiece = null;
-  }
-
   ngOnInit() {
-    this.selectedPiece = null;
     this.tunnelService.connect();
     this.subscriptions.push(
       this.boardService.getGameInstance().subscribe((data) => {

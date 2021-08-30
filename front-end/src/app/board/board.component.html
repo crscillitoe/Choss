@@ -21,17 +21,26 @@
               <div *ngFor="let row of rows; let y = index" class="chess-row">
                 <div
                   mwlDroppable
-                  (drop)="placePiece(x + 1, y + 1)"
+                  (drop)="dragService.stopDrag(x + 1, y + 1)"
                   [style.background]="tileService.getColor(x + 1, y + 1)"
                   *ngFor="let row of rows; let x = index"
                   class="chess-tile"
                 >
-                  <img
-                    mwlDraggable
-                    (dragStart)="selectPiece(x + 1, y + 1)"
-                    [src]="tileService.getSVG(x + 1, y + 1)"
-                    class="chess-image"
-                  />
+                  <div class="image-wrapper">
+                    <img
+                      mwlDraggable
+                      (dragStart)="dragService.startDrag(x + 1, y + 1)"
+                      [src]="tileService.getSVG(x + 1, y + 1)"
+                      class="chess-image"
+                    />
+                    <img
+                      [ngClass]="{
+                        ghost: !dragService.dragging(x + 1, y + 1),
+                        'hacky-chess-image': dragService.dragging(x + 1, y + 1)
+                      }"
+                      [src]="tileService.getSVG(x + 1, y + 1)"
+                    />
+                  </div>
                 </div>
               </div>
             </ng-container>
@@ -39,21 +48,42 @@
               <div *ngFor="let row of rows; let y = index" class="chess-row">
                 <div
                   mwlDroppable
-                  (drop)="placePiece(Board.Width - x, Board.Height - y)"
+                  (drop)="
+                    dragService.stopDrag(Board.Width - x, Board.Height - y)
+                  "
                   [style.background]="
                     tileService.getColor(Board.Width - x, Board.Height - y)
                   "
                   *ngFor="let row of rows; let x = index"
                   class="chess-tile"
                 >
-                  <img
-                    mwlDraggable
-                    (dragStart)="selectPiece(Board.Width - x, Board.Height - y)"
-                    [src]="
-                      tileService.getSVG(Board.Width - x, Board.Height - y)
-                    "
-                    class="chess-image"
-                  />
+                  <div class="image-wrapper">
+                    <img
+                      mwlDraggable
+                      (dragStart)="
+                        dragService.startDrag(Board.Width - x, Board.Height - y)
+                      "
+                      [src]="
+                        tileService.getSVG(Board.Width - x, Board.Height - y)
+                      "
+                      class="chess-image"
+                    />
+                    <img
+                      [ngClass]="{
+                        ghost: !dragService.dragging(
+                          Board.Width - x,
+                          Board.Height - y
+                        ),
+                        'hacky-chess-image': dragService.dragging(
+                          Board.Width - x,
+                          Board.Height - y
+                        )
+                      }"
+                      [src]="
+                        tileService.getSVG(Board.Width - x, Board.Height - y)
+                      "
+                    />
+                  </div>
                 </div>
               </div>
             </ng-container>
