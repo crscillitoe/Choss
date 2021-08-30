@@ -11,13 +11,15 @@ import { BehaviorSubject } from "rxjs";
   providedIn: "root",
 })
 export class BoardService {
-  _gameMode: GameMode;
-  gameInstance: BehaviorSubject<Game> = new BehaviorSubject<Game>(null);
-  validMoves: BehaviorSubject<Coordinate[]> = new BehaviorSubject<Coordinate[]>(
-    []
-  );
-  _validMoves: Coordinate[] = [];
-  _gameInstance: Game;
+  private _gameMode: GameMode;
+  private gameInstance: BehaviorSubject<Game> = new BehaviorSubject<Game>(null);
+  private validMoves: BehaviorSubject<Coordinate[]> = new BehaviorSubject<
+    Coordinate[]
+  >([]);
+  private preMove: BehaviorSubject<Move> = new BehaviorSubject<Move>(null);
+  private _preMove: Move = null;
+  private _validMoves: Coordinate[] = [];
+  private _gameInstance: Game;
   constructor() {}
 
   buildGame(gameModeId: number, seed: number) {
@@ -38,12 +40,38 @@ export class BoardService {
     this.validMoves.next(this._validMoves);
   }
 
+  makePreMove(move: Move) {
+    this._preMove = move;
+    this.preMove.next(this._preMove);
+  }
+
+  clearPreMove() {
+    this._preMove = null;
+    this.preMove.next(this._preMove);
+  }
+
+  getCurrentValidSquares() {
+    return this._validMoves;
+  }
+
   getValidSquares() {
     return this.validMoves;
   }
 
+  getCurrentGameInstance() {
+    return this._gameInstance;
+  }
+
   getGameInstance() {
     return this.gameInstance;
+  }
+
+  getCurrentPreMove() {
+    return this._preMove;
+  }
+
+  getPreMove() {
+    return this.preMove;
   }
 
   evaluateMove(move: Move) {

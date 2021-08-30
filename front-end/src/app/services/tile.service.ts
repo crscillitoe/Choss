@@ -9,22 +9,10 @@ import { PlayerService } from "./player.service";
   providedIn: "root",
 })
 export class TileService {
-  private board: Board;
-  private validMoves: Coordinate[];
   constructor(
     private boardService: BoardService,
     private playerSerivce: PlayerService
-  ) {
-    this.boardService.getGameInstance().subscribe((game) => {
-      if (game) {
-        this.board = game.BoardState;
-      }
-    });
-
-    this.boardService.getValidSquares().subscribe((validSquares) => {
-      this.validMoves = validSquares;
-    });
-  }
+  ) {}
 
   /**
    * Returns the given SVG of the piece at this location on the board.
@@ -34,14 +22,16 @@ export class TileService {
    * @param y The y coordinate on the board of the piece
    */
   getSVG(x: number, y: number) {
-    if (this.board) {
-      const Piece = this.board.getPieceAtCoordinate(new Coordinate(x, y));
+    if (this.boardService.getCurrentGameInstance()) {
+      const Piece = this.boardService
+        .getCurrentGameInstance()
+        .BoardState.getPieceAtCoordinate(new Coordinate(x, y));
       if (Piece) {
         return `assets/chess_pieces/${Piece.SVGName}`;
       }
 
-      if (this.validMoves) {
-        for (const coordinate of this.validMoves) {
+      if (this.boardService.getCurrentValidSquares()) {
+        for (const coordinate of this.boardService.getCurrentValidSquares()) {
           if (coordinate.x === x && coordinate.y === y) {
             return `assets/chess_pieces/dot.svg`;
           }
@@ -58,16 +48,19 @@ export class TileService {
    * @param x X coordinate of the tile
    * @param y Y coordinate of the tile
    */
-  getColor(x: number, y: number, preMoves: Coordinate[]): string {
+  getColor(x: number, y: number): string {
     const lookupKey = new Coordinate(x, y).toString();
-    const coloredSquare = this.board.ColorMap[lookupKey];
+    const coloredSquare =
+      this.boardService.getCurrentGameInstance().BoardState.ColorMap[lookupKey];
     if (
       coloredSquare &&
       coloredSquare.viewableBy === this.playerSerivce.getPlayerTeam()
     ) {
       return coloredSquare.color;
     }
-    const piece = this.board.getPieceAtCoordinate(new Coordinate(x, y));
+    const piece = this.boardService
+      .getCurrentGameInstance()
+      .BoardState.getPieceAtCoordinate(new Coordinate(x, y));
     if (piece) {
       if (
         piece.IsBomb &&
@@ -77,17 +70,22 @@ export class TileService {
       }
     }
 
-    for (const coordinate of preMoves) {
-      if (coordinate.x === x && coordinate.y === y) {
-        if ((x + y) % 2 === 0) {
-          return "#5f637d";
-        }
+    const preMove = this.boardService.getCurrentPreMove();
+    if (preMove) {
+      for (const coordinate of [preMove.PointA, preMove.PointB]) {
+        if (coordinate.x === x && coordinate.y === y) {
+          if ((x + y) % 2 === 0) {
+            return "#5f637d";
+          }
 
-        return "#43465d";
+          return "#43465d";
+        }
       }
     }
 
-    const movedCoords = this.board.getMovedTo();
+    const movedCoords = this.boardService
+      .getCurrentGameInstance()
+      .BoardState.getMovedTo();
     if (movedCoords.length >= 2) {
       if (
         Coordinate.equals(movedCoords[0], new Coordinate(x, y)) ||

@@ -7,17 +7,10 @@ import { BoardService } from "./board.service";
   providedIn: "root",
 })
 export class TimerService {
-  private board: Board;
   private player: TeamOption;
   private timerId: any;
 
-  constructor(private boardService: BoardService) {
-    this.boardService.getGameInstance().subscribe((game) => {
-      if (game) {
-        this.board = game.BoardState;
-      }
-    });
-  }
+  constructor(private boardService: BoardService) {}
 
   startTimer(ourTeam: TeamOption) {
     this.player = ourTeam;
@@ -30,14 +23,14 @@ export class TimerService {
 
   getOurClock() {
     return this.player === TeamOption.WHITE
-      ? this.board.Timer.WhiteClock
-      : this.board.Timer.BlackClock;
+      ? this.boardService.getCurrentGameInstance().BoardState.Timer.WhiteClock
+      : this.boardService.getCurrentGameInstance().BoardState.Timer.BlackClock;
   }
 
   getTheirClock() {
     return this.player === TeamOption.WHITE
-      ? this.board.Timer.BlackClock
-      : this.board.Timer.WhiteClock;
+      ? this.boardService.getCurrentGameInstance().BoardState.Timer.BlackClock
+      : this.boardService.getCurrentGameInstance().BoardState.Timer.WhiteClock;
   }
 
   handleTimers() {
@@ -45,13 +38,18 @@ export class TimerService {
     const theirTimer = document.getElementById("theirtimer");
 
     const time = +new Date();
-    const timeDiff = time - this.board.Timer.PreviousTime;
+    const timeDiff =
+      time -
+      this.boardService.getCurrentGameInstance().BoardState.Timer.PreviousTime;
 
     if (
       (ourTimer &&
-        this.board.Timer.BlackTicking &&
+        this.boardService.getCurrentGameInstance().BoardState.Timer
+          .BlackTicking &&
         this.player === TeamOption.BLACK) ||
-      (this.board.Timer.WhiteTicking && this.player === TeamOption.WHITE)
+      (this.boardService.getCurrentGameInstance().BoardState.Timer
+        .WhiteTicking &&
+        this.player === TeamOption.WHITE)
     ) {
       // Our timer
       const diff = this.getOurClock() - timeDiff;
@@ -66,9 +64,12 @@ export class TimerService {
 
     if (
       (theirTimer &&
-        this.board.Timer.BlackTicking &&
+        this.boardService.getCurrentGameInstance().BoardState.Timer
+          .BlackTicking &&
         this.player === TeamOption.WHITE) ||
-      (this.board.Timer.WhiteTicking && this.player === TeamOption.BLACK)
+      (this.boardService.getCurrentGameInstance().BoardState.Timer
+        .WhiteTicking &&
+        this.player === TeamOption.BLACK)
     ) {
       // Our timer
       const diff = this.getTheirClock() - timeDiff;

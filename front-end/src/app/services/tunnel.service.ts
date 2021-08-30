@@ -10,6 +10,7 @@ import { ActivatedRoute } from "@angular/router";
 import { GameModeDescription } from "projects/chess/src/lib/chesslib/GameModes/GameModeRegistry";
 import { HttpClient } from "@angular/common/http";
 import { BoardService } from "./board.service";
+import { PlayerService } from "./player.service";
 
 @Injectable({
   providedIn: "root",
@@ -29,7 +30,8 @@ export class TunnelService {
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
-    private boardService: BoardService
+    private boardService: BoardService,
+    private playerService: PlayerService
   ) {}
 
   /**
@@ -80,6 +82,12 @@ export class TunnelService {
         PieceMoved: move.PieceMoved,
       };
       this.boardService.evaluateMove(tempMove);
+
+      const preMove = this.boardService.getCurrentPreMove();
+      if (this.playerService.isOurTurn() && preMove) {
+        this.boardService.clearPreMove();
+        this.makeMove(preMove.PointA, preMove.PointB);
+      }
     });
   }
 
