@@ -16,6 +16,7 @@ import { MusicService } from "../services/music.service";
 import { Subscription } from "rxjs";
 import { MatDialog } from "@angular/material";
 import { StartGameDialogComponent } from "../start-game-dialog/start-game-dialog.component";
+import { BoardService } from "../services/board.service";
 
 @Component({
   selector: "app-board",
@@ -27,15 +28,13 @@ export class BoardComponent implements OnInit, OnDestroy {
   Board: Board;
   Status: GameState;
   timerId: any;
-  rows = [];
-  columns = [];
-  alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
   player = new Team(TeamOption.BLACK);
   selectedPiece: Piece = null;
   pieceMoves: Coordinate[] = null;
   preMoves: Coordinate[] = [];
   weWinLocalTimer: boolean = false;
   weLoseLocalTimer: boolean = false;
+  rows = [];
 
   subscriptions: Subscription[] = [];
 
@@ -43,6 +42,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     private tunnelService: TunnelService,
     private route: ActivatedRoute,
     private musicService: MusicService,
+    private boardService: BoardService,
     public dialog: MatDialog
   ) {
     this.subscriptions.push(
@@ -132,8 +132,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     }
 
     this.selectedPiece = Piece;
-    this.pieceMoves = [];
-    this.tunnelService.requestValidSquares(Piece);
+    this.pieceMoves = this.boardService.getValidSquares(Piece);
   }
 
   placePiece(x: number, y: number) {
@@ -239,8 +238,6 @@ export class BoardComponent implements OnInit, OnDestroy {
     const time = +new Date();
     const timeDiff = time - this.Board.Timer.PreviousTime;
 
-    console.log(this.Board.Timer);
-
     if (
       (ourTimer &&
         this.Board.Timer.BlackTicking &&
@@ -287,7 +284,8 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.tunnelService.connect();
     this.Board = null;
     this.subscriptions.push(
-      this.tunnelService.receiveBoardState().subscribe((data) => {
+      this.boardService.getGameInstance().subscribe((data) => {
+        console.log(data);
         if (data) {
           this.Board = data.BoardState;
           this.Status = data.State;
@@ -305,19 +303,9 @@ export class BoardComponent implements OnInit, OnDestroy {
           }
 
           this.rows = [];
-          this.columns = [];
           for (let i = 0; i < this.Board.Width; i++) {
             this.rows.push(i + 1);
-            this.columns.push(this.alphabet[i]);
           }
-        }
-      })
-    );
-
-    this.subscriptions.push(
-      this.tunnelService.getValidSquares().subscribe((data) => {
-        if (this.selectedPiece) {
-          this.pieceMoves = data;
         }
       })
     );

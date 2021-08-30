@@ -126,8 +126,8 @@ export class QChess extends GameMode {
     return completedMoves;
   }
 
-  static BuildFreshGame(): Game {
-    const game = super.BuildFreshGame();
+  static BuildFreshGame(seed: number): Game {
+    const game = super.BuildFreshGame(seed);
     const timer = game.BoardState.Timer;
     const board: Board = new Board([], 11, 11);
     game.BoardState = board;

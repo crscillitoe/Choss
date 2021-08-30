@@ -57,8 +57,8 @@ export class RandomAtomic extends GameMode {
   /**
    * Sets the board up for a brand new game.
    */
-  static BuildFreshGame(): Game {
-    let standardGame: Game = super.BuildFreshGame();
+  static BuildFreshGame(seed: number): Game {
+    let standardGame: Game = super.BuildFreshGame(seed);
 
     while (true) {
       const piece = standardGame.BoardState.getRandomPiece();

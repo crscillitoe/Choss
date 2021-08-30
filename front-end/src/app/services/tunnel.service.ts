@@ -9,6 +9,7 @@ import { Game } from "projects/chess/src/lib/chesslib/Game";
 import { ActivatedRoute } from "@angular/router";
 import { GameModeDescription } from "projects/chess/src/lib/chesslib/GameModes/GameModeRegistry";
 import { HttpClient } from "@angular/common/http";
+import { BoardService } from "./board.service";
 
 @Injectable({
   providedIn: "root",
@@ -25,7 +26,11 @@ export class TunnelService {
 
   private gameId: number = 0;
 
-  constructor(private route: ActivatedRoute, private http: HttpClient) {}
+  constructor(
+    private route: ActivatedRoute,
+    private http: HttpClient,
+    private boardService: BoardService
+  ) {}
 
   /**
    * Disconnect from the server
@@ -58,28 +63,23 @@ export class TunnelService {
     this.socket.on("initial-connect", () => {
       this.route.queryParams.subscribe((params) => {
         this.gameId = params["gameId"];
+        // Updates observable, unused in tunnel
+        const fullSeed: string[] = params["roomId"].match(/\d/g);
+        const seedFromRoomID = +fullSeed.slice(0, 5).join("");
+        this.boardService.buildGame(this.gameId, seedFromRoomID);
         this.socket.emit("connect-to-room", params["roomId"], params["gameId"]);
       });
     });
 
-    this.socket.on("board-update", (data: Game) => {
-      let temp = new Board(
-        data.BoardState.Pieces,
-        data.BoardState.Height,
-        data.BoardState.Width
-      );
-
-      temp.Timer = data.BoardState.Timer;
-      temp.ColorMap = data.BoardState.ColorMap;
-
-      temp.MoveHistory = data.BoardState.MoveHistory;
-      data.BoardState = temp;
-
-      this.boardState.next(data);
-    });
-
-    this.socket.on("piece-moves", (data: Coordinate[]) => {
-      this.validSquares.next(data);
+    this.socket.on("move-made", (move: Move) => {
+      const coordinateA = new Coordinate(move.PointA.x, move.PointA.y);
+      const coordinateB = new Coordinate(move.PointB.x, move.PointB.y);
+      const tempMove = {
+        PointA: coordinateA,
+        PointB: coordinateB,
+        PieceMoved: move.PieceMoved,
+      };
+      this.boardService.evaluateMove(tempMove);
     });
   }
 

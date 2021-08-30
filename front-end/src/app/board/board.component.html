@@ -22,7 +22,7 @@
                   mwlDroppable
                   (drop)="placePiece(x + 1, y + 1)"
                   [style.background]="getColor(x + 1, y + 1)"
-                  *ngFor="let col of columns; let x = index"
+                  *ngFor="let row of rows; let x = index"
                   class="chess-tile"
                 >
                   <img
@@ -42,7 +42,7 @@
                   [style.background]="
                     getColor(Board.Width - x, Board.Height - y)
                   "
-                  *ngFor="let col of columns; let x = index"
+                  *ngFor="let row of rows; let x = index"
                   class="chess-tile"
                 >
                   <img

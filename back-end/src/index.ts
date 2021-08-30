@@ -37,25 +37,12 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 
 const clientIdToRooms: { [clientId: string]: string } = {};
-const roomIdToGames: { [roomId: string]: Game } = {};
-const roomIdToGameModes: { [roomId: string]: GameMode } = {};
-
 const waitingRooms: { [roomId: string]: boolean } = {};
 
 app.get("/listGameModes", async (request: any, response: any) => {
   const gameModeDescriptions = getGameModeDescriptions();
   response.status(200).send(gameModeDescriptions);
 });
-
-const getBoardFromClientId = (clientId: string): Game => {
-  const roomId = clientIdToRooms[clientId];
-  return roomIdToGames[roomId];
-};
-
-const getGameModeFromClientId = (clientId: string): GameMode => {
-  const roomId = clientIdToRooms[clientId];
-  return roomIdToGameModes[roomId];
-};
 
 io.on("connection", (socket: SocketIO.Socket) => {
   console.log(`Received connection from client: ${socket.client.id}`);
@@ -76,55 +63,11 @@ io.on("connection", (socket: SocketIO.Socket) => {
 
       clientIdToRooms[socket.client.id] = roomId;
       socket.join(roomId);
-      if (!roomIdToGames[roomId]) {
-        roomIdToGames[roomId] = getGameModeById(gameId).BuildFreshGame();
-        roomIdToGameModes[roomId] = new (<any>getGameModeById(gameId))();
-      }
-
-      io.to(roomId).emit(
-        "board-update",
-        getBoardFromClientId(socket.client.id)
-      );
     }
   });
 
   socket.on("make-move", async (move: Move) => {
-    const board = getBoardFromClientId(socket.client.id);
-    const gameMode = getGameModeFromClientId(socket.client.id);
-    const displayStates = gameMode.TimerHandleMove(move, board);
-
-    for (let i = 0; i < displayStates.length; i++) {
-      setTimeout(() => {
-        io.to(clientIdToRooms[socket.client.id]).emit(
-          "board-update",
-          displayStates[i]
-        );
-      }, 1000 * i);
-    }
-  });
-
-  socket.on("reset", (gameId: number) => {
-    const roomId = clientIdToRooms[socket.client.id];
-    roomIdToGames[roomId] = getGameModeById(gameId).BuildFreshGame();
-    io.to(clientIdToRooms[socket.client.id]).emit(
-      "board-update",
-      getBoardFromClientId(socket.client.id)
-    );
-  });
-
-  socket.on("valid-squares", (piece: Piece) => {
-    const board = getBoardFromClientId(socket.client.id);
-    const pieceOnBoard = board.BoardState.getPieceAtCoordinate(
-      piece.Coordinate
-    );
-
-    if (pieceOnBoard) {
-      const validSquares = Array.from(
-        pieceOnBoard.getValidSquares(board.BoardState)
-      );
-
-      socket.emit("piece-moves", validSquares);
-    }
+    io.to(clientIdToRooms[socket.client.id]).emit("move-made", move);
   });
 });
 

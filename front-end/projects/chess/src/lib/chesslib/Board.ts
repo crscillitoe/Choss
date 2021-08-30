@@ -10,6 +10,7 @@ import { ColoredSquare } from "./ColoredSquare";
  * A board contains a list of pieces on the board.
  */
 export class Board {
+  seed: number = 0;
   Pieces: Piece[];
   Height: number;
   Width: number;
@@ -90,7 +91,16 @@ export class Board {
    * Returns a random piece on the board.
    */
   getRandomPiece(): Piece {
-    return this.Pieces[Math.floor(Math.random() * this.Pieces.length)];
+    return this.Pieces[this.randomInt(0, this.Pieces.length)];
+  }
+
+  private randomInt(min, max) {
+    return Math.floor(this.random() * (max - min + 1) + min);
+  }
+
+  random() {
+    var x = Math.sin(++this.seed) * 10000;
+    return x - Math.floor(x);
   }
 
   /**

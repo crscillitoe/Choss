@@ -35,7 +35,7 @@ export class War extends GameMode {
     return boardGameStates;
   }
 
-  static BuildFreshGame(): Game {
-    return super.BuildFreshGame();
+  static BuildFreshGame(seed: number): Game {
+    return super.BuildFreshGame(seed);
   }
 }

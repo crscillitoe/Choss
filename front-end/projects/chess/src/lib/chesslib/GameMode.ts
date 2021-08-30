@@ -15,11 +15,13 @@ export abstract class GameMode {
   /**
    * Sets the board up for a brand new game.
    */
-  static BuildFreshGame(): Game {
+  static BuildFreshGame(seed: number): Game {
     const game = new Game(
       GameModeShared.StandardChessBoard(),
       GameState.IN_PROGRESS_WHITE_TURN
     );
+
+    game.BoardState.seed = seed;
 
     game.BoardState.Timer = {
       PreviousTime: Date.now(),

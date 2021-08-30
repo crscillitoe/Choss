@@ -58,8 +58,8 @@ export class DoubleMove extends GameMode {
   /**
    * Set turncounter to 0 since we are doublemove
    */
-  static BuildFreshGame(): Game {
-    let game = super.BuildFreshGame();
+  static BuildFreshGame(seed: number): Game {
+    let game = super.BuildFreshGame(seed);
     let doubleGame = new DoubleMove();
     doubleGame.turnCounter = 0;
     return game;
