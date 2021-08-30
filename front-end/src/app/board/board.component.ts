@@ -17,6 +17,9 @@ import { Subscription } from "rxjs";
 import { MatDialog } from "@angular/material";
 import { StartGameDialogComponent } from "../start-game-dialog/start-game-dialog.component";
 import { BoardService } from "../services/board.service";
+import { TileService } from "../services/tile.service";
+import { TimerService } from "../services/timer.service";
+import { PlayerService } from "../services/player.service";
 
 @Component({
   selector: "app-board",
@@ -28,7 +31,6 @@ export class BoardComponent implements OnInit, OnDestroy {
   Board: Board;
   Status: GameState;
   timerId: any;
-  player = new Team(TeamOption.BLACK);
   selectedPiece: Piece = null;
   pieceMoves: Coordinate[] = null;
   preMoves: Coordinate[] = [];
@@ -42,12 +44,17 @@ export class BoardComponent implements OnInit, OnDestroy {
     private tunnelService: TunnelService,
     private route: ActivatedRoute,
     private musicService: MusicService,
+    public tileService: TileService,
     private boardService: BoardService,
+    private timerService: TimerService,
+    public playerService: PlayerService,
     public dialog: MatDialog
   ) {
     this.subscriptions.push(
       this.route.queryParams.subscribe((params) => {
-        this.player = new Team(parseInt(params["team"]));
+        this.playerService.setPlayerTeam(
+          new Team(parseInt(params["team"])).teamOption
+        );
       })
     );
   }
@@ -55,9 +62,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
     this.tunnelService.closeConnection();
-    if (this.timerId) {
-      window.clearTimeout(this.timerId);
-    }
+    this.timerService.stopTimer();
   }
 
   drop(x, y) {
@@ -68,54 +73,8 @@ export class BoardComponent implements OnInit, OnDestroy {
     console.log("Element was dragged", event);
   }
 
-  /**
-   * Gets the background tile of the tile at the given location.
-   *
-   * @param x X coordinate of the tile
-   * @param y Y coordinate of the tile
-   */
-  getColor(x: number, y: number) {
-    const lookupKey = new Coordinate(x, y).toString();
-    const coloredSquare = this.Board.ColorMap[lookupKey];
-    if (coloredSquare && coloredSquare.viewableBy === this.player.teamOption) {
-      return coloredSquare.color;
-    }
-    const piece = this.Board.getPieceAtCoordinate(new Coordinate(x, y));
-    if (piece) {
-      if (piece.IsBomb && piece.Team.teamOption === this.player.teamOption) {
-        return "red";
-      }
-    }
-
-    for (const coordinate of this.preMoves) {
-      if (coordinate.x === x && coordinate.y === y) {
-        if ((x + y) % 2 === 0) {
-          return "#5f637d";
-        }
-
-        return "#43465d";
-      }
-    }
-
-    const movedCoords = this.Board.getMovedTo();
-    if (movedCoords.length >= 2) {
-      if (
-        Coordinate.equals(movedCoords[0], new Coordinate(x, y)) ||
-        Coordinate.equals(movedCoords[1], new Coordinate(x, y))
-      ) {
-        if ((x + y) % 2 === 1) {
-          return "#bd9b2d";
-        }
-
-        return "#f5cb42";
-      }
-    }
-
-    if ((x + y) % 2 === 1) {
-      return "#878787";
-    }
-
-    return "#ADADAD";
+  getColor(x: number, y: number): string {
+    return this.tileService.getColor(x, y, this.preMoves);
   }
 
   /**
@@ -127,12 +86,16 @@ export class BoardComponent implements OnInit, OnDestroy {
   selectPiece(x: number, y: number) {
     this.preMoves = [];
     const Piece = this.Board.getPieceAtCoordinate(new Coordinate(x, y));
-    if (!Piece || !this.player.equals(Piece.Team.teamOption)) {
+    if (
+      !Piece ||
+      !(this.playerService.getPlayerTeam() === Piece.Team.teamOption)
+    ) {
       return;
     }
 
     this.selectedPiece = Piece;
-    this.pieceMoves = this.boardService.getValidSquares(Piece);
+    this.boardService.clearPieceSelection();
+    this.boardService.requestValidSquares(Piece);
   }
 
   placePiece(x: number, y: number) {
@@ -149,7 +112,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       this.tunnelService.makeMove(this.selectedPiece.Coordinate, location);
     }
 
-    this.pieceMoves = [];
+    this.boardService.clearPieceSelection();
     this.selectedPiece = null;
   }
 
@@ -157,9 +120,9 @@ export class BoardComponent implements OnInit, OnDestroy {
     return (
       this.weWinLocalTimer ||
       (this.Status === GameState.WHITE_WIN &&
-        this.player.teamOption === TeamOption.WHITE) ||
+        this.playerService.getPlayerTeam() === TeamOption.WHITE) ||
       (this.Status === GameState.BLACK_WIN &&
-        this.player.teamOption === TeamOption.BLACK)
+        this.playerService.getPlayerTeam() === TeamOption.BLACK)
     );
   }
 
@@ -167,9 +130,9 @@ export class BoardComponent implements OnInit, OnDestroy {
     return (
       this.weLoseLocalTimer ||
       (this.Status === GameState.WHITE_WIN &&
-        this.player.teamOption === TeamOption.BLACK) ||
+        this.playerService.getPlayerTeam() === TeamOption.BLACK) ||
       (this.Status === GameState.BLACK_WIN &&
-        this.player.teamOption === TeamOption.WHITE)
+        this.playerService.getPlayerTeam() === TeamOption.WHITE)
     );
   }
 
@@ -177,9 +140,9 @@ export class BoardComponent implements OnInit, OnDestroy {
     return (
       !this.weWinLocalTimer &&
       ((this.Status === GameState.IN_PROGRESS_BLACK_TURN &&
-        this.player.teamOption === TeamOption.WHITE) ||
+        this.playerService.getPlayerTeam() === TeamOption.WHITE) ||
         (this.Status === GameState.IN_PROGRESS_WHITE_TURN &&
-          this.player.teamOption === TeamOption.BLACK))
+          this.playerService.getPlayerTeam() === TeamOption.BLACK))
     );
   }
 
@@ -187,105 +150,23 @@ export class BoardComponent implements OnInit, OnDestroy {
     return (
       !this.weLoseLocalTimer &&
       ((this.Status === GameState.IN_PROGRESS_BLACK_TURN &&
-        this.player.teamOption === TeamOption.BLACK) ||
+        this.playerService.getPlayerTeam() === TeamOption.BLACK) ||
         (this.Status === GameState.IN_PROGRESS_WHITE_TURN &&
-          this.player.teamOption === TeamOption.WHITE))
+          this.playerService.getPlayerTeam() === TeamOption.WHITE))
     );
-  }
-
-  /**
-   * Returns the given SVG of the piece at this location on the board.
-   * If no piece is found, this function will return a blank SVG.
-   *
-   * @param x The x coordinate on the board of the piece
-   * @param y The y coordinate on the board of the piece
-   */
-  getSVG(x: number, y: number) {
-    if (this.Board) {
-      const Piece = this.Board.getPieceAtCoordinate(new Coordinate(x, y));
-      if (Piece) {
-        return `assets/chess_pieces/${Piece.SVGName}`;
-      }
-
-      if (this.pieceMoves) {
-        for (const coordinate of this.pieceMoves) {
-          if (coordinate.x === x && coordinate.y === y) {
-            return `assets/chess_pieces/dot.svg`;
-          }
-        }
-      }
-    }
-
-    return "assets/chess_pieces/Blank.svg";
-  }
-
-  getOurClock() {
-    return this.player.teamOption === TeamOption.WHITE
-      ? this.Board.Timer.WhiteClock
-      : this.Board.Timer.BlackClock;
-  }
-
-  getTheirClock() {
-    return this.player.teamOption === TeamOption.WHITE
-      ? this.Board.Timer.BlackClock
-      : this.Board.Timer.WhiteClock;
-  }
-
-  handleTimers() {
-    const ourTimer = document.getElementById("ourtimer");
-    const theirTimer = document.getElementById("theirtimer");
-
-    const time = +new Date();
-    const timeDiff = time - this.Board.Timer.PreviousTime;
-
-    if (
-      (ourTimer &&
-        this.Board.Timer.BlackTicking &&
-        this.player.teamOption === TeamOption.BLACK) ||
-      (this.Board.Timer.WhiteTicking &&
-        this.player.teamOption === TeamOption.WHITE)
-    ) {
-      // Our timer
-      const diff = this.getOurClock() - timeDiff;
-      const minutes = Math.trunc(diff / (60 * 1000)) % 60;
-      const seconds = Math.trunc(diff / 1000) % 60;
-
-      ourTimer.textContent =
-        (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") +
-        ":" +
-        (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00");
-    }
-
-    if (
-      (theirTimer &&
-        this.Board.Timer.BlackTicking &&
-        this.player.teamOption === TeamOption.WHITE) ||
-      (this.Board.Timer.WhiteTicking &&
-        this.player.teamOption === TeamOption.BLACK)
-    ) {
-      // Our timer
-      const diff = this.getTheirClock() - timeDiff;
-      const minutes = Math.trunc(diff / (60 * 1000)) % 60;
-      const seconds = Math.trunc(diff / 1000) % 60;
-
-      theirTimer.textContent =
-        (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") +
-        ":" +
-        (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00");
-    }
-
-    this.timerId = setTimeout(() => this.handleTimers(), 200);
   }
 
   ngOnInit() {
     this.preMoves = [];
-    this.pieceMoves = [];
     this.selectedPiece = null;
     this.tunnelService.connect();
-    this.Board = null;
+    this.subscriptions.push(
+      this.boardService.getValidSquares().subscribe((squares) => {
+        this.pieceMoves = squares;
+      })
+    );
     this.subscriptions.push(
       this.boardService.getGameInstance().subscribe((data) => {
-        console.log(data);
         if (data) {
           this.Board = data.BoardState;
           this.Status = data.State;
@@ -293,7 +174,7 @@ export class BoardComponent implements OnInit, OnDestroy {
           if (!this.initialLoad) {
             this.musicService.playClick();
           } else {
-            this.handleTimers();
+            this.timerService.startTimer(this.playerService.getPlayerTeam());
             this.initialLoad = false;
           }
 

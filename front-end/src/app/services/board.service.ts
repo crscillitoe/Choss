@@ -13,6 +13,10 @@ import { BehaviorSubject } from "rxjs";
 export class BoardService {
   _gameMode: GameMode;
   gameInstance: BehaviorSubject<Game> = new BehaviorSubject<Game>(null);
+  validMoves: BehaviorSubject<Coordinate[]> = new BehaviorSubject<Coordinate[]>(
+    []
+  );
+  _validMoves: Coordinate[] = [];
   _gameInstance: Game;
   constructor() {}
 
@@ -22,8 +26,20 @@ export class BoardService {
     this._gameMode = new (<any>getGameModeById(gameModeId))();
   }
 
-  getValidSquares(piece: Piece): Coordinate[] {
-    return Array.from(piece.getValidSquares(this._gameInstance.BoardState));
+  requestValidSquares(piece: Piece) {
+    this._validMoves = Array.from(
+      piece.getValidSquares(this._gameInstance.BoardState)
+    );
+    this.validMoves.next(this._validMoves);
+  }
+
+  clearPieceSelection() {
+    this._validMoves = [];
+    this.validMoves.next(this._validMoves);
+  }
+
+  getValidSquares() {
+    return this.validMoves;
   }
 
   getGameInstance() {
@@ -31,6 +47,7 @@ export class BoardService {
   }
 
   evaluateMove(move: Move) {
+    if (Coordinate.equals(move.PointA, move.PointB)) return;
     this._gameMode.TimerHandleMove(move, this._gameInstance);
     this.gameInstance.next(this._gameInstance);
   }

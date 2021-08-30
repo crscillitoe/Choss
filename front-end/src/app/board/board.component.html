@@ -16,7 +16,7 @@
       >
         <div class="chess-game" *ngIf="Board">
           <ng-container *ngIf="rows">
-            <ng-container *ngIf="player.teamOption === 0">
+            <ng-container *ngIf="playerService.getPlayerTeam() === 0">
               <div *ngFor="let row of rows; let y = index" class="chess-row">
                 <div
                   mwlDroppable
@@ -28,13 +28,13 @@
                   <img
                     mwlDraggable
                     (dragStart)="selectPiece(x + 1, y + 1)"
-                    [src]="getSVG(x + 1, y + 1)"
+                    [src]="tileService.getSVG(x + 1, y + 1)"
                     class="chess-image"
                   />
                 </div>
               </div>
             </ng-container>
-            <ng-container *ngIf="player.teamOption === 1">
+            <ng-container *ngIf="playerService.getPlayerTeam() === 1">
               <div *ngFor="let row of rows; let y = index" class="chess-row">
                 <div
                   mwlDroppable
@@ -48,7 +48,9 @@
                   <img
                     mwlDraggable
                     (dragStart)="selectPiece(Board.Width - x, Board.Height - y)"
-                    [src]="getSVG(Board.Width - x, Board.Height - y)"
+                    [src]="
+                      tileService.getSVG(Board.Width - x, Board.Height - y)
+                    "
                     class="chess-image"
                   />
                 </div>
