@@ -18,6 +18,7 @@ import { Coordinate } from "../Coordinate";
 
 export class War extends GameMode {
   turncounter: number = 0;
+  expandCount: number = 0;
   constructor() {
     super();
     this.turncounter = 0;
@@ -27,8 +28,9 @@ export class War extends GameMode {
     const boardGameStates = super.HandleMove(Move, BoardGameState);
     if (boardGameStates.length !== 0) {
       this.turncounter++;
-      if (this.turncounter % 10 === 0) {
+      if (this.turncounter % 10 === 0 && this.expandCount < 2) {
         BoardGameState.BoardState.expand();
+        this.expandCount++;
       }
     }
 
