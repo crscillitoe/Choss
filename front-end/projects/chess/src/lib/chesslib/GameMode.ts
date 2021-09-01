@@ -40,6 +40,16 @@ export abstract class GameMode {
     const turnAfterMove = BoardGameState.State;
 
     if (result.length > 0 && turnBeforeMove !== turnAfterMove) {
+      if (!BoardGameState.BoardState.hasBlackKing()) {
+        result[result.length - 1].State = GameState.WHITE_WIN;
+        BoardGameState.State = GameState.WHITE_WIN;
+      }
+
+      if (!BoardGameState.BoardState.hasWhiteKing()) {
+        result[result.length - 1].State = GameState.BLACK_WIN;
+        BoardGameState.State = GameState.BLACK_WIN;
+      }
+
       // We've made a move.
       const time = Date.now();
       const timeSpent = time - BoardGameState.BoardState.Timer.PreviousTime;
@@ -188,14 +198,6 @@ export abstract class GameMode {
   TakePiece(Predator: Piece, Prey: Piece, BoardGameState: Game): void {
     this.KillPiece(Predator, Prey, BoardGameState);
     Predator.Coordinate = new Coordinate(Prey.Coordinate.x, Prey.Coordinate.y);
-
-    if (Prey instanceof King) {
-      if (Prey.Team === new Team(TeamOption.WHITE)) {
-        BoardGameState.State = GameState.BLACK_WIN;
-      } else {
-        BoardGameState.State = GameState.WHITE_WIN;
-      }
-    }
   }
 
   /**

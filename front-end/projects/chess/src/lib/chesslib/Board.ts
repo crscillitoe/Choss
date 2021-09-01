@@ -24,6 +24,26 @@ export class Board {
     this.Width = Width;
   }
 
+  hasWhiteKing(): boolean {
+    for (const piece of this.Pieces) {
+      if (piece.isKing() && piece.Team.teamOption === TeamOption.WHITE) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  hasBlackKing(): boolean {
+    for (const piece of this.Pieces) {
+      if (piece.isKing() && piece.Team.teamOption === TeamOption.BLACK) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   getMovedTo(): Coordinate[] {
     if (this.MoveHistory.length > 0) {
       const move = this.MoveHistory[this.MoveHistory.length - 1];
