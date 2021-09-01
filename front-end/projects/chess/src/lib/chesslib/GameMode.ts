@@ -25,8 +25,8 @@ export abstract class GameMode {
 
     game.BoardState.Timer = {
       PreviousTime: Date.now(),
-      WhiteClock: 60 * 10 * 1000, // 10 minutes in milliseconds
-      BlackClock: 60 * 10 * 1000, // 10 minutes in milliseconds
+      WhiteClock: 60 * 5 * 1000, // 10 minutes in milliseconds
+      BlackClock: 60 * 5 * 1000, // 10 minutes in milliseconds
       WhiteTicking: true,
       BlackTicking: false,
     };
@@ -165,10 +165,10 @@ export abstract class GameMode {
             Piece.Team.equals(TeamOption.WHITE)) ||
           (Piece.Coordinate.y === 1 && Piece.Team.equals(TeamOption.BLACK))
         ) {
+          const queen = new Queen(Move.PointB.x, Move.PointB.y, Piece.Team);
+          queen.IsBomb = Piece.IsBomb;
           BoardGameState.BoardState.killPiece(Piece);
-          BoardGameState.BoardState.Pieces.push(
-            new Queen(Move.PointB.x, Move.PointB.y, Piece.Team)
-          );
+          BoardGameState.BoardState.Pieces.push(queen);
         }
       }
 

@@ -60,19 +60,31 @@ export class RandomAtomic extends GameMode {
   static BuildFreshGame(seed: number): Game {
     let standardGame: Game = super.BuildFreshGame(seed);
 
-    while (true) {
+    const whiteBombs: number = 3;
+    const blackBombs: number = 3;
+    let whiteCount = 0;
+    let blackCount = 0;
+    while (whiteCount < whiteBombs) {
       const piece = standardGame.BoardState.getRandomPiece();
-      if (piece.Team.equals(TeamOption.WHITE) && !piece.isKing()) {
+      if (
+        piece.Team.equals(TeamOption.WHITE) &&
+        !piece.isKing() &&
+        !piece.IsBomb
+      ) {
         piece.IsBomb = true;
-        break;
+        whiteCount++;
       }
     }
 
-    while (true) {
+    while (blackCount < blackBombs) {
       const piece = standardGame.BoardState.getRandomPiece();
-      if (piece.Team.equals(TeamOption.BLACK) && !piece.isKing()) {
+      if (
+        piece.Team.equals(TeamOption.BLACK) &&
+        !piece.isKing() &&
+        !piece.IsBomb
+      ) {
         piece.IsBomb = true;
-        break;
+        blackCount++;
       }
     }
 
