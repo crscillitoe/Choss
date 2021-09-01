@@ -60,6 +60,15 @@ export class TileService {
     ) {
       return coloredSquare.color;
     }
+
+    if (this.dragService.dragging(x, y)) {
+      if ((x + y) % 2 === 0) {
+        return "#67a17d";
+      }
+
+      return "#3f634d";
+    }
+
     const piece = this.boardService
       .getCurrentGameInstance()
       .BoardState.getPieceAtCoordinate(new Coordinate(x, y));

@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { DragStartEvent } from "angular-draggable-droppable";
 import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
 import { PieceService } from "./piece.service";
 

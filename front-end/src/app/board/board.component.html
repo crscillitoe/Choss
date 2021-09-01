@@ -14,76 +14,66 @@
       >
         <div class="chess-game">
           <ng-container *ngIf="rows">
-            <ng-container *ngIf="playerService.getPlayerTeam() === 0">
-              <div *ngFor="let row of rows; let y = index" class="chess-row">
-                <div
-                  mwlDroppable
-                  (drop)="dragService.stopDrag(x + 1, y + 1)"
-                  [style.background]="tileService.getColor(x + 1, y + 1)"
-                  *ngFor="let row of rows; let x = index"
-                  class="chess-tile"
-                >
-                  <div class="image-wrapper">
-                    <img
-                      mwlDraggable
-                      (dragStart)="dragService.startDrag(x + 1, y + 1)"
-                      [src]="tileService.getSVG(x + 1, y + 1)"
-                      class="chess-image"
-                    />
-                    <img
-                      [ngClass]="{
-                        ghost: !dragService.dragging(x + 1, y + 1),
-                        'hacky-chess-image': dragService.dragging(x + 1, y + 1)
-                      }"
-                      [src]="tileService.getSVG(x + 1, y + 1)"
-                    />
-                  </div>
-                </div>
-              </div>
-            </ng-container>
-            <ng-container *ngIf="playerService.getPlayerTeam() === 1">
-              <div *ngFor="let row of rows; let y = index" class="chess-row">
-                <div
-                  mwlDroppable
-                  (drop)="
-                    dragService.stopDrag(Board.Width - x, Board.Height - y)
-                  "
-                  [style.background]="
-                    tileService.getColor(Board.Width - x, Board.Height - y)
-                  "
-                  *ngFor="let row of rows; let x = index"
-                  class="chess-tile"
-                >
-                  <div class="image-wrapper">
+            <div *ngFor="let row of rows; let y = index" class="chess-row">
+              <div
+                mwlDroppable
+                (drop)="
+                  dragService.stopDrag(
+                    playerService.getX(x),
+                    playerService.getY(y)
+                  )
+                "
+                [dragOverClass]="'drag-over'"
+                [style.background]="
+                  tileService.getColor(
+                    playerService.getX(x),
+                    playerService.getY(y)
+                  )
+                "
+                *ngFor="let row of rows; let x = index"
+                class="chess-tile"
+              >
+                <div class="image-wrapper">
+                  <div class="vertical-wrapper">
                     <img
                       mwlDraggable
                       (dragStart)="
-                        dragService.startDrag(Board.Width - x, Board.Height - y)
+                        dragService.startDrag(
+                          playerService.getX(x),
+                          playerService.getY(y)
+                        )
                       "
+                      [dragActiveClass]="'drag-active'"
                       [src]="
-                        tileService.getSVG(Board.Width - x, Board.Height - y)
+                        tileService.getSVG(
+                          playerService.getX(x),
+                          playerService.getY(y)
+                        )
                       "
                       class="chess-image"
                     />
                     <img
                       [ngClass]="{
                         ghost: !dragService.dragging(
-                          Board.Width - x,
-                          Board.Height - y
+                          playerService.getX(x),
+                          playerService.getY(y)
                         ),
                         'hacky-chess-image': dragService.dragging(
-                          Board.Width - x,
-                          Board.Height - y
+                          playerService.getX(x),
+                          playerService.getY(y)
                         )
                       }"
                       [src]="
-                        tileService.getSVG(Board.Width - x, Board.Height - y)
+                        tileService.getSVG(
+                          playerService.getX(x),
+                          playerService.getY(y)
+                        )
                       "
                     />
                   </div>
                 </div>
               </div>
-            </ng-container>
+            </div>
           </ng-container>
         </div>
       </div>

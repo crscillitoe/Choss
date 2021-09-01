@@ -40,7 +40,10 @@ export class PieceService {
   }
 
   placePiece(x: number, y: number) {
-    if (!this.selectedPiece) return;
+    if (!this.selectedPiece) {
+      this.boardService.clearPieceSelection();
+      return;
+    }
 
     const location = new Coordinate(x, y);
     if (this.playerService.isTheirTurn()) {
