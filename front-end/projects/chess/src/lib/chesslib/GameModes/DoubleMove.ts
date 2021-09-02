@@ -35,24 +35,24 @@ export class DoubleMove extends GameMode {
    * @param Player The player making the move
    * @param Move The desired move to be performed
    */
-  HandleMove(Move: Move, BoardGameState: Game): Game[] {
-    const boardGameStates = super.HandleMove(Move, BoardGameState);
+  async HandleMove(Move: Move, BoardGameState: Game): Promise<boolean> {
+    const madeMove = await super.HandleMove(Move, BoardGameState);
     if (BoardGameState.isGameOver()) {
-      return [BoardGameState];
+      return madeMove;
     }
 
-    if (boardGameStates.length !== 0) {
-      this.turnCounter++;
+    if (!madeMove) return false;
 
-      // Next players' turn
-      if (Math.floor(this.turnCounter / 2) % 2 === 0) {
-        BoardGameState.State = GameState.IN_PROGRESS_WHITE_TURN;
-      } else {
-        BoardGameState.State = GameState.IN_PROGRESS_BLACK_TURN;
-      }
+    this.turnCounter++;
+
+    // Next players' turn
+    if (Math.floor(this.turnCounter / 2) % 2 === 0) {
+      BoardGameState.State = GameState.IN_PROGRESS_WHITE_TURN;
+    } else {
+      BoardGameState.State = GameState.IN_PROGRESS_BLACK_TURN;
     }
 
-    return boardGameStates;
+    return true;
   }
 
   /**

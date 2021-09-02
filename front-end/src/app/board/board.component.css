@@ -1,3 +1,8 @@
+.chess-game {
+  height: min(calc(90vh - 4rem), calc(90vw - 250px));
+  width: min(calc(90vh - 4rem), calc(90vw - 250px));
+}
+
 .chess-row {
   display: flex;
   flex-direction: row;
@@ -22,42 +27,8 @@
   padding-top: 100%;
 }
 
-.timer-width {
-  width: 200px;
-}
-
-.board-and-timer {
-  display: flex;
-  justify-content: space-around;
-  height: 100%;
-}
-
-.timer {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-}
-
-.time {
-  padding: 20px;
-  font-size: 23px;
-}
-
-.monospace {
-  font-family: "Roboto Mono", monospace;
-}
-
-.chess-game {
-  height: min(calc(90vh - 4rem), calc(90vw - 250px));
-  width: min(calc(90vh - 4rem), calc(90vw - 250px));
-}
-
 .our-turn {
   box-shadow: inset 0 -20px 0px -6px #909090;
-}
-
-.time {
-  color: white;
 }
 
 .we-win {
@@ -70,66 +41,4 @@
 
 .they-win {
   box-shadow: inset 0 20px 0px -6px goldenrod;
-}
-
-.horizontal-center-game {
-  display: flex;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-}
-
-.vertical-center-game {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-}
-
-.chess-image,
-.hacky-chess-image {
-  position: absolute;
-  width: 90%;
-  height: 90%;
-  top: 3%;
-}
-
-.chess-image {
-  z-index: 1;
-}
-
-.vertical-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100%;
-  width: 90%;
-}
-
-.image-wrapper {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  position: relative;
-}
-
-.hacky-chess-image {
-  opacity: 0.3;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.ghost {
-  width: 0px;
-  height: 0px;
-  position: relative;
-  margin: 0px;
-  padding: 0px;
-}
-
-.label {
-  position: relative;
-  bottom: 0px;
-  color: white;
-  float: left;
 }

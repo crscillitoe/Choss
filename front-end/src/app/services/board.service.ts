@@ -74,9 +74,9 @@ export class BoardService {
     return this.preMove;
   }
 
-  evaluateMove(move: Move) {
+  async evaluateMove(move: Move) {
     if (Coordinate.equals(move.PointA, move.PointB)) return;
-    this._gameMode.TimerHandleMove(move, this._gameInstance);
+    await this._gameMode.TimerHandleMove(move, this._gameInstance);
     this.gameInstance.next(this._gameInstance);
   }
 }

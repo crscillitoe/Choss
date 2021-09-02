@@ -1,97 +1,31 @@
-<div class="horizontal-center-game">
-  <div class="vertical-center-game">
-    <div class="board-and-timer">
-      <div class="fake-timer timer-width"></div>
-      <div
-        *ngIf="Board"
-        class="vertical-center-game"
-        [ngClass]="{
-          'our-turn': playerService.isOurTurn(),
-          'their-turn': playerService.isTheirTurn(),
-          'we-win': playerService.weWin(),
-          'they-win': playerService.theyWin()
-        }"
-      >
-        <div class="chess-game">
-          <ng-container *ngIf="rows">
-            <div *ngFor="let row of rows; let y = index" class="chess-row">
-              <div
-                mwlDroppable
-                (drop)="
-                  mouseService.mouseUp(
-                    playerService.getX(x),
-                    playerService.getY(y)
-                  )
-                "
-                [dragOverClass]="'drag-over'"
-                [style.background]="
-                  tileService.getColor(
-                    playerService.getX(x),
-                    playerService.getY(y)
-                  )
-                "
-                *ngFor="let row of rows; let x = index"
-                class="chess-tile"
-              >
-                <div class="image-wrapper">
-                  <div class="vertical-wrapper">
-                    <img
-                      #pieceRef
-                      mwlDraggable
-                      (mouseup)="
-                        mouseService.mouseUp(
-                          playerService.getX(x),
-                          playerService.getY(y)
-                        )
-                      "
-                      (mousedown)="
-                        mouseService.mouseDown(
-                          pieceRef,
-                          $event,
-                          playerService.getX(x),
-                          playerService.getY(y)
-                        )
-                      "
-                      [dragActiveClass]="'drag-active'"
-                      [src]="
-                        tileService.getSVG(
-                          playerService.getX(x),
-                          playerService.getY(y)
-                        )
-                      "
-                      class="chess-image"
-                    />
-                    <img
-                      [ngClass]="{
-                        ghost: !mouseService.dragging(
-                          playerService.getX(x),
-                          playerService.getY(y)
-                        ),
-                        'hacky-chess-image': mouseService.dragging(
-                          playerService.getX(x),
-                          playerService.getY(y)
-                        )
-                      }"
-                      [src]="
-                        tileService.getSVG(
-                          playerService.getX(x),
-                          playerService.getY(y)
-                        )
-                      "
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </ng-container>
+<div
+  *ngIf="Board"
+  class="vertical-center"
+  [ngClass]="{
+    'our-turn': playerService.isOurTurn(),
+    'their-turn': playerService.isTheirTurn(),
+    'we-win': playerService.weWin(),
+    'they-win': playerService.theyWin()
+  }"
+>
+  <div class="chess-game">
+    <ng-container *ngIf="rows">
+      <div *ngFor="let row of rows; let y = index" class="chess-row">
+        <div
+          mwlDroppable
+          (drop)="
+            mouseService.mouseUp(playerService.getX(x), playerService.getY(y))
+          "
+          [dragOverClass]="'drag-over'"
+          [style.background]="
+            tileService.getColor(playerService.getX(x), playerService.getY(y))
+          "
+          *ngFor="let row of rows; let x = index"
+          class="chess-tile"
+        >
+          <choss-piece [x]="x" [y]="y"></choss-piece>
         </div>
       </div>
-
-      <div class="timer timer-width">
-        <a id="theirtimer" class="monospace time">05:00</a>
-        <a id="ourtimer" class="monospace time">05:00</a>
-      </div>
-    </div>
-    <mat-spinner *ngIf="!Board"></mat-spinner>
+    </ng-container>
   </div>
 </div>

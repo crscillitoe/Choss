@@ -34,12 +34,12 @@ export abstract class GameMode {
     return game;
   }
 
-  TimerHandleMove(Move: Move, BoardGameState: Game): Game[] {
+  async TimerHandleMove(Move: Move, BoardGameState: Game): Promise<boolean> {
     const turnBeforeMove = BoardGameState.State;
-    const result = this.HandleMove(Move, BoardGameState);
+    const madeMove = await this.HandleMove(Move, BoardGameState);
     const turnAfterMove = BoardGameState.State;
 
-    if (result.length > 0 && turnBeforeMove !== turnAfterMove) {
+    if (madeMove && turnBeforeMove !== turnAfterMove) {
       // We've made a move.
       const time = Date.now();
       const timeSpent = time - BoardGameState.BoardState.Timer.PreviousTime;
@@ -48,7 +48,7 @@ export abstract class GameMode {
         BoardGameState.BoardState.Timer.BlackClock -= timeSpent;
         if (BoardGameState.BoardState.Timer.BlackClock <= 0) {
           // Game over, black out of time
-          result[result.length - 1].State = GameState.WHITE_WIN;
+          BoardGameState.State = GameState.WHITE_WIN;
         }
       }
 
@@ -56,7 +56,7 @@ export abstract class GameMode {
         BoardGameState.BoardState.Timer.WhiteClock -= timeSpent;
         if (BoardGameState.BoardState.Timer.WhiteClock <= 0) {
           // Game over, white out of time
-          result[result.length - 1].State = GameState.BLACK_WIN;
+          BoardGameState.State = GameState.BLACK_WIN;
         }
       }
     }
@@ -75,7 +75,7 @@ export abstract class GameMode {
       BoardGameState.BoardState.Timer.BlackTicking = false;
     }
 
-    return result;
+    return madeMove;
   }
 
   /**
@@ -85,100 +85,106 @@ export abstract class GameMode {
    * @param Move The desired move to be performed
    * @param GameState The current board state
    */
-  HandleMove(Move: Move, BoardGameState: Game): Game[] {
+  async HandleMove(Move: Move, BoardGameState: Game): Promise<boolean> {
     let Piece = BoardGameState.BoardState.getPieceAtCoordinate(Move.PointA);
 
     let TargetPiece = BoardGameState.BoardState.getPieceAtCoordinate(
       Move.PointB
     );
 
-    if (Piece) {
-      if (
-        (BoardGameState.State !== GameState.IN_PROGRESS_BOTH_TURN &&
-          Piece.Team.equals(TeamOption.WHITE) &&
-          BoardGameState.State !== GameState.IN_PROGRESS_WHITE_TURN) ||
+    if (!Piece) return false;
+    if (
+      BoardGameState.State !== GameState.IN_PROGRESS_BOTH_TURN &&
+      ((Piece.Team.equals(TeamOption.WHITE) &&
+        BoardGameState.State !== GameState.IN_PROGRESS_WHITE_TURN) ||
         (Piece.Team.equals(TeamOption.BLACK) &&
-          BoardGameState.State !== GameState.IN_PROGRESS_BLACK_TURN)
-      ) {
-        return [];
-      }
+          BoardGameState.State !== GameState.IN_PROGRESS_BLACK_TURN))
+    ) {
+      return false;
+    }
 
-      if (
-        !Piece.isValidSquare(
-          Move.PointB.x,
-          Move.PointB.y,
+    if (
+      !Piece.isValidSquare(
+        Move.PointB.x,
+        Move.PointB.y,
+        BoardGameState.BoardState
+      )
+    ) {
+      return false;
+    }
+
+    if (BoardGameState.State === GameState.IN_PROGRESS_WHITE_TURN) {
+      BoardGameState.State = GameState.IN_PROGRESS_BLACK_TURN;
+    } else {
+      BoardGameState.State = GameState.IN_PROGRESS_WHITE_TURN;
+    }
+
+    if (Piece.SpecialMoves) {
+      for (const specialRule of Piece.SpecialMoves) {
+        for (const validSpecialSquare of specialRule.ValidSquares(
+          Piece,
           BoardGameState.BoardState
-        )
-      ) {
-        return [];
-      }
+        )) {
+          if (Coordinate.equals(Move.PointB, validSpecialSquare.target)) {
+            const success = validSpecialSquare.makeMove(
+              Piece,
+              BoardGameState.BoardState,
+              Move.PointB
+            );
 
-      if (BoardGameState.State === GameState.IN_PROGRESS_WHITE_TURN) {
-        BoardGameState.State = GameState.IN_PROGRESS_BLACK_TURN;
-      } else {
-        BoardGameState.State = GameState.IN_PROGRESS_WHITE_TURN;
-      }
-
-      if (Piece.SpecialMoves) {
-        for (const specialRule of Piece.SpecialMoves) {
-          for (const validSpecialSquare of specialRule.ValidSquares(
-            Piece,
-            BoardGameState.BoardState
-          )) {
-            if (Coordinate.equals(Move.PointB, validSpecialSquare.target)) {
-              const success = validSpecialSquare.makeMove(
+            if (success) {
+              BoardGameState.BoardState.logMove(
                 Piece,
-                BoardGameState.BoardState,
+                Move.PointA,
                 Move.PointB
               );
 
-              if (success) {
-                BoardGameState.BoardState.logMove(
-                  Piece,
-                  Move.PointA,
-                  Move.PointB
-                );
-                return [BoardGameState];
-              }
+              return true;
             }
           }
         }
       }
-
-      BoardGameState.BoardState.logMove(Piece, Move.PointA, Move.PointB);
-
-      if (TargetPiece) {
-        this.TakePiece(Piece, TargetPiece, BoardGameState);
-      } else {
-        // No killing has been done.
-        Piece.Coordinate = new Coordinate(Move.PointB.x, Move.PointB.y);
-      }
-
-      if (Piece instanceof Pawn) {
-        if (
-          (Piece.Coordinate.y === BoardGameState.BoardState.Height &&
-            Piece.Team.equals(TeamOption.WHITE)) ||
-          (Piece.Coordinate.y === 1 && Piece.Team.equals(TeamOption.BLACK))
-        ) {
-          const queen = new Queen(Move.PointB.x, Move.PointB.y, Piece.Team);
-          queen.IsBomb = Piece.IsBomb;
-          BoardGameState.BoardState.killPiece(Piece);
-          BoardGameState.BoardState.Pieces.push(queen);
-        }
-      }
-
-      if (!BoardGameState.BoardState.hasBlackKing()) {
-        BoardGameState.State = GameState.WHITE_WIN;
-      }
-
-      if (!BoardGameState.BoardState.hasWhiteKing()) {
-        BoardGameState.State = GameState.BLACK_WIN;
-      }
-
-      return [BoardGameState];
     }
 
-    return [];
+    BoardGameState.BoardState.logMove(Piece, Move.PointA, Move.PointB);
+
+    if (TargetPiece) {
+      this.TakePiece(Piece, TargetPiece, BoardGameState);
+    } else {
+      // No killing has been done.
+      Piece.Coordinate = new Coordinate(Move.PointB.x, Move.PointB.y);
+    }
+
+    // Promote pawns to queens on the last rank
+    if (Piece.getName() === "Pawn") {
+      if (
+        (Piece.Coordinate.y === BoardGameState.BoardState.Height &&
+          Piece.Team.equals(TeamOption.WHITE)) ||
+        (Piece.Coordinate.y === 1 && Piece.Team.equals(TeamOption.BLACK))
+      ) {
+        const queen = new Queen(Move.PointB.x, Move.PointB.y, Piece.Team);
+        queen.IsBomb = Piece.IsBomb;
+        BoardGameState.BoardState.killPiece(Piece);
+        BoardGameState.BoardState.Pieces.push(queen);
+      }
+    }
+
+    if (!BoardGameState.BoardState.hasBlackKing()) {
+      BoardGameState.State = GameState.WHITE_WIN;
+    }
+
+    if (!BoardGameState.BoardState.hasWhiteKing()) {
+      BoardGameState.State = GameState.BLACK_WIN;
+    }
+
+    if (
+      !BoardGameState.BoardState.hasBlackKing &&
+      !BoardGameState.BoardState.hasWhiteKing
+    ) {
+      BoardGameState.State = GameState.DRAW;
+    }
+
+    return true;
   }
 
   /**

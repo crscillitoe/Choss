@@ -1,0 +1,35 @@
+<div class="image-wrapper">
+  <div class="vertical-wrapper">
+    <img
+      #pieceRef
+      mwlDraggable
+      (mouseup)="
+        mouseService.mouseUp(playerService.getX(x), playerService.getY(y))
+      "
+      (mousedown)="
+        mouseService.mouseDown(
+          pieceRef,
+          $event,
+          playerService.getX(x),
+          playerService.getY(y)
+        )
+      "
+      [dragActiveClass]="'drag-active'"
+      [src]="tileService.getSVG(playerService.getX(x), playerService.getY(y))"
+      class="chess-image"
+    />
+    <img
+      [ngClass]="{
+        ghost: !mouseService.dragging(
+          playerService.getX(x),
+          playerService.getY(y)
+        ),
+        'hacky-chess-image': mouseService.dragging(
+          playerService.getX(x),
+          playerService.getY(y)
+        )
+      }"
+      [src]="tileService.getSVG(playerService.getX(x), playerService.getY(y))"
+    />
+  </div>
+</div>

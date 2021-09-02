@@ -17,53 +17,26 @@ import { PieceService } from "../services/piece.service";
 import { MouseService } from "../services/mouse.service";
 
 @Component({
-  selector: "app-board",
+  selector: "choss-board",
   templateUrl: "./board.component.html",
   styleUrls: ["./board.component.css"],
 })
 export class BoardComponent implements OnInit, OnDestroy {
-  initialLoad: boolean = true;
   Board: Board;
-  rows = [];
-
   subscriptions: Subscription[] = [];
-
-  constructor(
-    private tunnelService: TunnelService,
-    private route: ActivatedRoute,
-    private musicService: MusicService,
-    public tileService: TileService,
-    private boardService: BoardService,
-    private timerService: TimerService,
-    public playerService: PlayerService,
-    public mouseService: MouseService,
-    public dialog: MatDialog
-  ) {
-    this.subscriptions.push(
-      this.route.queryParams.subscribe((params) => {
-        this.playerService.setPlayerTeam(
-          new Team(parseInt(params["team"])).teamOption
-        );
-      })
-    );
-  }
+  initialLoad: boolean = true;
+  rows = [];
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
-    this.tunnelService.closeConnection();
-    this.timerService.stopTimer();
   }
-
-  ngOnInit() {
-    this.tunnelService.connect();
+  ngOnInit(): void {
     this.subscriptions.push(
       this.boardService.getGameInstance().subscribe((data) => {
         if (data) {
           this.Board = data.BoardState;
 
-          if (!this.initialLoad) {
-            this.musicService.playClick();
-          } else {
+          if (this.initialLoad) {
             this.timerService.startTimer(this.playerService.getPlayerTeam());
             this.initialLoad = false;
           }
@@ -76,4 +49,15 @@ export class BoardComponent implements OnInit, OnDestroy {
       })
     );
   }
+  constructor(
+    private tunnelService: TunnelService,
+    private route: ActivatedRoute,
+    private musicService: MusicService,
+    public tileService: TileService,
+    private boardService: BoardService,
+    private timerService: TimerService,
+    public playerService: PlayerService,
+    public mouseService: MouseService,
+    public dialog: MatDialog
+  ) {}
 }

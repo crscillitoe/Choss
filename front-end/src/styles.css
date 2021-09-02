@@ -23,3 +23,14 @@ html {
   background: #67a17d !important;
   opacity: 0.7;
 }
+
+.vertical-center {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.timer-width {
+  width: 200px;
+}

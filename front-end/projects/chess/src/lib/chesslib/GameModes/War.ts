@@ -24,17 +24,17 @@ export class War extends GameMode {
     this.turncounter = 0;
   }
 
-  HandleMove(Move: Move, BoardGameState: Game): Game[] {
-    const boardGameStates = super.HandleMove(Move, BoardGameState);
-    if (boardGameStates.length !== 0) {
-      this.turncounter++;
-      if (this.turncounter % 10 === 0 && this.expandCount < 2) {
-        BoardGameState.BoardState.expand();
-        this.expandCount++;
-      }
+  async HandleMove(Move: Move, BoardGameState: Game): Promise<boolean> {
+    const madeMove = super.HandleMove(Move, BoardGameState);
+    if (!madeMove) return false;
+
+    this.turncounter++;
+    if (this.turncounter % 10 === 0 && this.expandCount < 2) {
+      BoardGameState.BoardState.expand();
+      this.expandCount++;
     }
 
-    return boardGameStates;
+    return true;
   }
 
   static BuildFreshGame(seed: number): Game {

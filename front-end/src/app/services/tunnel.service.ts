@@ -73,7 +73,7 @@ export class TunnelService {
       });
     });
 
-    this.socket.on("move-made", (move: Move) => {
+    this.socket.on("move-made", async (move: Move) => {
       const coordinateA = new Coordinate(move.PointA.x, move.PointA.y);
       const coordinateB = new Coordinate(move.PointB.x, move.PointB.y);
       const tempMove = {
@@ -81,7 +81,7 @@ export class TunnelService {
         PointB: coordinateB,
         PieceMoved: move.PieceMoved,
       };
-      this.boardService.evaluateMove(tempMove);
+      await this.boardService.evaluateMove(tempMove);
 
       const preMove = this.boardService.getCurrentPreMove();
       if (this.playerService.isOurTurn() && preMove) {

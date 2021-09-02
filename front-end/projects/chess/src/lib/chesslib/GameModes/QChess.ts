@@ -22,7 +22,7 @@ export class QChess extends GameMode {
   whiteMoveArray: Move[] = [];
   blackMoveArray: Move[] = [];
 
-  HandleMove(Move: Move, BoardGameState: Game): Game[] {
+  async HandleMove(Move: Move, BoardGameState: Game): Promise<boolean> {
     const piece = BoardGameState.BoardState.getPieceAtCoordinate(Move.PointA);
     Move.PointA = new Coordinate(Move.PointA.x, Move.PointA.y);
     Move.PointB = new Coordinate(Move.PointB.x, Move.PointB.y);
@@ -52,24 +52,21 @@ export class QChess extends GameMode {
       };
     }
 
-    console.log(this.whiteMoveArray);
-    console.log(this.blackMoveArray);
-
-    let toReturn: Game[] = [BoardGameState];
+    let toReturn = false;
     if (this.whiteMoveArray.length === 3 && this.blackMoveArray.length === 3) {
       // The speedier player gets initiative
       // -> The slower player will have the game state set to their turn
       // -> The faster player will have their moves played first
       if (BoardGameState.State === GameState.IN_PROGRESS_WHITE_TURN) {
         BoardGameState.State = GameState.IN_PROGRESS_BLACK_TURN;
-        toReturn = this.processMoves(
+        toReturn = await this.processMoves(
           this.blackMoveArray,
           this.whiteMoveArray,
           BoardGameState
         );
       } else {
         BoardGameState.State = GameState.IN_PROGRESS_WHITE_TURN;
-        toReturn = this.processMoves(
+        toReturn = await this.processMoves(
           this.whiteMoveArray,
           this.blackMoveArray,
           BoardGameState
@@ -79,6 +76,8 @@ export class QChess extends GameMode {
       this.blackMoveArray = [];
       BoardGameState.BoardState.ColorMap = {};
       BoardGameState.State = GameState.IN_PROGRESS_BOTH_TURN;
+      BoardGameState.BoardState.Timer.BlackTicking = true;
+      BoardGameState.BoardState.Timer.WhiteTicking = true;
     } else if (this.whiteMoveArray.length === 3) {
       BoardGameState.State = GameState.IN_PROGRESS_BLACK_TURN;
     } else if (this.blackMoveArray.length === 3) {
@@ -90,40 +89,36 @@ export class QChess extends GameMode {
     return toReturn;
   }
 
-  processMoves(
+  async processMoves(
     firstMoves: Move[],
     secondMoves: Move[],
     BoardGameState: Game
-  ): Game[] {
-    const completedMoves: Game[] = [];
+  ): Promise<boolean> {
+    let toReturn = false;
 
     for (let i = 0; i < 3; i++) {
-      completedMoves.push(
-        ...JSON.parse(
-          JSON.stringify(super.HandleMove(firstMoves[i], BoardGameState))
-        )
-      );
+      BoardGameState.State = GameState.IN_PROGRESS_BOTH_TURN;
+      toReturn =
+        (await super.HandleMove(firstMoves[i], BoardGameState)) || toReturn;
       if (BoardGameState.isGameOver()) {
-        return completedMoves;
+        return toReturn;
       }
-      completedMoves.push(
-        ...JSON.parse(
-          JSON.stringify(super.HandleMove(secondMoves[i], BoardGameState))
-        )
-      );
+      await this.sleep(1000);
+
+      BoardGameState.State = GameState.IN_PROGRESS_BOTH_TURN;
+      toReturn =
+        (await super.HandleMove(secondMoves[i], BoardGameState)) || toReturn;
       if (BoardGameState.isGameOver()) {
-        return completedMoves;
+        return toReturn;
       }
+      await this.sleep(1000);
     }
 
-    completedMoves[completedMoves.length - 1].BoardState.ColorMap = {};
-    completedMoves[completedMoves.length - 1].State =
-      GameState.IN_PROGRESS_BOTH_TURN;
-    completedMoves[completedMoves.length - 1].BoardState.Timer.BlackTicking =
-      true;
-    completedMoves[completedMoves.length - 1].BoardState.Timer.WhiteTicking =
-      true;
-    return completedMoves;
+    return toReturn;
+  }
+
+  sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   static BuildFreshGame(seed: number): Game {

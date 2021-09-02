@@ -1,0 +1,14 @@
+.timer {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.time {
+  padding: 20px;
+  font-size: 23px;
+  color: white;
+}
+
+.monospace {
+  font-family: "Roboto Mono", monospace;
+}

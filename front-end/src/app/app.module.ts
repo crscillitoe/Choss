@@ -23,6 +23,9 @@ import { StartGameDialogComponent } from "./start-game-dialog/start-game-dialog.
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { FormsModule } from "@angular/forms";
+import { GameComponent } from './game/game.component';
+import { PieceComponent } from './piece/piece.component';
+import { TimerComponent } from './timer/timer.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +34,9 @@ import { FormsModule } from "@angular/forms";
     HomeComponent,
     HeaderComponent,
     StartGameDialogComponent,
+    GameComponent,
+    PieceComponent,
+    TimerComponent,
   ],
   imports: [
     BrowserModule,
