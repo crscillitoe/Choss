@@ -1,10 +1,7 @@
-import { MoveRule } from "../../MoveRule";
 import { Board } from "../../Board";
 import { Piece } from "../../Piece";
 import { Coordinate } from "../../Coordinate";
-import { TeamOption } from "../../Team";
 import { SpecialMove, SpecialMoveRule } from "../../SpecialMoveRule";
-import { Pawn } from "../../Pieces/Standard/Pawn";
 
 /**
  * If a pawn adjacant to this piece has just moved
@@ -27,7 +24,7 @@ export class EnPassant implements SpecialMoveRule {
     for (const otherPiece of legalTakeCases) {
       if (otherPiece) {
         if (
-          otherPiece instanceof Pawn &&
+          otherPiece.getName() === "Pawn" &&
           !otherPiece.Team.equals(piece.Team.teamOption)
         ) {
           // Check if this piece just moved.

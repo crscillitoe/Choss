@@ -3,7 +3,7 @@ import { Board } from "projects/chess/src/lib/chesslib/Board";
 import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
 import { TeamOption } from "projects/chess/src/lib/chesslib/Team";
 import { BoardService } from "./board.service";
-import { DragService } from "./drag.service";
+import { MouseService } from "./mouse.service";
 import { PlayerService } from "./player.service";
 
 @Injectable({
@@ -13,7 +13,7 @@ export class TileService {
   constructor(
     private boardService: BoardService,
     private playerSerivce: PlayerService,
-    private dragService: DragService
+    private dragService: MouseService
   ) {}
 
   /**
@@ -62,10 +62,6 @@ export class TileService {
     }
 
     if (this.dragService.dragging(x, y)) {
-      if ((x + y) % 2 === 0) {
-        return "#67a17d";
-      }
-
       return "#3f634d";
     }
 

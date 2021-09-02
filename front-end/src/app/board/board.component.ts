@@ -14,7 +14,7 @@ import { TimerService } from "../services/timer.service";
 import { PlayerService } from "../services/player.service";
 import { Move } from "projects/chess/src/lib/chesslib/Move";
 import { PieceService } from "../services/piece.service";
-import { DragService } from "../services/drag.service";
+import { MouseService } from "../services/mouse.service";
 
 @Component({
   selector: "app-board",
@@ -36,7 +36,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     private boardService: BoardService,
     private timerService: TimerService,
     public playerService: PlayerService,
-    public dragService: DragService,
+    public mouseService: MouseService,
     public dialog: MatDialog
   ) {
     this.subscriptions.push(

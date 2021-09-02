@@ -18,7 +18,7 @@
               <div
                 mwlDroppable
                 (drop)="
-                  dragService.stopDrag(
+                  mouseService.mouseUp(
                     playerService.getX(x),
                     playerService.getY(y)
                   )
@@ -36,9 +36,18 @@
                 <div class="image-wrapper">
                   <div class="vertical-wrapper">
                     <img
+                      #pieceRef
                       mwlDraggable
-                      (dragStart)="
-                        dragService.startDrag(
+                      (mouseup)="
+                        mouseService.mouseUp(
+                          playerService.getX(x),
+                          playerService.getY(y)
+                        )
+                      "
+                      (mousedown)="
+                        mouseService.mouseDown(
+                          pieceRef,
+                          $event,
                           playerService.getX(x),
                           playerService.getY(y)
                         )
@@ -54,11 +63,11 @@
                     />
                     <img
                       [ngClass]="{
-                        ghost: !dragService.dragging(
+                        ghost: !mouseService.dragging(
                           playerService.getX(x),
                           playerService.getY(y)
                         ),
-                        'hacky-chess-image': dragService.dragging(
+                        'hacky-chess-image': mouseService.dragging(
                           playerService.getX(x),
                           playerService.getY(y)
                         )

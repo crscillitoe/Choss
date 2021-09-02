@@ -16,6 +16,7 @@ export abstract class Piece {
   Coordinate: Coordinate;
   Team: Team;
   SVGName: string;
+  Name: string;
 
   KillCount: number = 0;
   TimesMoved: number = 0;
@@ -26,16 +27,21 @@ export abstract class Piece {
 
   PointValue: number;
 
-  constructor(x: number, y: number, team: Team, SVGName: string) {
+  constructor(x: number, y: number, team: Team, name: string) {
     this.Coordinate = new Coordinate(x, y);
+    this.Name = name;
 
     if (team.equals(TeamOption.WHITE)) {
-      this.SVGName = `White_${SVGName}.svg`;
+      this.SVGName = `White_${name}.svg`;
     } else {
-      this.SVGName = `Black_${SVGName}.svg`;
+      this.SVGName = `Black_${name}.svg`;
     }
 
     this.Team = team;
+  }
+
+  getName(): string {
+    return this.Name;
   }
 
   isKing(): boolean {
