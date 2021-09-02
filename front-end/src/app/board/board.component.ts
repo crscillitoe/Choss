@@ -15,6 +15,7 @@ import { PlayerService } from "../services/player.service";
 import { Move } from "projects/chess/src/lib/chesslib/Move";
 import { PieceService } from "../services/piece.service";
 import { MouseService } from "../services/mouse.service";
+import { AnimationService } from "../services/animation.service";
 
 @Component({
   selector: "choss-board",
@@ -58,6 +59,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     private timerService: TimerService,
     public playerService: PlayerService,
     public mouseService: MouseService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private animationService: AnimationService
   ) {}
 }

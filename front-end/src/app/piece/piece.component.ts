@@ -1,4 +1,12 @@
-import { Component, Input, OnInit } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from "@angular/core";
 import { BoardService } from "../services/board.service";
 import { MouseService } from "../services/mouse.service";
 import { PieceService } from "../services/piece.service";
@@ -11,6 +19,7 @@ import { TileService } from "../services/tile.service";
   styleUrls: ["./piece.component.scss"],
 })
 export class PieceComponent implements OnInit {
+  @ViewChild("pieceRef", { static: true }) piece: ElementRef;
   @Input() x: number;
   @Input() y: number;
   constructor(
@@ -20,5 +29,11 @@ export class PieceComponent implements OnInit {
     public tileService: TileService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.pieceService.registerPieceRef(
+      this.piece,
+      this.playerService.getX(this.x),
+      this.playerService.getY(this.y)
+    );
+  }
 }

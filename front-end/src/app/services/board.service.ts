@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { MatSliderModule } from "@angular/material";
 import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
 import { Game } from "projects/chess/src/lib/chesslib/Game";
 import { GameMode } from "projects/chess/src/lib/chesslib/GameMode";
@@ -17,6 +18,7 @@ export class BoardService {
     Coordinate[]
   >([]);
   private preMove: BehaviorSubject<Move> = new BehaviorSubject<Move>(null);
+  private previousMove: BehaviorSubject<Move> = new BehaviorSubject<Move>(null);
   private _preMove: Move = null;
   private _validMoves: Coordinate[] = [];
   private _gameInstance: Game;
@@ -73,10 +75,17 @@ export class BoardService {
   getPreMove() {
     return this.preMove;
   }
+  getPreviousMove() {
+    return this.previousMove;
+  }
 
   async evaluateMove(move: Move) {
     if (Coordinate.equals(move.PointA, move.PointB)) return;
-    await this._gameMode.TimerHandleMove(move, this._gameInstance);
+    const madeMove = await this._gameMode.TimerHandleMove(
+      move,
+      this._gameInstance
+    );
+    if (madeMove) this.previousMove.next(move);
     this.gameInstance.next(this._gameInstance);
   }
 }

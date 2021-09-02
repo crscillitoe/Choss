@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { ElementRef, Injectable } from "@angular/core";
 import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
 import { Move } from "projects/chess/src/lib/chesslib/Move";
 import { Piece } from "projects/chess/src/lib/chesslib/Piece";
@@ -11,6 +11,7 @@ import { TunnelService } from "./tunnel.service";
 })
 export class PieceService {
   private selectedPiece: Piece;
+  private pieceRefMap: { [key: string]: HTMLElement } = {};
   constructor(
     private boardService: BoardService,
     private playerService: PlayerService,
@@ -37,6 +38,14 @@ export class PieceService {
     this.selectedPiece = Piece;
     this.boardService.clearPieceSelection();
     this.boardService.requestValidSquares(Piece);
+  }
+
+  registerPieceRef(pieceRef: ElementRef, x: number, y: number) {
+    this.pieceRefMap[`${x},${y}`] = pieceRef.nativeElement;
+  }
+
+  getPieceRef(x: number, y: number): HTMLElement {
+    return this.pieceRefMap[`${x},${y}`];
   }
 
   placePiece(x: number, y: number) {

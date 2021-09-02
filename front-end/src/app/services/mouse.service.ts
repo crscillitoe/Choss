@@ -10,11 +10,16 @@ import { PieceService } from "./piece.service";
 export class MouseService {
   private dragOrigin: Coordinate = null;
   private draggingPiece: HTMLElement;
+  private placedWithClick: boolean = false;
 
   constructor(
     private pieceService: PieceService,
     private boardService: BoardService
   ) {}
+
+  getPlacedWithClick() {
+    return this.placedWithClick;
+  }
 
   getCurrentDragOrigin(): Coordinate {
     return this.dragOrigin;
@@ -32,9 +37,11 @@ export class MouseService {
     y: number
   ): void {
     // Left click
+    console.log(this.pieceService.getPieceRef(x, y));
     if (event.button === 0) {
       for (const coord of this.boardService.getCurrentValidSquares()) {
         if (coord.x === x && coord.y === y) {
+          this.placedWithClick = true;
           this.pieceService.placePiece(x, y);
           return;
         }
@@ -62,6 +69,10 @@ export class MouseService {
     if (this.dragOrigin && this.dragOrigin.x === x && this.dragOrigin.y === y)
       return;
     this.dragOrigin = null;
+    this.placedWithClick = false;
     this.pieceService.placePiece(x, y);
+    if (this.boardService.getCurrentPreMove() != null) {
+      this.placedWithClick = true;
+    }
   }
 }
