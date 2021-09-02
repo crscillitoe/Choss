@@ -62,6 +62,6 @@ export class AnimationService {
       pieceRef.style.top = "";
       pieceRef.style.transform = "";
       pieceRef.style.transition = "";
-    }, 1000);
+    }, 300);
   }
 }
