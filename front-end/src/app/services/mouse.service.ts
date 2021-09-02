@@ -37,8 +37,8 @@ export class MouseService {
     y: number
   ): void {
     // Left click
-    console.log(this.pieceService.getPieceRef(x, y));
     if (event.button === 0) {
+      // Drag origin is set to previous coordinate
       for (const coord of this.boardService.getCurrentValidSquares()) {
         if (coord.x === x && coord.y === y) {
           this.placedWithClick = true;
@@ -47,11 +47,11 @@ export class MouseService {
         }
       }
 
+      this.dragOrigin = new Coordinate(x, y);
       this.draggingPiece = pieceRef;
       pieceRef.style.left =
         5 + (event.offsetX - pieceRef.offsetWidth / 2) + "px";
       pieceRef.style.top = event.offsetY - pieceRef.offsetHeight / 2 + "px";
-      this.dragOrigin = new Coordinate(x, y);
       this.pieceService.selectPiece(x, y);
     }
   }
@@ -66,9 +66,11 @@ export class MouseService {
 
   mouseUp(x: number, y: number): void {
     this.clearPiece();
-    if (this.dragOrigin && this.dragOrigin.x === x && this.dragOrigin.y === y)
+    if (this.dragOrigin && this.dragOrigin.x === x && this.dragOrigin.y === y) {
+      this.dragOrigin = null;
       return;
-    this.dragOrigin = null;
+    }
+
     this.placedWithClick = false;
     this.pieceService.placePiece(x, y);
     if (this.boardService.getCurrentPreMove() != null) {

@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  Output,
+  EventEmitter,
+} from "@angular/core";
 import { TunnelService } from "../services/tunnel.service";
 import { Board } from "../../../projects/chess/src/lib/chesslib/Board";
 import { Team } from "../../../projects/chess/src/lib/chesslib/Team";
@@ -23,6 +29,7 @@ import { AnimationService } from "../services/animation.service";
   styleUrls: ["./board.component.css"],
 })
 export class BoardComponent implements OnInit, OnDestroy {
+  @Output() startGame = new EventEmitter();
   Board: Board;
   subscriptions: Subscription[] = [];
   initialLoad: boolean = true;
@@ -38,7 +45,7 @@ export class BoardComponent implements OnInit, OnDestroy {
           this.Board = data.BoardState;
 
           if (this.initialLoad) {
-            this.timerService.startTimer(this.playerService.getPlayerTeam());
+            this.startGame.emit("start");
             this.initialLoad = false;
           }
 

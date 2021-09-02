@@ -20,6 +20,8 @@ import { TunnelService } from "../services/tunnel.service";
 export class GameComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
+  timerMessage: string = "";
+
   constructor(
     private tunnelService: TunnelService,
     private route: ActivatedRoute,
@@ -40,10 +42,14 @@ export class GameComponent implements OnInit, OnDestroy {
     );
   }
 
+  startGame(message: string) {
+    this.timerMessage = message;
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
     this.tunnelService.closeConnection();
-    this.timerService.stopTimer();
+    this.timerMessage = "stop";
   }
 
   ngOnInit() {

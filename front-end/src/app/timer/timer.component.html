@@ -1,6 +1,20 @@
 <div class="vertical-center">
   <div class="timer timer-width">
-    <a id="theirtimer" class="monospace time">05:00</a>
-    <a id="ourtimer" class="monospace time">05:00</a>
+    <a
+      #theirTimer
+      [ngClass]="{
+        ticking: timerService.theyTicking()
+      }"
+      class="monospace time"
+      >05:00</a
+    >
+    <a
+      #ourTimer
+      [ngClass]="{
+        ticking: timerService.weTicking()
+      }"
+      class="monospace time"
+      >05:00</a
+    >
   </div>
 </div>

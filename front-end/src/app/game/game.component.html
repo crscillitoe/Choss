@@ -3,8 +3,8 @@
     <div class="board-and-timer">
       <div class="fake-timer timer-width"></div>
 
-      <choss-board></choss-board>
-      <choss-timer></choss-timer>
+      <choss-board (startGame)="startGame($event)"></choss-board>
+      <choss-timer [timerMessage]="timerMessage"></choss-timer>
     </div>
   </div>
 </div>

@@ -41,15 +41,20 @@ export class AnimationService {
       move.PointB.y
     );
 
-    const pointAX = (originalLocation.getBoundingClientRect() as any).x;
-    const pointAY = (originalLocation.getBoundingClientRect() as any).y;
+    const aRect = originalLocation.getBoundingClientRect() as DOMRect;
+    const pointAX = aRect.x;
+    const pointAY = aRect.y;
 
-    const pointBX = (pieceRef.getBoundingClientRect() as any).x;
-    const pointBY = (pieceRef.getBoundingClientRect() as any).y;
+    const magicX = aRect.width / 17;
+    const magicY = aRect.height / 19;
+
+    const bRect = pieceRef.getBoundingClientRect() as DOMRect;
+    const pointBX = bRect.x;
+    const pointBY = bRect.y;
 
     pieceRef.style.position = "absolute";
-    pieceRef.style.left = pointAX - pointBX + 3 + "px";
-    pieceRef.style.top = pointAY - pointBY + 2 + "px";
+    pieceRef.style.left = pointAX - pointBX + magicX + "px";
+    pieceRef.style.top = pointAY - pointBY + magicY + "px";
 
     pieceRef.style.transform = `translate(${pointBX - pointAX}px, ${
       pointBY - pointAY
@@ -60,6 +65,8 @@ export class AnimationService {
       pieceRef.style.position = "";
       pieceRef.style.left = "";
       pieceRef.style.top = "";
+      pieceRef.style.width = "";
+      pieceRef.style.height = "";
       pieceRef.style.transform = "";
       pieceRef.style.transition = "";
     }, 300);
