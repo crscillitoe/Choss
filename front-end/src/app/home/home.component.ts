@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { TunnelService } from "../services/tunnel.service";
-import { GameModeDescription } from "projects/chess/src/lib/chesslib/GameModes/GameModeRegistry";
+import {
+  GameModeDescription,
+  getGameModeDescriptions,
+} from "projects/chess/src/lib/chesslib/GameModes/GameModeRegistry";
 import { MatDialog } from "@angular/material";
 import { StartGameDialogComponent } from "../start-game-dialog/start-game-dialog.component";
 
@@ -19,10 +22,7 @@ export class HomeComponent implements OnInit {
     private tunnel: TunnelService,
     public dialog: MatDialog
   ) {
-    tunnel.getAvailableGameModes().subscribe((gameModeDescriptions) => {
-      console.log(gameModeDescriptions);
-      this.gameModeDescriptions = gameModeDescriptions;
-    });
+    this.gameModeDescriptions = getGameModeDescriptions();
   }
 
   ngOnInit() {}

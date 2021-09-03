@@ -3,6 +3,7 @@ import { DoubleMove } from "./DoubleMove";
 import { RandomAtomic } from "./RandomAtomic";
 import { QChess } from "./QChess";
 import { War } from "./War";
+import { Chiss } from "./Chiss";
 
 export interface GameModeDescription {
   displayName: string;
@@ -34,6 +35,11 @@ const allGameModeDescriptions: GameModeDescription[] = [
     description:
       "Instead of turns, each player queues up 3 moves. The game will then play those moves out 1 by 1.",
     gameMode: QChess,
+  },
+  {
+    displayName: "Chiss",
+    description: "Small Board Chess",
+    gameMode: Chiss,
   },
 ];
 

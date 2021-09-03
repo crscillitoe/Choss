@@ -71,10 +71,12 @@ export class TimerComponent implements OnInit, OnDestroy, OnChanges {
       const minutes = Math.trunc(diff / (60 * 1000)) % 60;
       const seconds = Math.trunc(diff / 1000) % 60;
 
-      this.ourTimer.nativeElement.textContent =
-        (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") +
-        ":" +
-        (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00");
+      if (diff >= 0) {
+        this.ourTimer.nativeElement.textContent =
+          (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") +
+          ":" +
+          (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00");
+      }
     }
 
     if (
@@ -88,10 +90,12 @@ export class TimerComponent implements OnInit, OnDestroy, OnChanges {
       const minutes = Math.trunc(diff / (60 * 1000)) % 60;
       const seconds = Math.trunc(diff / 1000) % 60;
 
-      this.theirTimer.nativeElement.textContent =
-        (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") +
-        ":" +
-        (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00");
+      if (diff >= 0) {
+        this.theirTimer.nativeElement.textContent =
+          (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") +
+          ":" +
+          (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00");
+      }
     }
 
     this.timerId = setTimeout(() => this.handleTimers(), 200);
