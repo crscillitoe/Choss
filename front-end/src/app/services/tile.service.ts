@@ -61,10 +61,6 @@ export class TileService {
       return coloredSquare.color;
     }
 
-    if (this.dragService.dragging(x, y)) {
-      return "#3f634d";
-    }
-
     const piece = this.boardService
       .getCurrentGameInstance()
       .BoardState.getPieceAtCoordinate(new Coordinate(x, y));
@@ -90,20 +86,28 @@ export class TileService {
       }
     }
 
-    const movedCoords = this.boardService
-      .getCurrentGameInstance()
-      .BoardState.getMovedTo();
-    if (movedCoords.length >= 2) {
+    const history =
+      this.boardService.getCurrentGameInstance().BoardState.MoveHistory;
+    const length = this.boardService.getMoveLength();
+    const movedCoords = history.slice(history.length - length, history.length);
+    let index = 0;
+    for (const movedCoord of movedCoords) {
       if (
-        Coordinate.equals(movedCoords[0], new Coordinate(x, y)) ||
-        Coordinate.equals(movedCoords[1], new Coordinate(x, y))
+        Coordinate.equals(movedCoord.PointA, new Coordinate(x, y)) ||
+        Coordinate.equals(movedCoord.PointB, new Coordinate(x, y))
       ) {
+        let red = 245 - index * 10;
+        let green = 203 - index * 10;
+        let blue = 66;
         if ((x + y) % 2 === 1) {
-          return "#bd9b2d";
+          red = 189 - index * 10;
+          green = 155 - index * 10;
+          blue = 45;
         }
 
-        return "#f5cb42";
+        return `rgb(${red}, ${green}, ${blue})`;
       }
+      index++;
     }
 
     if ((x + y) % 2 === 1) {

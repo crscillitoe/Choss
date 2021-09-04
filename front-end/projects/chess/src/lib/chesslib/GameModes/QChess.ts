@@ -22,6 +22,10 @@ export class QChess extends GameMode {
   whiteMoveArray: Move[] = [];
   blackMoveArray: Move[] = [];
 
+  getMoveLength(): number {
+    return 6;
+  }
+
   async HandleMove(Move: Move, BoardGameState: Game): Promise<boolean> {
     const piece = BoardGameState.BoardState.getPieceAtCoordinate(Move.PointA);
     Move.PointA = new Coordinate(Move.PointA.x, Move.PointA.y);

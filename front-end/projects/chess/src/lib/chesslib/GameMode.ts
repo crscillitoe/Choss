@@ -34,6 +34,10 @@ export abstract class GameMode {
     return game;
   }
 
+  getMoveLength(): number {
+    return 1;
+  }
+
   async TimerHandleMove(Move: Move, BoardGameState: Game): Promise<boolean> {
     const turnBeforeMove = BoardGameState.State;
     const madeMove = await this.HandleMove(Move, BoardGameState);

@@ -20,6 +20,10 @@ export class DoubleMove extends GameMode {
     this.turnCounter = 0;
   }
 
+  getMoveLength(): number {
+    return 2;
+  }
+
   /**
    * In `DoubleMove`, each player is allowed to make
    * *two* moves before their turn is concluded.

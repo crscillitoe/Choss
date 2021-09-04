@@ -30,6 +30,10 @@ export class BoardService {
     this._gameMode = new (<any>getGameModeById(gameModeId))();
   }
 
+  getMoveLength(): number {
+    return this._gameMode.getMoveLength();
+  }
+
   requestValidSquares(piece: Piece) {
     this._validMoves = Array.from(
       piece.getValidSquares(this._gameInstance.BoardState)
