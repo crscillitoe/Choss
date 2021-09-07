@@ -8,7 +8,7 @@ import { BoardService } from "./board.service";
   providedIn: "root",
 })
 export class PlayerService {
-  private team: TeamOption = TeamOption.BLACK;
+  public team: TeamOption = TeamOption.BLACK;
 
   constructor(private boardService: BoardService) {}
 
@@ -17,65 +17,57 @@ export class PlayerService {
   }
 
   getX(x: number): number {
-    if (this.getPlayerTeam() === TeamOption.BLACK) {
+    if (this.team === TeamOption.BLACK) {
       return x + 1;
     }
 
-    return this.boardService.getCurrentGameInstance().BoardState.Width - x;
+    return this.boardService.gameInstance.BoardState.Width - x;
   }
 
   getY(y: number): number {
-    if (this.getPlayerTeam() === TeamOption.BLACK) {
+    if (this.team === TeamOption.BLACK) {
       return y + 1;
     }
 
-    return this.boardService.getCurrentGameInstance().BoardState.Height - y;
-  }
-
-  getPlayerTeam(): TeamOption {
-    return this.team;
+    return this.boardService.gameInstance.BoardState.Height - y;
   }
 
   isTheirTurn(): boolean {
     return (
-      (this.boardService.getCurrentGameInstance().State ===
+      (this.boardService.gameInstance.State ===
         GameState.IN_PROGRESS_BLACK_TURN &&
-        this.getPlayerTeam() === TeamOption.WHITE) ||
-      (this.boardService.getCurrentGameInstance().State ===
+        this.team === TeamOption.WHITE) ||
+      (this.boardService.gameInstance.State ===
         GameState.IN_PROGRESS_WHITE_TURN &&
-        this.getPlayerTeam() === TeamOption.BLACK)
+        this.team === TeamOption.BLACK)
     );
   }
 
   isOurTurn(): boolean {
     return (
-      (this.boardService.getCurrentGameInstance().State ===
+      (this.boardService.gameInstance.State ===
         GameState.IN_PROGRESS_BLACK_TURN &&
-        this.getPlayerTeam() === TeamOption.BLACK) ||
-      (this.boardService.getCurrentGameInstance().State ===
+        this.team === TeamOption.BLACK) ||
+      (this.boardService.gameInstance.State ===
         GameState.IN_PROGRESS_WHITE_TURN &&
-        this.getPlayerTeam() === TeamOption.WHITE)
+        this.team === TeamOption.WHITE)
     );
   }
   weWin(): boolean {
     return (
-      (this.boardService.getCurrentGameInstance().State ===
-        GameState.WHITE_WIN &&
-        this.getPlayerTeam() === TeamOption.WHITE) ||
-      (this.boardService.getCurrentGameInstance().State ===
-        GameState.BLACK_WIN &&
-        this.getPlayerTeam() === TeamOption.BLACK)
+      (this.boardService.gameInstance.State === GameState.WHITE_WIN &&
+        this.team === TeamOption.WHITE) ||
+      (this.boardService.gameInstance.State === GameState.BLACK_WIN &&
+        this.team === TeamOption.BLACK)
     );
   }
 
   theyWin(): boolean {
     return (
-      (this.boardService.getCurrentGameInstance().State ===
-        GameState.WHITE_WIN &&
-        this.getPlayerTeam() === TeamOption.BLACK) ||
-      (this.boardService.getCurrentGameInstance().State ===
-        GameState.BLACK_WIN &&
-        this.getPlayerTeam() === TeamOption.WHITE)
+      (this.boardService.gameInstance.State === GameState.WHITE_WIN &&
+        this.team === TeamOption.BLACK) ||
+      (this.boardService.gameInstance.State === GameState.BLACK_WIN &&
+        this.team === TeamOption.WHITE)
     );
   }
 }

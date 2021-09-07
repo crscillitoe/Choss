@@ -18,13 +18,13 @@ export class MusicService {
 
   constructor() {
     let playing = localStorage.getItem("musicPlaying");
-    if (playing == null) {
+    if (!playing) {
       localStorage.setItem("playing", "true");
       playing = "true";
     }
 
     let playClicks = localStorage.getItem("playClicks");
-    if (playClicks == null) {
+    if (!playClicks) {
       localStorage.setItem("playClicks", "true");
       playClicks = "true";
     }
@@ -37,18 +37,19 @@ export class MusicService {
 
     this.music = new Howl({
       src: ["assets/audio/music/chess.wav"],
-      autoplay: playing == "true",
+      autoplay: playing === "true",
       loop: true,
     });
 
-    this._playing.next(playing == "true");
+    this._playing.next(playing === "true");
+    this._playClicks.next(playClicks === "true");
   }
 
   /**
    * Plays the clickng sound used when a piece is moved.
    */
   playClick() {
-    if (localStorage.getItem("playClicks") == "true") {
+    if (localStorage.getItem("playClicks") === "true") {
       this.pieceMove.play();
     }
   }
@@ -57,7 +58,7 @@ export class MusicService {
    * toggles whether or not to mute clicking noises
    */
   muteClicks() {
-    if (localStorage.getItem("playClicks") == "true") {
+    if (localStorage.getItem("playClicks") === "true") {
       localStorage.setItem("playClicks", "false");
       this._playClicks.next(false);
     } else {

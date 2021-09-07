@@ -8,18 +8,14 @@ import { PieceService } from "./piece.service";
   providedIn: "root",
 })
 export class MouseService {
-  private dragOrigin: Coordinate = null;
-  private draggingPiece: HTMLElement;
-  private placedWithClick: boolean = false;
+  public dragOrigin: Coordinate = null;
+  public draggingPiece: HTMLElement;
+  public placedWithClick: boolean = false;
 
   constructor(
     private pieceService: PieceService,
     private boardService: BoardService
   ) {}
-
-  getPlacedWithClick() {
-    return this.placedWithClick;
-  }
 
   getCurrentDragOrigin(): Coordinate {
     return this.dragOrigin;
@@ -39,7 +35,7 @@ export class MouseService {
     // Left click
     if (event.button === 0) {
       // Drag origin is set to previous coordinate
-      for (const coord of this.boardService.getCurrentValidSquares()) {
+      for (const coord of this.boardService.validMoves) {
         if (coord.x === x && coord.y === y) {
           this.placedWithClick = true;
           this.pieceService.placePiece(x, y);
@@ -73,7 +69,7 @@ export class MouseService {
 
     this.placedWithClick = false;
     this.pieceService.placePiece(x, y);
-    if (this.boardService.getCurrentPreMove() != null) {
+    if (this.boardService.preMove != null) {
       this.placedWithClick = true;
     }
   }

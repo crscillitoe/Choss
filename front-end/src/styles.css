@@ -21,6 +21,7 @@ html {
 
 .drag-over {
   background: #67a17d !important;
+  cursor: grabbing;
   opacity: 0.7;
 }
 

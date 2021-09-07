@@ -10,8 +10,8 @@ import { TunnelService } from "./tunnel.service";
   providedIn: "root",
 })
 export class PieceService {
-  private selectedPiece: Piece;
-  private pieceRefMap: { [key: string]: HTMLElement } = {};
+  public selectedPiece: Piece;
+  public pieceRefMap: { [key: string]: HTMLElement } = {};
   constructor(
     private boardService: BoardService,
     private playerService: PlayerService,
@@ -25,13 +25,11 @@ export class PieceService {
    */
   selectPiece(x: number, y: number) {
     this.boardService.clearPreMove();
-    const Piece = this.boardService
-      .getCurrentGameInstance()
-      .BoardState.getPieceAtCoordinate(new Coordinate(x, y));
-    if (
-      !Piece ||
-      !(this.playerService.getPlayerTeam() === Piece.Team.teamOption)
-    ) {
+    const Piece =
+      this.boardService.gameInstance.BoardState.getPieceAtCoordinate(
+        new Coordinate(x, y)
+      );
+    if (!Piece || !(this.playerService.team === Piece.Team.teamOption)) {
       return;
     }
 

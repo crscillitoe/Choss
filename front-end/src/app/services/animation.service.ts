@@ -22,11 +22,10 @@ export class AnimationService {
 
   shouldAnimate(move: Move) {
     return (
-      this.mouseService.getPlacedWithClick() ||
-      this.boardService
-        .getCurrentGameInstance()
-        .BoardState.getPieceAtCoordinate(move.PointB).Team.teamOption !=
-        this.playerService.getPlayerTeam()
+      this.mouseService.placedWithClick ||
+      this.boardService.gameInstance.BoardState.getPieceAtCoordinate(
+        move.PointB
+      ).Team.teamOption != this.playerService.team
     );
   }
 

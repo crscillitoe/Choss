@@ -7,6 +7,7 @@ import {
   SimpleChanges,
   ViewChild,
 } from "@angular/core";
+import { Board } from "projects/chess/src/lib/chesslib/Board";
 import { BoardService } from "../services/board.service";
 import { MouseService } from "../services/mouse.service";
 import { PieceService } from "../services/piece.service";
@@ -26,7 +27,8 @@ export class PieceComponent implements OnInit {
     public mouseService: MouseService,
     public pieceService: PieceService,
     public playerService: PlayerService,
-    public tileService: TileService
+    public tileService: TileService,
+    public boardService: BoardService
   ) {}
 
   ngOnInit() {

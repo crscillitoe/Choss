@@ -13,6 +13,15 @@
   z-index: 1;
 }
 
+.valid-chess-piece:hover {
+  cursor: grab;
+}
+
+.valid-chess-piece:active,
+.hacky-chess-image:hover {
+  cursor: grabbing !important;
+}
+
 .hacky-chess-image {
   opacity: 0.3;
   pointer-events: none;

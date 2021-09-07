@@ -13,6 +13,12 @@
         playerService.getY(y)
       )
     "
+    [ngClass]="{
+      'valid-chess-piece': boardService.isPieceAt(
+        playerService.getX(x),
+        playerService.getY(y)
+      )
+    }"
     [dragActiveClass]="'drag-active'"
     [src]="tileService.getSVG(playerService.getX(x), playerService.getY(y))"
     class="chess-image"

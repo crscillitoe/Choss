@@ -83,10 +83,10 @@ export class TunnelService {
       };
       await this.boardService.evaluateMove(tempMove);
 
-      const preMove = this.boardService.getCurrentPreMove();
+      const preMove = this.boardService.preMove;
       if (this.playerService.isOurTurn() && preMove) {
-        this.boardService.clearPreMove();
         this.makeMove(preMove.PointA, preMove.PointB);
+        this.boardService.clearPreMove();
       }
     });
   }

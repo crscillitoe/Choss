@@ -12,84 +12,85 @@ import { BehaviorSubject } from "rxjs";
   providedIn: "root",
 })
 export class BoardService {
-  private _gameMode: GameMode;
-  private gameInstance: BehaviorSubject<Game> = new BehaviorSubject<Game>(null);
-  private validMoves: BehaviorSubject<Coordinate[]> = new BehaviorSubject<
+  public gameMode: GameMode;
+  public preMove: Move = null;
+  public validMoves: Coordinate[] = [];
+  public gameInstance: Game;
+
+  private __gameInstance: BehaviorSubject<Game> = new BehaviorSubject<Game>(
+    null
+  );
+  private __validMoves: BehaviorSubject<Coordinate[]> = new BehaviorSubject<
     Coordinate[]
   >([]);
-  private preMove: BehaviorSubject<Move> = new BehaviorSubject<Move>(null);
-  private previousMove: BehaviorSubject<Move> = new BehaviorSubject<Move>(null);
-  private _preMove: Move = null;
-  private _validMoves: Coordinate[] = [];
-  private _gameInstance: Game;
+  private __preMove: BehaviorSubject<Move> = new BehaviorSubject<Move>(null);
+  private __previousMove: BehaviorSubject<Move> = new BehaviorSubject<Move>(
+    null
+  );
   constructor() {}
 
   buildGame(gameModeId: number, seed: number) {
-    this._gameInstance = getGameModeById(gameModeId).BuildFreshGame(seed);
-    this.gameInstance.next(this._gameInstance);
-    this._gameMode = new (<any>getGameModeById(gameModeId))();
+    this.gameInstance = getGameModeById(gameModeId).BuildFreshGame(seed);
+    this.__gameInstance.next(this.gameInstance);
+    this.gameMode = new (<any>getGameModeById(gameModeId))();
+  }
+
+  isPieceAt(x: number, y: number) {
+    return (
+      this.gameInstance.BoardState.getPieceAtCoordinate(new Coordinate(x, y)) !=
+      null
+    );
   }
 
   getMoveLength(): number {
-    return this._gameMode.getMoveLength();
+    return this.gameMode.getMoveLength();
   }
 
   requestValidSquares(piece: Piece) {
-    this._validMoves = Array.from(
-      piece.getValidSquares(this._gameInstance.BoardState)
+    this.validMoves = Array.from(
+      piece.getValidSquares(this.gameInstance.BoardState)
     );
-    this.validMoves.next(this._validMoves);
+    this.__validMoves.next(this.validMoves);
   }
 
   clearPieceSelection() {
-    this._validMoves = [];
-    this.validMoves.next(this._validMoves);
+    this.validMoves = [];
+    this.__validMoves.next(this.validMoves);
   }
 
   makePreMove(move: Move) {
-    this._preMove = move;
-    this.preMove.next(this._preMove);
+    this.preMove = move;
+    this.__preMove.next(this.preMove);
   }
 
   clearPreMove() {
-    this._preMove = null;
-    this.preMove.next(this._preMove);
-  }
-
-  getCurrentValidSquares() {
-    return this._validMoves;
+    this.preMove = null;
+    this.__preMove.next(this.preMove);
   }
 
   getValidSquares() {
-    return this.validMoves;
-  }
-
-  getCurrentGameInstance() {
-    return this._gameInstance;
+    return this.__validMoves;
   }
 
   getGameInstance() {
-    return this.gameInstance;
-  }
-
-  getCurrentPreMove() {
-    return this._preMove;
+    return this.__gameInstance;
   }
 
   getPreMove() {
-    return this.preMove;
+    return this.__preMove;
   }
+
   getPreviousMove() {
-    return this.previousMove;
+    return this.__previousMove;
   }
 
   async evaluateMove(move: Move) {
     if (Coordinate.equals(move.PointA, move.PointB)) return;
-    const madeMove = await this._gameMode.TimerHandleMove(
+    const madeMove = await this.gameMode.TimerHandleMove(
       move,
-      this._gameInstance
+      this.gameInstance
     );
-    if (madeMove) this.previousMove.next(move);
-    this.gameInstance.next(this._gameInstance);
+    if (madeMove) this.__previousMove.next(move);
+    this.__gameInstance.next(this.gameInstance);
   }
 }

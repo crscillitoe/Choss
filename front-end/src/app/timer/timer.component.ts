@@ -36,7 +36,7 @@ export class TimerComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges() {
     if (this.timerMessage === "start" && !this.running) {
       this.running = true;
-      this.startTimer(this.playerService.getPlayerTeam());
+      this.startTimer(this.playerService.team);
     } else if (this.timerMessage === "stop") {
       this.stopTimer();
     }

@@ -26,13 +26,6 @@ export class HeaderComponent implements OnInit {
   }
 
   /**
-   * Resets the board state to its' starting position.
-   */
-  resetBoard() {
-    this.tunnelService.resetGame();
-  }
-
-  /**
    * Turns the music on or off.
    */
   toggleMusic() {

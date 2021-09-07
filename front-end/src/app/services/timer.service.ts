@@ -30,25 +30,25 @@ export class TimerService {
   }
 
   weTicking() {
-    return this.playerService.getPlayerTeam() === TeamOption.WHITE
+    return this.playerService.team === TeamOption.WHITE
       ? this.timer.WhiteTicking
       : this.timer.BlackTicking;
   }
 
   theyTicking() {
-    return this.playerService.getPlayerTeam() === TeamOption.BLACK
+    return this.playerService.team === TeamOption.BLACK
       ? this.timer.WhiteTicking
       : this.timer.BlackTicking;
   }
 
   getOurClock() {
-    return this.playerService.getPlayerTeam() === TeamOption.WHITE
+    return this.playerService.team === TeamOption.WHITE
       ? this.timer.WhiteClock
       : this.timer.BlackClock;
   }
 
   getTheirClock() {
-    return this.playerService.getPlayerTeam() === TeamOption.WHITE
+    return this.playerService.team === TeamOption.WHITE
       ? this.timer.BlackClock
       : this.timer.WhiteClock;
   }
