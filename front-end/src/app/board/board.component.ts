@@ -26,7 +26,7 @@ import { AnimationService } from "../services/animation.service";
 @Component({
   selector: "choss-board",
   templateUrl: "./board.component.html",
-  styleUrls: ["./board.component.css"],
+  styleUrls: ["./board.component.scss"],
 })
 export class BoardComponent implements OnInit, OnDestroy {
   @Output() startGame = new EventEmitter();

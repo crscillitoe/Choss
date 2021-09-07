@@ -11,7 +11,7 @@ import { StartGameDialogComponent } from "../start-game-dialog/start-game-dialog
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
-  styleUrls: ["./home.component.css"],
+  styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent implements OnInit {
   gameModeDescriptions: GameModeDescription[] = [];

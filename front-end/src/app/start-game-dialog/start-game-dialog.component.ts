@@ -5,7 +5,7 @@ import { TunnelService } from "../services/tunnel.service";
 @Component({
   selector: "app-start-game-dialog",
   templateUrl: "./start-game-dialog.component.html",
-  styleUrls: ["./start-game-dialog.component.css"],
+  styleUrls: ["./start-game-dialog.component.scss"],
 })
 export class StartGameDialogComponent implements OnInit, OnDestroy {
   inviteLink: string = "";

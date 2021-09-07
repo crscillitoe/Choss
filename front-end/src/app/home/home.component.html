@@ -1,23 +1,21 @@
 <div class="page">
-  <div class="horizontal-align max-height">
-    <div class="vertical-align">
-      <div class="games">
-        <div class="game-mode" *ngFor="let gameMode of gameModeDescriptions">
-          <div class="game-name">
-            {{ gameMode.displayName }}
-          </div>
-          <div class="game-description">
-            {{ gameMode.description }}
-          </div>
-          <div class="game-buttons">
-            <button
-              mat-raised-button
-              color="primary"
-              (click)="setGamemode(gameMode.id); newGame()"
-            >
-              Play
-            </button>
-          </div>
+  <div class="center-both">
+    <div class="games">
+      <div class="game-mode" *ngFor="let gameMode of gameModeDescriptions">
+        <div class="game-name">
+          {{ gameMode.displayName }}
+        </div>
+        <div class="game-description">
+          {{ gameMode.description }}
+        </div>
+        <div class="game-buttons">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="setGamemode(gameMode.id); newGame()"
+          >
+            Play
+          </button>
         </div>
       </div>
     </div>
