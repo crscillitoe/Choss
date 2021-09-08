@@ -13,7 +13,7 @@ import { PlayerService } from "./player.service";
 export class TileService {
   constructor(
     private boardService: BoardService,
-    private playerSerivce: PlayerService,
+    private playerService: PlayerService,
     private pieceService: PieceService
   ) {}
 
@@ -64,7 +64,7 @@ export class TileService {
     const lookupKey = new Coordinate(x, y).toString();
     const coloredSquare =
       this.boardService.gameInstance.BoardState.ColorMap[lookupKey];
-    if (coloredSquare && coloredSquare.viewableBy === this.playerSerivce.team) {
+    if (coloredSquare && coloredSquare.viewableBy === this.playerService.team) {
       return coloredSquare.color;
     }
 
@@ -73,7 +73,7 @@ export class TileService {
         new Coordinate(x, y)
       );
     if (piece) {
-      if (piece.IsBomb && piece.Team.teamOption === this.playerSerivce.team) {
+      if (piece.IsBomb && piece.Team.teamOption === this.playerService.team) {
         return "red";
       }
     }
