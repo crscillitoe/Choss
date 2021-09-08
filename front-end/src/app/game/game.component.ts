@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute } from "@angular/router";
 import { Board } from "projects/chess/src/lib/chesslib/Board";
 import { Team } from "projects/chess/src/lib/chesslib/Team";
