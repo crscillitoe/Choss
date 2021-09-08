@@ -1,36 +1,30 @@
-.slidey-button {
-  font-size: 70px;
-  padding: 50px;
-  cursor: pointer;
-  border-radius: 10px;
-}
-
 .games {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-around;
+  height: 100%;
 }
 
 .game-mode {
   background-color: #2f343a;
-  border-radius: 5px;
-  padding: 15px;
-  margin: 50px;
-  width: 300px;
+  border-radius: 0.6rem;
+  padding: 1rem;
+  margin: 3rem;
+  width: 19rem;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
 }
 
 .game-name {
-  font-size: 30px;
+  font-size: 2rem;
   text-align: center;
 }
 
 .game-name,
 .game-description {
   color: #dddddd;
-  margin-bottom: 20px;
+  margin-bottom: 1.3rem;
 }
 
 .game-buttons {

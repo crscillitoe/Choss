@@ -2,16 +2,39 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
+  background-color: #404040;
+  border-radius: 0.5rem;
+  margin-left: 1rem;
+}
+
+@media only screen and (max-width: 900px) {
+  .timer {
+    flex-direction: row;
+    margin-bottom: 1rem;
+    margin-left: 0rem;
+  }
+
+  #theirTimer {
+    order: 2;
+  }
+
+  #ourTimer {
+    order: 1;
+  }
 }
 
 .time {
-  padding: 10px;
-  font-size: 23px;
+  --highlight-render-time: 1s;
+  transition: background-color var(--highlight-render-time) ease;
+  border-radius: 0.5rem;
+  padding: 0.8rem;
+  margin: 0.8rem;
+  font-size: 2rem;
   color: white;
 }
 
 .ticking {
-  background-color: darkseagreen;
+  background-color: rgb(121, 155, 121);
 }
 
 .monospace {

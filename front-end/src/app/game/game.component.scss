@@ -12,11 +12,24 @@
     height: 100%;
     width: 100%;
   }
+
+  .fake-timer {
+    order: 3;
+  }
+
+  #board {
+    order: 2;
+  }
+
+  #timer {
+    padding-top: 1rem;
+    order: 1;
+  }
 }
 
 .label {
   position: relative;
-  bottom: 0px;
+  bottom: 0rem;
   color: white;
   float: left;
 }

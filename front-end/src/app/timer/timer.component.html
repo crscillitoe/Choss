@@ -1,6 +1,7 @@
 <div class="center-both">
   <div class="timer">
     <a
+      id="theirTimer"
       #theirTimer
       [ngClass]="{
         ticking: timerService.theyTicking()
@@ -9,6 +10,7 @@
       >05:00</a
     >
     <a
+      id="ourTimer"
       #ourTimer
       [ngClass]="{
         ticking: timerService.weTicking()

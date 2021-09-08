@@ -1,15 +1,15 @@
 #header {
   position: absolute;
-  top: 0px;
-  left: 0px;
+  top: 0rem;
+  left: 0rem;
   width: 100vw;
-  height: 64px;
+  height: 4rem;
 }
 
 #body {
   position: absolute;
-  top: 64px;
-  left: 0px;
+  top: 4rem;
+  left: 0rem;
   width: 100vw;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 4rem);
 }
