@@ -5,7 +5,7 @@ import {
   GameModeDescription,
   getGameModeDescriptions,
 } from "projects/chess/src/lib/chesslib/GameModes/GameModeRegistry";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { StartGameDialogComponent } from "../start-game-dialog/start-game-dialog.component";
 
 @Component({

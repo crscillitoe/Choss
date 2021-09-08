@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { MatSliderModule } from "@angular/material";
 import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
 import { Game } from "projects/chess/src/lib/chesslib/Game";
 import { GameMode } from "projects/chess/src/lib/chesslib/GameMode";

@@ -13,7 +13,7 @@ import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
 import { ActivatedRoute } from "@angular/router";
 import { MusicService } from "../services/music.service";
 import { Subscription } from "rxjs";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { BoardService } from "../services/board.service";
 import { TileService } from "../services/tile.service";
 import { TimerService } from "../services/timer.service";
