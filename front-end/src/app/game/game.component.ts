@@ -25,10 +25,7 @@ export class GameComponent implements OnInit, OnDestroy {
   constructor(
     private tunnelService: TunnelService,
     private route: ActivatedRoute,
-    private musicService: MusicService,
     public tileService: TileService,
-    private boardService: BoardService,
-    private timerService: TimerService,
     public playerService: PlayerService,
     public mouseService: MouseService,
     public dialog: MatDialog
