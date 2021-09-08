@@ -1,8 +1,17 @@
 .chess-game {
-  --height: min(calc(90vh - 4rem), calc(90vw - 250px));
-  --width: min(calc(90vh - 4rem), calc(90vw - 250px));
-  width: (var(--width));
-  height: (var(--height));
+  --size: min(calc(90vh - 12rem), calc(90vw - 12rem));
+  width: (var(--size));
+  height: (var(--size));
+}
+
+@media only screen and (max-width: 900px) {
+  .chess-game {
+    --size: min(calc(90vh - 12rem), 100vw);
+    width: (var(--size));
+    height: (var(--size));
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+  }
 }
 
 .chess-row {

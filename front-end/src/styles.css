@@ -40,6 +40,9 @@ html {
   justify-content: center;
 }
 
-.timer-width {
-  width: 200px;
+@media only screen and (max-width: 900px) {
+  .no-mobile-scroll {
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+  }
 }
