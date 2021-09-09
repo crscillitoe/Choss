@@ -1,18 +1,18 @@
+@import "../mixins.scss";
+
 .board-and-timer {
   display: flex;
   justify-content: space-around;
   height: 100%;
-}
 
-@media only screen and (max-width: 900px) {
-  .board-and-timer {
-    display: flex;
+  @include mobile() {
+    width: 100%;
     flex-direction: column;
     justify-content: flex-start;
-    height: 100%;
-    width: 100%;
   }
+}
 
+@include mobile() {
   .fake-timer {
     order: 3;
   }

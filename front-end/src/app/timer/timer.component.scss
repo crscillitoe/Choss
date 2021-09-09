@@ -1,3 +1,5 @@
+@import "../mixins.scss";
+
 .timer {
   display: flex;
   justify-content: center;
@@ -5,15 +7,19 @@
   background-color: #404040;
   border-radius: 0.5rem;
   margin-left: 1rem;
-}
 
-@media only screen and (max-width: 900px) {
-  .timer {
+  @include mobile() {
     flex-direction: row;
     margin-bottom: 1rem;
     margin-left: 0rem;
   }
+}
 
+/*
+ * On mobile devices display timers on top, with our timer
+ * on the left and their timer on the right.
+ */
+@include mobile() {
   #theirTimer {
     order: 2;
   }
