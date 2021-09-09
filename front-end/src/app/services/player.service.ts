@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { DropEvent } from "angular-draggable-droppable";
 import { GameState } from "projects/chess/src/lib/chesslib/GameState";
 import { TeamOption } from "projects/chess/src/lib/chesslib/Team";
 import { BoardService } from "./board.service";

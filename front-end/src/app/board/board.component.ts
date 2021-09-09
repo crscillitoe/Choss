@@ -1,27 +1,22 @@
 import {
   Component,
-  OnInit,
-  OnDestroy,
-  Output,
   EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
 } from "@angular/core";
-import { TunnelService } from "../services/tunnel.service";
-import { Board } from "../../../projects/chess/src/lib/chesslib/Board";
-import { Team } from "../../../projects/chess/src/lib/chesslib/Team";
-import { Piece } from "projects/chess/src/lib/chesslib/Piece";
-import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
-import { ActivatedRoute } from "@angular/router";
-import { MusicService } from "../services/music.service";
-import { Subscription } from "rxjs";
 import { MatDialog } from "@angular/material/dialog";
+import { ActivatedRoute } from "@angular/router";
+import { Subscription } from "rxjs";
+import { Board } from "../../../projects/chess/src/lib/chesslib/Board";
+import { AnimationService } from "../services/animation.service";
 import { BoardService } from "../services/board.service";
+import { MouseService } from "../services/mouse.service";
+import { MusicService } from "../services/music.service";
+import { PlayerService } from "../services/player.service";
 import { TileService } from "../services/tile.service";
 import { TimerService } from "../services/timer.service";
-import { PlayerService } from "../services/player.service";
-import { Move } from "projects/chess/src/lib/chesslib/Move";
-import { PieceService } from "../services/piece.service";
-import { MouseService } from "../services/mouse.service";
-import { AnimationService } from "../services/animation.service";
+import { TunnelService } from "../services/tunnel.service";
 
 @Component({
   selector: "choss-board",
