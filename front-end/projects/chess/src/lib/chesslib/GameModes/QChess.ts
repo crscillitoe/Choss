@@ -1,16 +1,15 @@
-import { GameMode } from "../GameMode";
-import { Move } from "../Move";
-import { Game } from "../Game";
-import { Team, TeamOption } from "../Team";
 import { Board } from "../Board";
-import { GameState } from "../GameState";
-import { King } from "../Pieces/Standard/King";
-import { Bishop } from "../Pieces/Standard/Bishop";
-import { Knight } from "../Pieces/Standard/Knight";
-import { Pawn } from "../Pieces/Standard/Pawn";
-import { Rook } from "../Pieces/Standard/Rook";
-import { Zebra } from "../Pieces/Non-Standard/Zebra";
 import { Coordinate } from "../Coordinate";
+import { Game } from "../Game";
+import { GameMode } from "../GameMode";
+import { GameState } from "../GameState";
+import { Move } from "../Move";
+import { Zebra } from "../Pieces/Non-Standard/Zebra";
+import { Bishop } from "../Pieces/Standard/Bishop";
+import { King } from "../Pieces/Standard/King";
+import { Knight } from "../Pieces/Standard/Knight";
+import { Rook } from "../Pieces/Standard/Rook";
+import { Team, TeamOption } from "../Team";
 
 const QUEUED_MOVE_COLORS = ["lightblue", "blue", "darkblue"];
 

@@ -1,11 +1,11 @@
 import { Board } from "../Board";
-import { Team, TeamOption } from "../Team";
-import { Queen } from "../Pieces/Standard/Queen";
-import { King } from "../Pieces/Standard/King";
-import { Rook } from "../Pieces/Standard/Rook";
-import { Knight } from "../Pieces/Standard/Knight";
 import { Bishop } from "../Pieces/Standard/Bishop";
+import { King } from "../Pieces/Standard/King";
+import { Knight } from "../Pieces/Standard/Knight";
 import { Pawn } from "../Pieces/Standard/Pawn";
+import { Queen } from "../Pieces/Standard/Queen";
+import { Rook } from "../Pieces/Standard/Rook";
+import { Team, TeamOption } from "../Team";
 
 /**
  * Contains definitions for built data/function implementations

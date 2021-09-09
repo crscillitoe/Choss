@@ -1,9 +1,9 @@
 import { GameMode } from "../GameMode";
-import { DoubleMove } from "./DoubleMove";
-import { RandomAtomic } from "./RandomAtomic";
-import { QChess } from "./QChess";
-import { War } from "./War";
 import { Chiss } from "./Chiss";
+import { DoubleMove } from "./DoubleMove";
+import { QChess } from "./QChess";
+import { RandomAtomic } from "./RandomAtomic";
+import { War } from "./War";
 
 export interface GameModeDescription {
   displayName: string;

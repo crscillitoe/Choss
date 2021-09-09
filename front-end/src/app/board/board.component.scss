@@ -2,16 +2,19 @@
 @use "../scss/vars";
 
 .chess-game {
-  $size: min(calc(90vh - 12rem), calc(90vw - 12rem));
-
-  @include mixins.mobile() {
-    $size: min(calc(90vh - 12rem), 100vw);
-  }
-
-  padding-bottom: 1rem;
-  padding-top: 1rem;
+  $size: min(calc(100vh - 8rem), calc(100vw - 8rem));
+  $sizeMobile: min(calc(90vh - 12rem), 100vw);
   width: $size;
   height: $size;
+
+  @include mixins.mobile() {
+    width: $sizeMobile;
+    height: $sizeMobile;
+  }
+
+  aspect-ratio: 1/1;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
 }
 
 .chess-row {

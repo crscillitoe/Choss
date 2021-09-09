@@ -1,17 +1,10 @@
-import { GameMode } from "../GameMode";
-import { Board } from "../Board";
-import { Team, TeamOption } from "../Team";
-import { Move } from "../Move";
-import { GameState } from "../GameState";
 import { Game } from "../Game";
-import { King } from "../Pieces/Standard/King";
-import { Pawn } from "../Pieces/Standard/Pawn";
-import { Rook } from "../Pieces/Standard/Rook";
-import { Knight } from "../Pieces/Standard/Knight";
+import { GameMode } from "../GameMode";
 import { Bishop } from "../Pieces/Standard/Bishop";
-import { Queen } from "../Pieces/Standard/Queen";
-import { Piece } from "../Piece";
-import { GameModeShared } from "./GameModeShared";
+import { King } from "../Pieces/Standard/King";
+import { Knight } from "../Pieces/Standard/Knight";
+import { Rook } from "../Pieces/Standard/Rook";
+import { Team, TeamOption } from "../Team";
 
 export class Chiss extends GameMode {
   constructor() {
@@ -19,7 +12,7 @@ export class Chiss extends GameMode {
   }
 
   /**
-   * Set turncounter to 0 since we are doublemove
+   * Set turn counter to 0 since we are DoubleMove
    */
   static BuildFreshGame(seed: number): Game {
     let game = super.BuildFreshGame(seed);
