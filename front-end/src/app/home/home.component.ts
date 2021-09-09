@@ -1,11 +1,10 @@
 import { Component, OnInit } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
-import { TunnelService } from "../services/tunnel.service";
 import {
   GameModeDescription,
   getGameModeDescriptions,
 } from "projects/chess/src/lib/chesslib/GameModes/GameModeRegistry";
-import { MatDialog } from "@angular/material/dialog";
 import { StartGameDialogComponent } from "../start-game-dialog/start-game-dialog.component";
 
 @Component({
@@ -17,11 +16,7 @@ export class HomeComponent implements OnInit {
   gameModeDescriptions: GameModeDescription[] = [];
   private gamemodeID: number;
 
-  constructor(
-    private router: Router,
-    private tunnel: TunnelService,
-    public dialog: MatDialog
-  ) {
+  constructor(private router: Router, public dialog: MatDialog) {
     this.gameModeDescriptions = getGameModeDescriptions();
   }
 

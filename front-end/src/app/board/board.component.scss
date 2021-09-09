@@ -1,17 +1,17 @@
-@import "../mixins.scss";
+@use "../scss/mixins";
+@use "../scss/vars";
 
 .chess-game {
-  --size: min(calc(90vh - 12rem), calc(90vw - 12rem));
-  width: (var(--size));
-  height: (var(--size));
+  $size: min(calc(90vh - 12rem), calc(90vw - 12rem));
 
-  @include mobile() {
-    --size: min(calc(90vh - 12rem), 100vw);
-    width: (var(--size));
-    height: (var(--size));
-    padding-bottom: 1rem;
-    padding-top: 1rem;
+  @include mixins.mobile() {
+    $size: min(calc(90vh - 12rem), 100vw);
   }
+
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+  width: $size;
+  height: $size;
 }
 
 .chess-row {
@@ -33,17 +33,17 @@
 }
 
 .our-turn {
-  box-shadow: inset 0 -1.2rem 0rem -0.3rem #909090;
+  box-shadow: inset 0 -1.2rem 0rem -0.3rem vars.$accentColor;
 }
 
 .we-win {
-  box-shadow: inset 0 -1.2rem 0rem -0.3rem goldenrod;
+  box-shadow: inset 0 -1.2rem 0rem -0.3rem vars.$winnerColor;
 }
 
 .their-turn {
-  box-shadow: inset 0 1.2rem 0rem -0.3rem #909090;
+  box-shadow: inset 0 1.2rem 0rem -0.3rem vars.$accentColor;
 }
 
 .they-win {
-  box-shadow: inset 0 1.2rem 0rem -0.3rem goldenrod;
+  box-shadow: inset 0 1.2rem 0rem -0.3rem vars.$winnerColor;
 }

@@ -1,18 +1,25 @@
-@import "../mixins.scss";
+@use "../scss/mixins";
+@use "../scss/vars";
 
 .board-and-timer {
   display: flex;
   justify-content: space-around;
   height: 100%;
 
-  @include mobile() {
+  @include mixins.mobile() {
     width: 100%;
     flex-direction: column;
     justify-content: flex-start;
   }
+
+  .offset-center {
+    @include mixins.desktop() {
+      flex: 1;
+    }
+  }
 }
 
-@include mobile() {
+@include mixins.mobile() {
   .fake-timer {
     order: 3;
   }
@@ -25,11 +32,4 @@
     padding-top: 1rem;
     order: 1;
   }
-}
-
-.label {
-  position: relative;
-  bottom: 0rem;
-  color: white;
-  float: left;
 }

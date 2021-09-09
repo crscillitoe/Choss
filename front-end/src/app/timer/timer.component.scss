@@ -1,17 +1,29 @@
-@import "../mixins.scss";
+@use "../scss/mixins";
+@use "../scss/vars";
 
 .timer {
   display: flex;
   justify-content: center;
   flex-direction: column;
-  background-color: #404040;
+  background-color: vars.$backgroundAltColor;
   border-radius: 0.5rem;
   margin-left: 1rem;
 
-  @include mobile() {
+  @include mixins.mobile() {
     flex-direction: row;
     margin-bottom: 1rem;
     margin-left: 0rem;
+  }
+}
+
+.vertical {
+  display: flex;
+  justify-content: center;
+
+  @include mixins.desktop() {
+    flex-direction: column;
+    align-items: flex-start;
+    height: 100%;
   }
 }
 
@@ -19,7 +31,7 @@
  * On mobile devices display timers on top, with our timer
  * on the left and their timer on the right.
  */
-@include mobile() {
+@include mixins.mobile() {
   #theirTimer {
     order: 2;
   }
@@ -30,17 +42,17 @@
 }
 
 .time {
-  --highlight-render-time: 1s;
-  transition: background-color var(--highlight-render-time) ease;
+  $highlightRenderTime: 1s;
+  transition: background-color $highlightRenderTime ease;
   border-radius: 0.5rem;
   padding: 0.8rem;
   margin: 0.8rem;
   font-size: 2rem;
-  color: white;
+  color: vars.$textColor;
 }
 
 .ticking {
-  background-color: rgb(121, 155, 121);
+  background-color: vars.$accentColor;
 }
 
 .monospace {

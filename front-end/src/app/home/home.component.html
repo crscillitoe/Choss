@@ -1,23 +1,19 @@
-<div class="page">
-  <div class="center-both">
-    <div class="games">
-      <div class="game-mode" *ngFor="let gameMode of gameModeDescriptions">
-        <div class="game-name">
-          {{ gameMode.displayName }}
-        </div>
-        <div class="game-description">
-          {{ gameMode.description }}
-        </div>
-        <div class="game-buttons">
-          <button
-            mat-raised-button
-            color="primary"
-            (click)="setGamemode(gameMode.id); newGame()"
-          >
-            Play
-          </button>
-        </div>
-      </div>
+<div class="games">
+  <div class="card" *ngFor="let gameMode of gameModeDescriptions">
+    <h2 class="name">
+      {{ gameMode.displayName }}
+    </h2>
+    <div class="description">
+      {{ gameMode.description }}
+    </div>
+    <div class="buttons">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="setGamemode(gameMode.id); newGame()"
+      >
+        Play
+      </button>
     </div>
   </div>
 </div>

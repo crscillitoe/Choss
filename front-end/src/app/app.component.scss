@@ -1,15 +1,10 @@
-#header {
-  position: absolute;
-  top: 0rem;
-  left: 0rem;
-  width: 100vw;
-  height: 4rem;
+.website {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100vh;
 }
 
-#body {
-  position: absolute;
-  top: 4rem;
-  left: 0rem;
-  width: 100vw;
-  height: calc(100vh - 4rem);
+.fill-remaining-space {
+  flex: 1 1 auto;
 }

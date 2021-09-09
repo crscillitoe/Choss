@@ -1,7 +1,9 @@
-<div class="center-both">
-  <div class="board-and-timer">
-    <div class="fake-timer timer-width"></div>
-    <choss-board id="board" (startGame)="startGame($event)"></choss-board>
-    <choss-timer id="timer" [timerMessage]="timerMessage"></choss-timer>
-  </div>
+<div class="board-and-timer">
+  <div class="offset-center"></div>
+  <choss-board id="board" (startGame)="startGame($event)"></choss-board>
+  <choss-timer
+    class="offset-center"
+    id="timer"
+    [timerMessage]="timerMessage"
+  ></choss-timer>
 </div>
