@@ -1,19 +1,26 @@
 <div class="games">
-  <div class="card" *ngFor="let gameMode of gameModeDescriptions">
-    <h2 class="name">
-      {{ gameMode.displayName }}
-    </h2>
-    <div class="description">
-      {{ gameMode.description }}
+  <div class="card-container grow"*ngFor="let gameMode of gameModeDescriptions">
+    <div class="card-image">
+      <img src="https://media.istockphoto.com/vectors/blank-chess-board-in-black-and-white-vector-id456040935"/>
     </div>
-    <div class="buttons">
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="setGamemode(gameMode.id); newGame()"
-      >
-        Play
-      </button>
+    <div class="card-body">
+      <div class="card">
+        <h2 class="name">
+          {{ gameMode.displayName }}
+        </h2>
+        <div class="description">
+          {{ gameMode.description }}
+        </div>
+        <div class="buttons">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="setGamemode(gameMode.id); newGame()"
+          >
+            Play
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

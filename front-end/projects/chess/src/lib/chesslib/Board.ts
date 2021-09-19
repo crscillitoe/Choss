@@ -114,7 +114,7 @@ export class Board {
     return this.Pieces[this.randomInt(0, this.Pieces.length)];
   }
 
-  private randomInt(min, max) {
+  private randomInt(min: number, max: number) {
     return Math.floor(this.random() * (max - min + 1) + min);
   }
 

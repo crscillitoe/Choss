@@ -18,7 +18,7 @@ import { PlayerService } from "./player.service";
 export class TunnelService {
   private socket: SocketIOClient.Socket;
   private waitSocket: SocketIOClient.Socket;
-  private socket_ip: string = "https://api.woohoojin.dev";
+  private socket_ip: string = "https://api.brad.coffee";
 
   private boardState: BehaviorSubject<Game> = new BehaviorSubject<Game>(null);
   private validSquares: BehaviorSubject<Coordinate[]> = new BehaviorSubject<
@@ -32,7 +32,7 @@ export class TunnelService {
     private http: HttpClient,
     private boardService: BoardService,
     private playerService: PlayerService
-  ) {}
+  ) { }
 
   /**
    * Disconnect from the server
@@ -160,7 +160,7 @@ export class TunnelService {
    */
   getAvailableGameModes(): Observable<GameModeDescription[]> {
     return this.http.get<GameModeDescription[]>(
-      `https://api.woohoojin.dev/listGameModes`
+      `https://api.brad.coffee/listGameModes`
     );
   }
 }

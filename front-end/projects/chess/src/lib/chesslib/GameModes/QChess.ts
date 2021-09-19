@@ -120,7 +120,7 @@ export class QChess extends GameMode {
     return toReturn;
   }
 
-  sleep(ms) {
+  sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 

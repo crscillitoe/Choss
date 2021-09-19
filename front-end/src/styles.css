@@ -47,3 +47,12 @@ html {
   flex-direction: column;
   justify-content: center;
 }
+
+.grow {
+  transition: all .2s ease-in-out;
+}
+
+.grow:hover {
+  transform: scale(1.01);
+  box-shadow: -6px 75px 12px 0px #131314;
+}
