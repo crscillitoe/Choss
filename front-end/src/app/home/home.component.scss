@@ -1,63 +1,120 @@
 @use "../scss/vars";
+@use "../scss/mixins";
 
 .games {
-  display: grid;
-  overflow: hidden;
-  grid-template-columns: repeat(2, 1fr);
-  grid-auto-flow: row;
-  grid-auto-rows: 1fr;
-  grid-column-gap: 5rem;
-  grid-row-gap: 5rem;
-  justify-content: space-around;
-  margin-left: 20%;
-  margin-right: 20%;
-  margin-top: 2rem;
+  // Container
+  padding-top: 2rem;
+  width: 70%;
+  margin-left: 15%;
+
+  @include mixins.mobile() {
+    justify-content: center;
+    width: 95%;
+    margin-left: 2.5%;
+  }
+
+  @include mixins.tablet() {
+    justify-content: center;
+    width: 95%;
+    margin-left: 2.5%;
+  }
+
+
+  // Flexbox
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
   justify-items: center;
+  align-items: center;
+  gap: 3rem;
 
   .card-container {
-    width: 90%;
-    height: 90%;
+    flex: 0 0 40%;
+    align-self: stretch;
+    position: relative;
+
+    @include mixins.mobile() {
+      flex: 0 0 100%;
+      align-self: stretch;
+    }
+
+    @include mixins.tablet() {
+      flex: 0 0 60%;
+      align-self: stretch;
+    }
 
     .card-image {
+      border-radius: 1rem;
       width: 100%;
-      flex-grow: 0;
+      display: block;
 
       img {
-        width: 100%;
-        vertical-align: top;
-        border-radius: 0.6rem 0.6rem 0px 0px;
+        display: block;
       }
     }
 
-    .card-body {
-      width: 100%;
-      height: 40%;
-      display: flex;
+    .card {
+      width: 60%;
+      display: inline;
       align-items: center;
+      margin-right: 0%;
+      border-radius: 1em;
+      background: rgb(47, 52, 58);
+      background: linear-gradient(90deg, rgba(47, 52, 58, 1) 0%, rgba(68, 75, 84, 1) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      position: absolute;
+      bottom: 2%;
+      left: 20%;
 
-      .card {
-        border-radius: 0px 0px 0.6rem 0.6rem;
-        // top, right, bottom, left
-        padding: 0 1rem 1rem 1rem;
-        background-color: vars.$backgroundColor;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
+      >span.overlay {
+        background-color: black;
+        transition: opacity .2s ease-in-out;
+        opacity: 0%;
+        display: block;
+        position: absolute;
+        width: 100%;
         height: 100%;
+        border-radius: 1em;
       }
     }
-
   }
 
   .name,
   .description {
     color: vars.$textColor;
     text-align: center;
-    margin-bottom: 1.3rem;
+    padding: 0.2rem 0 0.2rem 0;
+
+    @include mixins.mobile() {
+      font-size: 22px;
+      padding: 0.3rem 0 0.3rem 0;
+    }
   }
 
   .buttons {
     display: flex;
     justify-content: center;
+  }
+}
+
+@include mixins.desktop() {
+  div.card-container.grow {
+    transition: all .2s ease-in-out;
+
+
+    &:hover {
+      >div.card>span.overlay {
+        //transition: opacity 3s ease-in-out;
+        opacity: 20%;
+      }
+    }
+  }
+
+  .grow:hover {
+    transform: scale(1.01);
+    cursor: pointer;
   }
 }
