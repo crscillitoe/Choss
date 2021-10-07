@@ -32,25 +32,11 @@ export class PlayerService {
   }
 
   isTheirTurn(): boolean {
-    return (
-      (this.boardService.gameInstance.State ===
-        GameState.IN_PROGRESS_BLACK_TURN &&
-        this.team === TeamOption.WHITE) ||
-      (this.boardService.gameInstance.State ===
-        GameState.IN_PROGRESS_WHITE_TURN &&
-        this.team === TeamOption.BLACK)
-    );
+    return false;
   }
 
   isOurTurn(): boolean {
-    return (
-      (this.boardService.gameInstance.State ===
-        GameState.IN_PROGRESS_BLACK_TURN &&
-        this.team === TeamOption.BLACK) ||
-      (this.boardService.gameInstance.State ===
-        GameState.IN_PROGRESS_WHITE_TURN &&
-        this.team === TeamOption.WHITE)
-    );
+    return true;
   }
   weWin(): boolean {
     return (

@@ -1,13 +1,11 @@
 <div *ngIf="Board" class="center-both">
-  <div
-    class="chess-game"
-    [ngClass]="{
+  <div class="chess-game">
+    <!-- [ngClass]="{
       'our-turn': playerService.isOurTurn(),
       'their-turn': playerService.isTheirTurn(),
       'we-win': playerService.weWin(),
       'they-win': playerService.theyWin()
-    }"
-  >
+    }" -->
     <ng-container *ngIf="rows">
       <div *ngFor="let row of rows; let y = index" class="chess-row">
         <div

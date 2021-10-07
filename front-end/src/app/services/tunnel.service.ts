@@ -1,14 +1,13 @@
-import { Injectable } from "@angular/core";
-import * as io from "socket.io-client";
-import { Observable, BehaviorSubject } from "rxjs";
-import { Board } from "../../../projects/chess/src/lib/chesslib/Board";
-import { Move } from "../../../projects/chess/src/lib/chesslib/Move";
-import { Coordinate } from "../../../projects/chess/src/lib/chesslib/Coordinate";
-import { Piece } from "projects/chess/src/lib/chesslib/Piece";
-import { Game } from "projects/chess/src/lib/chesslib/Game";
-import { ActivatedRoute } from "@angular/router";
-import { GameModeDescription } from "projects/chess/src/lib/chesslib/GameModes/GameModeRegistry";
 import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { Game } from "projects/chess/src/lib/chesslib/Game";
+import { GameModeDescription } from "projects/chess/src/lib/chesslib/GameModes/GameModeRegistry";
+import { Piece } from "projects/chess/src/lib/chesslib/Piece";
+import { BehaviorSubject, Observable } from "rxjs";
+import * as io from "socket.io-client";
+import { Coordinate } from "../../../projects/chess/src/lib/chesslib/Coordinate";
+import { Move } from "../../../projects/chess/src/lib/chesslib/Move";
 import { BoardService } from "./board.service";
 import { PlayerService } from "./player.service";
 
@@ -137,13 +136,19 @@ export class TunnelService {
    * @param pointA The coordinate of the piece you would like to move
    * @param pointB The coordinate that you would like to move the piece to
    */
-  makeMove(pointA: Coordinate, pointB: Coordinate) {
+  async makeMove(pointA: Coordinate, pointB: Coordinate) {
     const move: Move = {
       PointA: pointA,
       PointB: pointB,
     };
 
-    this.socket.emit("make-move", move);
+    console.log();
+
+    if (this.socket) {
+      this.socket.emit("make-move", move);
+    } else {
+      await this.boardService.evaluateMove(move);
+    }
   }
 
   makePremove(pointA: Coordinate, pointB: Coordinate) {

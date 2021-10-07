@@ -1,18 +1,20 @@
 import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
-import { BoardComponent } from "./board/board.component";
-import { GameComponent } from "./game/game.component";
-import { HomeComponent } from "./home/home.component";
+import { RouterModule, Routes } from "@angular/router";
+import { TrainingComponent } from "./training/training.component";
 
 const routes: Routes = [
+  // {
+  //   path: "",
+  //   component: HomeComponent,
+  // },
   {
     path: "",
-    component: HomeComponent,
+    component: TrainingComponent,
   },
-  {
-    path: "play",
-    component: GameComponent,
-  },
+  // {
+  //   path: "play",
+  //   component: GameComponent,
+  // },
 ];
 
 @NgModule({

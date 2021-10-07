@@ -20,9 +20,13 @@ import { BoardComponent } from "./board/board.component";
 import { GameComponent } from "./game/game.component";
 import { HeaderComponent } from "./header/header.component";
 import { HomeComponent } from "./home/home.component";
+import { LeftControlsComponent } from "./left-controls/left-controls.component";
+import { PgnInputComponent } from "./pgn-input/pgn-input.component";
 import { PieceComponent } from "./piece/piece.component";
+import { RightControlsComponent } from "./right-controls/right-controls.component";
 import { StartGameDialogComponent } from "./start-game-dialog/start-game-dialog.component";
 import { TimerComponent } from "./timer/timer.component";
+import { TrainingComponent } from "./training/training.component";
 
 @NgModule({
   declarations: [
@@ -34,6 +38,10 @@ import { TimerComponent } from "./timer/timer.component";
     GameComponent,
     PieceComponent,
     TimerComponent,
+    TrainingComponent,
+    LeftControlsComponent,
+    RightControlsComponent,
+    PgnInputComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,7 +61,7 @@ import { TimerComponent } from "./timer/timer.component";
     BrowserAnimationsModule,
     HttpClientModule,
   ],
-  entryComponents: [StartGameDialogComponent],
+  entryComponents: [StartGameDialogComponent, PgnInputComponent],
   providers: [],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA],

@@ -1,9 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Board } from "projects/chess/src/lib/chesslib/Board";
 import { Coordinate } from "projects/chess/src/lib/chesslib/Coordinate";
-import { TeamOption } from "projects/chess/src/lib/chesslib/Team";
 import { BoardService } from "./board.service";
-import { MouseService } from "./mouse.service";
 import { PieceService } from "./piece.service";
 import { PlayerService } from "./player.service";
 
@@ -64,7 +61,7 @@ export class TileService {
     const lookupKey = new Coordinate(x, y).toString();
     const coloredSquare =
       this.boardService.gameInstance.BoardState.ColorMap[lookupKey];
-    if (coloredSquare && coloredSquare.viewableBy === this.playerService.team) {
+    if (coloredSquare) {
       return coloredSquare.color;
     }
 

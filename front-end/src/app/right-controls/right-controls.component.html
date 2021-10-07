@@ -1,0 +1,56 @@
+<div class="center-both">
+  <div class="vertical-center">
+    <button
+      class="variation-button"
+      mat-flat-button
+      color="primary"
+      *ngIf="controls.randomLine"
+      (click)="controls.randomLine = !controls.randomLine"
+    >
+      Random Variation: ON
+    </button>
+
+    <button
+      class="variation-button"
+      mat-flat-button
+      color="warn"
+      *ngIf="!controls.randomLine"
+      (click)="controls.randomLine = !controls.randomLine"
+    >
+      Random Variation: OFF
+    </button>
+
+    <button
+      mat-flat-button
+      color="warn"
+      (mousedown)="
+        boardService.highlightContinuation(controls.getMoveFromMainline())
+      "
+      (mouseup)="
+        boardService.unhighlightContinuation(controls.getMoveFromMainline())
+      "
+      *ngIf="controls.ourTurn()"
+    >
+      Show Move
+    </button>
+
+    <div *ngIf="controls.getValidContinuations() && !controls.ourTurn()">
+      <ng-container
+        *ngFor="let continuation of controls.getValidContinuations()"
+      >
+        <button
+          (click)="
+            boardService.unhighlightContinuation(continuation);
+            controls.playContinuation(continuation)
+          "
+          (mouseover)="boardService.highlightContinuation(continuation)"
+          (mouseout)="boardService.unhighlightContinuation(continuation)"
+          mat-button
+          color="accent"
+        >
+          {{ continuation.san }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</div>

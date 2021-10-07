@@ -1,10 +1,17 @@
-import { Piece } from "./Piece";
+// import { ChessInstance, Square } from "chess.js";
+import { ChessInstance, Square } from "chess.js";
+import { ColoredSquare } from "./ColoredSquare";
 import { Coordinate } from "./Coordinate";
 import { Move } from "./Move";
-import { TeamOption, Team } from "./Team";
+import { Piece } from "./Piece";
+import { Bishop } from "./Pieces/Standard/Bishop";
+import { King } from "./Pieces/Standard/King";
+import { Knight } from "./Pieces/Standard/Knight";
 import { Pawn } from "./Pieces/Standard/Pawn";
+import { Queen } from "./Pieces/Standard/Queen";
+import { Rook } from "./Pieces/Standard/Rook";
+import { Team, TeamOption } from "./Team";
 import { Timer } from "./Timer";
-import { ColoredSquare } from "./ColoredSquare";
 
 /**
  * A board contains a list of pieces on the board.
@@ -22,6 +29,49 @@ export class Board {
     this.Pieces = Pieces;
     this.Height = Height;
     this.Width = Width;
+  }
+
+  updateFromChessJS(chess: ChessInstance) {
+    this.Pieces = [];
+    const columnNames = ["h", "g", "f", "e", "d", "c", "b", "a"];
+    for (const row of [0, 1, 2, 3, 4, 5, 6, 7]) {
+      for (const col of [1, 2, 3, 4, 5, 6, 7, 8]) {
+        const piece = chess.get((columnNames[row] + col) as Square);
+        if (piece) {
+          const team =
+            piece.color === "w" ? TeamOption.WHITE : TeamOption.BLACK;
+          if (piece.type === "p") {
+            this.Pieces.push(new Pawn(row + 1, col, new Team(team)));
+          } else if (piece.type === "k") {
+            this.Pieces.push(new King(row + 1, col, new Team(team)));
+          } else if (piece.type === "q") {
+            this.Pieces.push(new Queen(row + 1, col, new Team(team)));
+          } else if (piece.type === "r") {
+            this.Pieces.push(new Rook(row + 1, col, new Team(team)));
+          } else if (piece.type === "b") {
+            this.Pieces.push(new Bishop(row + 1, col, new Team(team)));
+          } else if (piece.type === "n") {
+            this.Pieces.push(new Knight(row + 1, col, new Team(team)));
+          }
+        }
+      }
+    }
+
+    const history = chess.history({ verbose: true });
+    if (history.length > 0) {
+      this.MoveHistory.push({
+        PointA: this.squareToCoordinate(history[history.length - 1].from),
+        PointB: this.squareToCoordinate(history[history.length - 1].to),
+      });
+    }
+  }
+
+  squareToCoordinate(square: Square): Coordinate {
+    return new Coordinate(this.letterToNumber(square[0]), +square[1]);
+  }
+
+  letterToNumber(letter: string): number {
+    return 8 - (letter.charCodeAt(0) - 97);
   }
 
   hasWhiteKing(): boolean {

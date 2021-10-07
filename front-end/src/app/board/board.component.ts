@@ -6,17 +6,12 @@ import {
   Output,
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs";
 import { Board } from "../../../projects/chess/src/lib/chesslib/Board";
-import { AnimationService } from "../services/animation.service";
 import { BoardService } from "../services/board.service";
 import { MouseService } from "../services/mouse.service";
-import { MusicService } from "../services/music.service";
 import { PlayerService } from "../services/player.service";
 import { TileService } from "../services/tile.service";
-import { TimerService } from "../services/timer.service";
-import { TunnelService } from "../services/tunnel.service";
 
 @Component({
   selector: "choss-board",
@@ -53,15 +48,10 @@ export class BoardComponent implements OnInit, OnDestroy {
     );
   }
   constructor(
-    private tunnelService: TunnelService,
-    private route: ActivatedRoute,
-    private musicService: MusicService,
     public tileService: TileService,
     private boardService: BoardService,
-    private timerService: TimerService,
     public playerService: PlayerService,
     public mouseService: MouseService,
-    public dialog: MatDialog,
-    private animationService: AnimationService
+    public dialog: MatDialog
   ) {}
 }
